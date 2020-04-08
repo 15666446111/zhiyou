@@ -51,6 +51,12 @@ class UserGroupController extends AdminController
         $show->field('created_at', __('创建时间'));
         $show->field('updated_at', __('修改时间'));
 
+        $show->users('用户信息', function ($users) {
+            $users->nickname('用户昵称');
+            $users->created_at();
+            $users->updated_at();
+        });
+
         return $show;
     }
 
