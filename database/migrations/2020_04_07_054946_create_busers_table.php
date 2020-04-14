@@ -14,6 +14,7 @@ class CreateBusersTable extends Migration
     public function up()
     {
         Schema::create('busers', function (Blueprint $table) {
+            
             $table->bigIncrements('id');
 
             $table->string('nickname')->comment('用户昵称')->nullable();

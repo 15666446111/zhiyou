@@ -61,17 +61,17 @@ class WithdrawController extends AdminController
     {
         $show = new Show(Withdraw::findOrFail($id));
 
-        $show->field('user_id', __('User id'));
-        $show->field('money', __('Money'));
-        $show->field('real_money', __('Real money'));
-        $show->field('rate', __('Rate'));
-        $show->field('rate_money', __('Rate money'));
-        $show->field('single_rate', __('Single rate'));
-        $show->field('status', __('Status'));
-        $show->field('pay_time', __('Pay time'));
-        $show->field('remark', __('Remark'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+        $show->field('user_id', __('提现会员'));
+        $show->field('money', __('提现金额'));
+        $show->field('real_money', __('到账金额'));
+        $show->field('rate', __('提现费率'));
+        $show->field('rate_money', __('手续费'));
+        $show->field('single_rate', __('单笔提现费'));
+        $show->field('status', __('提现状态'));
+        $show->field('pay_time', __('审核时间'));
+        $show->field('remark', __('提现备注'));
+        $show->field('created_at', __('申请时间'));
+        //$show->field('updated_at', __('Updated at'));
 
         return $show;
     }

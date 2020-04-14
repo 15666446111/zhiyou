@@ -41,6 +41,26 @@ class BuserController extends AdminController
         $grid->column('last_ip', __('最后登录IP'));
         $grid->column('last_time', __('最后登录时间'));
         $grid->column('created_at', __('注册时间'));
+
+        // 查询过滤器
+        $grid->filter(function($filter){
+            // 去掉默认的id过滤器
+            $filter->disableIdFilter();
+
+            $filter->column(1/4, function ($filter) {
+                $filter->like('nickname', '昵称');
+            });
+            $filter->column(1/4, function ($filter) {
+                $filter->like('account',  '账号');
+            });
+            $filter->column(1/4, function ($filter) {
+                $filter->like('phone',    '手机');
+            });
+            $filter->column(1/4, function ($filter) {
+                $filter->like('realname', '姓名');
+            });
+        });
+ 
         return $grid;
     }
 
@@ -54,24 +74,22 @@ class BuserController extends AdminController
     {
         $show = new Show(Buser::findOrFail($id));
 
-        $show->field('id', __('Id'));
-        $show->field('nickname', __('Nickname'));
-        $show->field('account', __('Account'));
-        $show->field('password', __('Password'));
-        $show->field('realname', __('Realname'));
-        $show->field('phone', __('Phone'));
-        $show->field('headimg', __('Headimg'));
-        $show->field('parent', __('Parent'));
-        $show->field('group', __('Group'));
-        $show->field('blance', __('Blance'));
-        $show->field('score', __('Score'));
-        $show->field('active', __('Active'));
-        $show->field('blance_active', __('Blance active'));
-        $show->field('blance_bak', __('Blance bak'));
-        $show->field('last_ip', __('Last ip'));
-        $show->field('last_time', __('Last time'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+        $show->field('nickname', __('用户昵称'));
+        $show->field('account', __('用户账号'));
+        $show->field('realname', __('真实姓名'));
+        $show->field('phone', __('手机号码'));
+        $show->field('headimg', __('用户头像'));
+        $show->field('parent', __('上级会员'));
+        $show->field('group', __('用户级别'));
+        $show->field('blance', __('用户余额'));
+        $show->field('score', __('用户积分'));
+        $show->field('active', __('用户状态'));
+        $show->field('blance_active', __('钱包状态'));
+        $show->field('blance_bak', __('冻结说明'));
+        $show->field('last_ip', __('最后登录地址'));
+        $show->field('last_time', __('最后登录时间'));
+        $show->field('created_at', __('创建时间'));
+        $show->field('updated_at', __('修改时间'));
 
         return $show;
     }
@@ -91,7 +109,7 @@ class BuserController extends AdminController
         $form->text('realname', __('真实姓名'));
         $form->mobile('phone', __('用户手机'));
         $form->text('headimg', __('头像图片'));
-        $form->number('parent', __('上级ID'));
+        $form->number('parent', __('上级ID'))->default(0);
         $form->number('group', __('用户级别'));
         $form->number('blance', __('用户余额'))->default(0);
         $form->number('score', __('用户积分'))->default(0);
@@ -100,6 +118,12 @@ class BuserController extends AdminController
         $form->text('blance_bak', __('冻结说明'));
         //$form->text('last_ip', __('Last ip'));
         //$form->datetime('last_time', __('Last time'))->default(date('Y-m-d H:i:s'));
+        //
+        // MD5 保存密码
+        $form->saving(function (Form $form) {
+            $form->password = md5($form->password);
+        });
+
         return $form;
     }
 }

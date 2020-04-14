@@ -1,0 +1,47 @@
+@import url(https://fonts.googleapis.com/css?family=Nunito);
+
+/*!
+ * Diy Css and laravel mix build
+ */
+
+html {
+	font-family: sans-serif;
+	line-height: 1.15;
+	-webkit-text-size-adjust: 100%;
+	-ms-text-size-adjust: 100%;
+	-ms-overflow-style: scrollbar;
+	-webkit-tap-highlight-color: rgba(0,0,0,0)
+}
+
+body {
+	margin: 0;
+	font-family: Nunito,sans-serif;
+	font-size: .9rem;
+	font-weight: 400;
+	line-height: 1.6;
+	color: #212529;
+	text-align: left;
+	background-color: #f8fafc
+}[tabindex="-1"]:focus {
+	outline: 0!important
+}
+
+/**
+ * @version Register Page For Css
+ */
+
+.demos-header{padding: 2.5rem 0}
+
+.demos-title{ text-align: center; font-size: 1.8rem; color: #3cc51f; font-weight: 400; margin: 0 15%; }
+
+.weui-input{font-size: .65rem;}
+
+.weui-vcode-btn{font-size: .7rem; padding: .1rem .7rem .1rem .8rem}
+
+.weui-label{font-size: .7rem;}
+
+.weui-agree{padding: .7rem .8rem; font-size: .6rem}
+
+.button_active{color: hsla(0,0%,100%,.6); background-color: #179b16;}
+
+.SendButton{color:#ccc;}

@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Merchant extends Model
+class BuserParent extends Model
 {
-    
+    // 黑名单
+	protected $guarded = [];
+
+
     /**
      * [busers 关联用户会员模型]
      * @author Pudding
@@ -16,16 +19,5 @@ class Merchant extends Model
     public function busers()
     {
     	return $this->belongsTo('\App\Buser', 'user_id', 'id');
-    }
-
-    /**
-     * [tradess 管理交易模型]
-     * @author Pudding
-     * @DateTime 2020-04-10T16:35:15+0800
-     * @return   [type]                   [description]
-     */
-    public function tradess()
-    {
-        return $this->hasMany('\App\Trade', 'terminal', 'merchant_terminal');
     }
 }
