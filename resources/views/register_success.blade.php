@@ -1,7 +1,6 @@
 @extends('layouts.apps')
 
 
-
 @section('content')
 <div class="weui-msg">
     <div class="weui-msg__icon-area">
@@ -30,8 +29,8 @@
             <p class="weui-footer__text">Copyright © 2020-2025 {{ env('APP_NAME')}}</p>
         </div>
     </div>
-</div>
+</div> 
 @endsection
-
+ 
 
 

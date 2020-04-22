@@ -19,6 +19,9 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        /**
+         * @version 解除推送交易数据的csrf验证 汇开店plus推送
+         */
+        '/trade'
     ];
 }
