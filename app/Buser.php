@@ -40,6 +40,12 @@ class Buser extends Model
  	}
 
 
+ 	/** 获取图片头像 **/
+ 	public function getHeadimgAttribute($value)
+    {
+    	return env("APP_URL")."/".$value;
+    }
+
 
  	/**
  	 * [getParentStr 获取会员的所有上级]

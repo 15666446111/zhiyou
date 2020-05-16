@@ -27,20 +27,30 @@ class BuserController extends AdminController
         $grid = new Grid(new Buser());
 
         $grid->column('id', __('索引'));
-        $grid->column('nickname', __('用户昵称'));
-        $grid->column('account', __('登录账号'));
-        $grid->column('realname', __('真实姓名'));
-        $grid->column('phone', __('手机号码'));
+        $grid->column('nickname', __('昵称'));
+        $grid->column('account', __('账号'));
+        $grid->column('realname', __('姓名'));
+        $grid->column('phone', __('手机号'));
         $grid->column('headimg', __('头像图片'));
-        $grid->column('parent', __('上级会员'));
-        $grid->column('group', __('用户级别'));
-        $grid->column('blance', __('用户余额'));
-        $grid->column('score', __('用户积分'));
-        $grid->column('active', __('活动状态'));
-        $grid->column('blance_active', __('钱包状态'));
+        $grid->column('groups.name', __('级别'))->label();
+        $grid->column('blance', __('余额'))->label();
+        $grid->column('score', __('积分'))->label();
+        $grid->column('active', __('活动'))->bool();
+        $grid->column('blance_active', __('钱包'))->bool();
         $grid->column('last_ip', __('最后登录IP'));
         $grid->column('last_time', __('最后登录时间'));
         $grid->column('created_at', __('注册时间'));
+
+        $grid->actions(function ($actions) {
+            // 去掉删除
+            $actions->disableDelete();
+        });
+
+        $grid->batchActions(function ($batch) {
+            $batch->disableDelete();
+        });
+        
+        //$grid->disableCreateButton();
 
         // 查询过滤器
         $grid->filter(function($filter){
@@ -124,6 +134,10 @@ class BuserController extends AdminController
             $form->password = md5($form->password);
         });
 
+        $form->tools(function (Form\Tools $tools) {
+            // 去掉`删除`按钮
+            $tools->disableDelete();
+        });
         return $form;
     }
 }

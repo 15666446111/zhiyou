@@ -167,7 +167,7 @@ return [
          */
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Vinkla\Hashids\HashidsServiceProvider::class,
-
+        
         /*
          * Application Service Providers...
          */

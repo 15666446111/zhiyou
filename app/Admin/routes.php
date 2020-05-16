@@ -30,4 +30,22 @@ Route::group([
     $router->resource('trades', TradeController::class);
     // 分润管理
     $router->resource('cashes', CashController::class);
+
+
+
+
+    /** 终端品牌管理 **/
+    $router->resource('brands', BrandController::class);
+
+
+    /* 交易类型管理 */
+    $router->resource('trade-types', TradeTypeController::class);
+
+
+
+
+    // 文章类型
+    $router->resource('article-types', ArticleTypeController::class);
+    // 文章列表
+    $router->resource('articles', ArticleController::class);
 });

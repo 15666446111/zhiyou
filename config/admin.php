@@ -396,22 +396,43 @@ return [
     |
     */
     'extensions' => [
+
+        'ueditor' => [
+            // 如果要关掉这个扩展，设置为false
+            'enable' => true,
+
+            // 编辑器的前端配置 参考：http://fex.baidu.com/ueditor/#start-config
+            'config' => [
+                'initialFrameHeight' => 600, // 例如初始化高度
+            ],
+            // 'field_type' => '自定义名字'
+        ],
+
         // 系统配置
         'configx' => [
             // Set to `false` if you want to disable this extension
             'enable' => true,
             'tabs' => [
                 'base' => '基本设置',
+                'fee'  => '费率设置',
+                'price'=> '结算价设置', 
                 'draw' => '提现设置',
             ],
             // Whether check group permissions. 
             //if (!Admin::user()->can('confix.tab.base')) {/*hide base tab*/ } .
             'check_permission' => false
         ],
+
         // env 文件管理
         'env-manager' => [
             // If the value is set to false, this extension will be disabled
             'enable' => true
+        ],
+
+        'chartjs' => [
+        
+            // Set to `false` if you want to disable this extension
+            'enable' => true,
         ]
     ],
 ];

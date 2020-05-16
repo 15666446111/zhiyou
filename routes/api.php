@@ -39,6 +39,20 @@ Route::prefix('V1')->group(function () {
 	Route::middleware('AuthToken')->get('/plug', 'V1\PlugController@index');
 
     /**
+     * @version [<获取系统公告>] [<description>]
+     * @return  [<返回系统公告列表>]
+     * @version [<首页轮播图下方的系统公告>] 
+     */
+    Route::middleware('AuthToken')->get('/notice', 'V1\ArticleController@Notice');
+
+    /**
+     * @version [<获取常见问题>] [<description>]
+     * @return  [<返回常见问题列表>]
+     * @version [<产品使用的常见问题>] 
+     */
+    Route::middleware('AuthToken')->get('/problem', 'V1\ArticleController@problem');
+
+    /**
      * @version [<团队扩展分享二维码>] [<description>]
      * @return  [带二维码的分享海报]   [<description>]
      * @version [<分享二维码] [<description>]

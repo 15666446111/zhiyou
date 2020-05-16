@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Buser;
+use App\BuserRate;
 use App\Observers\BuserObserver;
+use App\Observers\BuserRateObserver;
+
 
 use Encore\Admin\Config\Config;
 use Illuminate\Support\ServiceProvider;
@@ -33,7 +36,10 @@ class AppServiceProvider extends ServiceProvider
          * @version [<新增用户 / 用户注册 / 用户模型发生新增事件的时候 执行观察者 >] [<description>]
          */
         Buser::observe(BuserObserver::class);
-
+        /**
+         * @version [<费率新增初始化， 费率更改事件的时候 执行观察者 >] [<description>]
+         */
+        BuserRate::observe(BuserRateObserver::class);
 
         /**
          * [$table Admin 的Setting ]

@@ -12,4 +12,10 @@ class Plug extends Model
     {
     	return $query->orderBy('sort', 'desc')->limit(config('base.plug_limit'))->select(['image_file', 'link']);
     }
+
+    /* 返回带全部地址的图片*/
+    public function getImageFileAttribute($value)
+    {
+    	return env("APP_URL")."/".$value;
+    }
 }
