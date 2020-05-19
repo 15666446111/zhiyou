@@ -48,4 +48,8 @@ Route::group([
     $router->resource('article-types', ArticleTypeController::class);
     // 文章列表
     $router->resource('articles', ArticleController::class);
+
+
+    // 消息通知
+    $router->resource('buser-messages', BuserMessageController::class);
 });

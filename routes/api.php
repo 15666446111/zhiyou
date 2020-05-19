@@ -100,6 +100,15 @@ Route::prefix('V1')->group(function () {
 
 
     /**
+     * @version [<APP 获取用户伙伴信息>] [<description>]
+     * @return  [个人信息 获取伙伴信息]   [<description>]
+     * @version [<伙伴信息接口] [<description>]
+     */
+    Route::middleware('AuthToken')->post('/userInfo', 'V1\MineController@userInfo');
+
+
+
+    /**
      * @version [<APP 提现记录>] [<description>]
      * @return  [个人信息 获取提现记录]   [<description>]
      * @version [<提现记录信息接口] [<description>]
@@ -108,6 +117,34 @@ Route::prefix('V1')->group(function () {
 
 
 
+    /**
+     * @version [<APP 获取消息通知>] [<description>]
+     * @return  [获取发送的消息接口]   [<description>]
+     * @version [<消息通知信息接口] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/message', 'V1\MessageController@getMessage');
+
+
+    /**
+     * @version [<APP 获取产品分类接口>] [<description>]
+     * @return  [获取正在展示的产品分类]   [<description>]
+     * @version [<产品分类信息接口] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getproducttype', 'V1\ProductController@getType');
+
+    /**
+     * @version [<APP 获取产品列表接口>] [<description>]
+     * @return  [获取正在展示的产品列表]   [<description>]
+     * @version [<产品列表信息接口] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getproduct', 'V1\ProductController@getProduct');
+
+    /**
+     * @version [<APP 获取产品信息接口>] [<description>]
+     * @return  [获取单独某个产品信息]   [<description>]
+     * @version [<产品信息接口] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getproductinfo', 'V1\ProductController@getProductInfo');
 
 });
 

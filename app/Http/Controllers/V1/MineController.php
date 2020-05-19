@@ -35,6 +35,40 @@ class MineController extends Controller
 
 
     /**
+     * @Author    Pudding
+     * @DateTime  2020-05-16
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [获取伙伴用户的详细]
+     * @param     Request user id 伙伴的id
+     * @return    [type]
+     */
+    public function userInfo(Request $request)
+    {
+        try{
+
+
+            //return response()->json(['success'=>['message' => '获取成功!', 'data' => $request->team_user]]);
+
+            if (!$request->team_user) {
+                return response()->json(['success'=>['message' => '获取成功!', 'data' => []]]);
+            }
+
+            // 获取用户信息
+            $user = \App\Buser::where('id', $request->team_user)->first();
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data' => $user]]);
+
+        } catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+
+    }
+
+
+    /**
      * [draw_log  APP 获取提现信息]
      * @author Pudding
      * @DateTime 2020-04-13T08:53:57+0800

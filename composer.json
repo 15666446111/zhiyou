@@ -14,6 +14,7 @@
         "fideloper/proxy": "^4.0",
         "ichynul/configx": "^1.3",
         "jxlwqq/env-manager": "^0.1.0",
+        "laravel-admin-ext/backup": "^1.1",
         "laravel-admin-ext/chartjs": "^1.0",
         "laravel-admin-ext/config": "^1.1",
         "laravel-admin-ext/reporter": "^1.0",
