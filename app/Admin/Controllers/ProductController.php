@@ -2,20 +2,20 @@
 
 namespace App\Admin\Controllers;
 
-use App\BuserMessage;
+use App\Product;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
 
-class BuserMessageController extends AdminController
+class ProductController extends AdminController
 {
     /**
      * Title for current resource.
      *
      * @var string
      */
-    protected $title = '消息通知';
+    protected $title = '商品管理';
 
     /**
      * Make a grid builder.
@@ -24,16 +24,20 @@ class BuserMessageController extends AdminController
      */
     protected function grid()
     {
-        $grid = new Grid(new BuserMessage());
+        $grid = new Grid(new Product());
 
         $grid->column('id', __('索引'));
-        $grid->column('user_id', __('会员'));
-        $grid->column('type', __('类型'));
-        $grid->column('is_read', __('已读'));
         $grid->column('title', __('标题'));
-        $grid->column('message_text', __('内容'));
-        $grid->column('send_plat', __('发送方'));
+        $grid->column('image', __('图片'));
+        $grid->column('active', __('状态'))->switch();
+        $grid->column('type', __('类型'));
+        $grid->column('price', __('价格'))->label();
         $grid->column('created_at', __('创建时间'));
+        
+        $grid->actions(function ($actions) {
+            // 去掉删除
+            $actions->disableDelete();
+        });
         return $grid;
     }
 
@@ -45,15 +49,15 @@ class BuserMessageController extends AdminController
      */
     protected function detail($id)
     {
-        $show = new Show(BuserMessage::findOrFail($id));
+        $show = new Show(Product::findOrFail($id));
 
         $show->field('id', __('Id'));
-        $show->field('user_id', __('User id'));
-        $show->field('type', __('Type'));
-        $show->field('is_read', __('Is read'));
         $show->field('title', __('Title'));
-        $show->field('message_text', __('Message text'));
-        $show->field('send_plat', __('Send plat'));
+        $show->field('image', __('Image'));
+        $show->field('active', __('Active'));
+        $show->field('type', __('Type'));
+        $show->field('price', __('Price'));
+        $show->field('content', __('Content'));
         $show->field('created_at', __('Created at'));
         $show->field('updated_at', __('Updated at'));
 
@@ -67,14 +71,14 @@ class BuserMessageController extends AdminController
      */
     protected function form()
     {
-        $form = new Form(new BuserMessage());
+        $form = new Form(new Product());
 
-        $form->number('user_id', __('User id'));
-        $form->text('type', __('Type'))->default('other');
-        $form->switch('is_read', __('Is read'));
         $form->text('title', __('Title'));
-        $form->textarea('message_text', __('Message text'));
-        $form->text('send_plat', __('Send plat'))->default('系统发送');
+        $form->image('image', __('Image'));
+        $form->switch('active', __('Active'))->default(1);
+        $form->switch('type', __('Type'));
+        $form->number('price', __('Price'));
+        $form->textarea('content', __('Content'));
 
         return $form;
     }

@@ -15,7 +15,7 @@ class CashController extends AdminController
      *
      * @var string
      */
-    protected $title = 'App\Cash';
+    protected $title = '分润返现列表';
 
     /**
      * Make a grid builder.

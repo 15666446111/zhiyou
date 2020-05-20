@@ -32,16 +32,12 @@ Route::group([
     $router->resource('cashes', CashController::class);
 
 
-
-
     /** 终端品牌管理 **/
     $router->resource('brands', BrandController::class);
 
 
     /* 交易类型管理 */
     $router->resource('trade-types', TradeTypeController::class);
-
-
 
 
     // 文章类型
@@ -52,4 +48,15 @@ Route::group([
 
     // 消息通知
     $router->resource('buser-messages', BuserMessageController::class);
+
+
+    // 商城产品管理
+    $router->resource('products', ProductController::class);
+    // 商品订单管理
+    $router->resource('orders', OrderController::class);
+
+    // 活动政策
+    $router->resource('policies', PolicyController::class);
+    // 用户政策活动信息
+    $router->resource('user-policies', UserPolicyController::class);
 });
