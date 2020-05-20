@@ -3,10 +3,14 @@
 namespace App\Admin\Controllers;
 
 use App\Merchant;
-use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+
+use App\Admin\Actions\ImportMachines;
+use App\Admin\Actions\MachineHeadTail;
+
+use Encore\Admin\Controllers\AdminController;
 
 class MerchantController extends AdminController
 {
@@ -37,7 +41,6 @@ class MerchantController extends AdminController
         $grid->column('created_at', __('创建时间'));
         //$grid->column('updated_at', __('Updated at'));
 
-        $grid->disableCreateButton();
         $grid->actions(function ($actions) {
             // 去掉删除 编辑
             $actions->disableDelete();
@@ -45,6 +48,13 @@ class MerchantController extends AdminController
         });
         $grid->batchActions(function ($batch) {
             $batch->disableDelete();
+        });
+
+        $grid->tools(function ($tools) {
+
+            $tools->append(new ImportMachines());
+
+            $tools->append(new MachineHeadTail());
         });
         return $grid;
     }
@@ -81,13 +91,7 @@ class MerchantController extends AdminController
     {
         $form = new Form(new Merchant());
 
-        $form->number('user_id', __('User id'));
-        $form->text('user_phone', __('User phone'));
-        $form->text('merchant_number', __('Merchant number'));
-        $form->text('merchant_terminal', __('Merchant terminal'));
-        $form->text('merchant_name', __('Merchant name'));
-        $form->switch('bind_status', __('Bind status'));
-        $form->datetime('bind_time', __('Bind time'))->default(date('Y-m-d H:i:s'));
+        $form->text('merchant_terminal', __('终端编号'));
 
         return $form;
     }

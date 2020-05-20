@@ -60,3 +60,4 @@ Route::group([
     // 用户政策活动信息
     $router->resource('user-policies', UserPolicyController::class);
 });
+http://wk.changhuoban.com/admin

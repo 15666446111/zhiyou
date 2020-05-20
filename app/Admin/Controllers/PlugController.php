@@ -67,8 +67,11 @@ class PlugController extends AdminController
         $form = new Form(new Plug());
 
         $form->file('image_file', __('上传图片'));
+
         $form->url('link', __('链接地址'));
+
         $form->switch('active', __('开启状态'));
+        
         $form->number('sort', __('排序权重'))->default(0);
 
         return $form;

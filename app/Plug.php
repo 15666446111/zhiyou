@@ -16,6 +16,6 @@ class Plug extends Model
     /* 返回带全部地址的图片*/
     public function getImageFileAttribute($value)
     {
-    	return env("APP_URL")."/".$value;
+    	return env("APP_URL")."/storage/".$value;
     }
 }
