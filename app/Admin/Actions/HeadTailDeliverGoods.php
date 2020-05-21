@@ -5,7 +5,7 @@ namespace App\Admin\Actions;
 use Encore\Admin\Actions\Action;
 use Illuminate\Http\Request;
 
-class MachineHeadTail extends Action
+class HeadTailDeliverGoods extends Action
 {
     protected $selector = '.machine-head-tail';
 
@@ -66,13 +66,13 @@ class MachineHeadTail extends Action
             return $this->response()->swal()->error($throwable->getMessage());
         }
 
-        return $this->response()->success('补全成功!')->refresh();
+        return $this->response()->success('发货成功!')->refresh();
     }
 
     public function html()
     {
         return <<<HTML
-        <a class="btn btn-sm btn-default machine-head-tail"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾补全</a>
+        <a class="btn btn-sm btn-default machine-head-tail" style="position:absolute;  right: 250px;"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾发货</a>
 HTML;
     }
 
@@ -85,9 +85,12 @@ HTML;
      */
     public function form()
     {
-        $Brand = \App\Brand::where('active', '1')->pluck('brand_name as name','id');
+        $user = \App\Buser::pluck('nickname as name','id');
+        $this->select('user', '配送会员')->options($user)->rules('required', ['required' => '请选择品牌']);
 
-        $this->select('brand', '机具品牌')->options($Brand)->rules('required', ['required' => '请选择品牌']);
+
+        $policy = \App\Policy::where('active', '1')->pluck('title as name','id');
+        $this->select('policy', '政策活动')->options($policy)->rules('required', ['required' => '请选择品牌']);
 
         $this->text('head', '机具首行终端号')->rules('required', ['required' => '首行不能为空']);
 

@@ -48,7 +48,7 @@ class UserGroupController extends AdminController
 
         $grid->disableFilter();
 
-        $grid->disableCreateButton();
+        //$grid->disableCreateButton();
 
         return $grid;
     }
