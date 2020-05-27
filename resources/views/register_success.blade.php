@@ -16,7 +16,7 @@
 
     <div class="weui-msg__opr-area">
         <p class="weui-btn-area">
-            <a href="javascript:;" class="weui-btn weui-btn_primary">关注公众号</a>
+            <a href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=Mzg4NDA1NDM0Mw==#wechat_redirect" class="weui-btn weui-btn_primary">关注公众号</a>
             <a href="{{ config('base.app_down_url') }}" class="weui-btn weui-btn_default">下载APP</a>
         </p>
     </div>
@@ -24,9 +24,9 @@
     <div class="weui-msg__extra-area">
         <div class="weui-footer">
             <p class="weui-footer__links">
-                <a href="javascript:void(0);" class="weui-footer__link">{{ env('APP_NAME')}}版权所有</a>
+                <a href="javascript:void(0);" class="weui-footer__link">{{ config('app.name')}}版权所有</a>
             </p> 
-            <p class="weui-footer__text">Copyright © 2020-2025 {{ env('APP_NAME')}}</p>
+            <p class="weui-footer__text">Copyright © {{date('Y', time() )}}-{{date('Y', time() )+6}} {{ config('app.name')}}</p>
         </div>
     </div>
 </div> 

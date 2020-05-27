@@ -15,7 +15,7 @@ class UserPolicyController extends AdminController
      *
      * @var string
      */
-    protected $title = 'App\UserPolicy';
+    protected $title = '会员政策信息';
 
     /**
      * Make a grid builder.
@@ -26,16 +26,20 @@ class UserPolicyController extends AdminController
     {
         $grid = new Grid(new UserPolicy());
 
-        $grid->column('id', __('Id'));
-        $grid->column('user_id', __('User id'));
-        $grid->column('policy_id', __('Policy id'));
-        $grid->column('sett_price', __('Sett price'));
-        $grid->column('active_return', __('Active return'));
-        $grid->column('standard', __('Standard'));
-        $grid->column('standard_count', __('Standard count'));
-        $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
+        $grid->column('id', __('索引'));
+        $grid->column('busers.nickname', __('会员'));
+        $grid->column('policys.title', __('政策'));
 
+
+        $grid->disableCreateButton();
+        $grid->actions(function ($actions) {
+            // 去掉删除
+            $actions->disableDelete();
+        });
+
+        $grid->batchActions(function ($batch) {
+            $batch->disableDelete();
+        });
         return $grid;
     }
 
@@ -71,12 +75,13 @@ class UserPolicyController extends AdminController
     {
         $form = new Form(new UserPolicy());
 
-        $form->text('user_id', __('User id'));
-        $form->text('policy_id', __('Policy id'));
-        $form->number('sett_price', __('Sett price'));
-        $form->textarea('active_return', __('Active return'));
-        $form->textarea('standard', __('Standard'));
-        $form->textarea('standard_count', __('Standard count'));
+            $form->table('sett_price', '结算价设置',function ($table) {
+                $table->text('trade_name', '类型名称');
+                $table->text('trade_type', '交易类型');
+                $table->text('trade_bank', '交易卡类型');
+                $table->number('setprice', '结算价(万分位)')->default(0);
+                $table->switch('open', '是否开启')->default(0);
+            });
 
         return $form;
     }

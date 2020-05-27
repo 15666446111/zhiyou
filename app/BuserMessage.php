@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuserMessage extends Model
 {
-    //
+    // 黑名单
+	protected $guarded = [];
 }

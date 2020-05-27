@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -23,6 +23,17 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $trade = \App\Trade::orderBy('id', 'desc')->first();
+
+        
+        /**
+         * @version [< 给当前交易进行分润发放 >]
+         */
+        $cash = new \App\Http\Controllers\CashMerchantController($trade);
+
+        $result = $cash->cash($trade);
+
+        dd($result);
         return view('home');
     }
 }

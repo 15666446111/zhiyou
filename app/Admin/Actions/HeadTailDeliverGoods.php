@@ -13,7 +13,7 @@ class HeadTailDeliverGoods extends Action
     {
         // $request ...
         try { 
-            if(!$request->head or !$request->tail or !$request->brand){
+            if(!$request->head or !$request->tail or !$request->user  or !$request->policy){
                 return $this->response()->error('参数无效!')->refresh();
             }
 
@@ -26,11 +26,11 @@ class HeadTailDeliverGoods extends Action
                 return $this->response()->error('终端尾行不能低于首行')->refresh();
             }
 
-            $data = [];
-
             if(strlen($request->head) != strlen($request->tail)){
                 return $this->response()->error('终端首尾长度不一样')->refresh();
             }
+
+            $data = [];
 
             //
             $lenth = strlen($request->head);
@@ -44,20 +44,13 @@ class HeadTailDeliverGoods extends Action
 
             }
 
-            $eplice = \App\Merchant::whereIn('merchant_terminal', $data)->pluck('merchant_terminal')->toArray();
-            // 交集
-            $epliceRows = array_intersect($data, $eplice);
-            // 差集
-            $InsertData = array_diff($data, $eplice);
 
-            foreach ($InsertData as $key => $value) {
-                \App\Merchant::create([
-                    'merchant_terminal' =>  $value,
-                    'brand_id'          =>  $request->brand,
-                ]);
-            }
+            \App\Merchant::whereIn('merchant_terminal', $data)->where('bind_status', '0')->update([
+                'user_id'   =>  $request->user,
+                'policy_id' =>  $request->policy
+            ]);
 
-            return $this->response()->success('入库成功, 入库'.count($InsertData).'台!')->refresh();
+            return $this->response()->success('发货成功')->refresh();
 
         }catch (Throwable $throwable) {
 

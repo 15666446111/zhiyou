@@ -12,9 +12,44 @@ class DeliverGoods extends RowAction
 
     public function handle(Model $model, Request $request)
     {
-        // $model ...
+        // $request ...
+        try { 
 
-        return $this->response()->success('Success message.')->refresh();
+            if(!$request->user or !$request->policy){
+                return $this->response()->error('参数无效!')->refresh();
+            }
+
+            $model->user_id = $request->user;
+
+            $model->policy_id = $request->policy;
+
+            $model->save();
+
+            /*
+            	检查该会员在该政策下是否有结算激活等配置。如果没有 进行默认该政策配置
+             */
+            $userPolicy  = \App\UserPolicy::where('user_id', $request->user)->where('policy_id', $request->policy)->first();
+
+            if(!$userPolicy or empty($userPolicy)){
+
+            	$policy = \App\Policy::where('id', $request->policy)->first();
+
+            	\App\UserPolicy::create([
+            		'user_id'		=>	$request->user,
+            		'policy_id'		=>	$request->policy,
+            		'sett_price'	=>	$policy->sett_price
+            	]);
+            }
+
+            return $this->response()->success('发货成功')->refresh();
+
+        }catch (Throwable $throwable) {
+
+            $this->response()->status = false;
+
+            return $this->response()->swal()->error($throwable->getMessage());
+        }
+
     }
 
     /* 发货按钮需要提交资料 */

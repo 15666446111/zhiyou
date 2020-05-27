@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Trade extends Model
 {
+	// 黑名单
+	protected $guarded = ['id'];
 
 	/**
 	 * [merchants 关联商户模型]

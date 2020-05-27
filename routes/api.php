@@ -14,7 +14,9 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
+
     return $request->user();
+
 });
 
 
@@ -146,9 +148,30 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getproductinfo', 'V1\ProductController@getProductInfo');
 
+
+    /**
+     * @version [<APP 商户登记>] [<description>]
+     * @return  [获取该用户下所有未登记的机器]   [<description>]
+     * @version [<未登记机器获取接口] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getNoBindMerchant', 'V1\MerchantController@getNoBindList');
+
+
+
+    /**
+     * @version [<汇付方交易推送地址>] [<description>]
+     * @return  [交易数据推送处理]   [<description>]
+     * @version [<交易数据处理] [<description>]
+     */
+    Route::post('/huifuTradeNotify', 'V1\TradeNotifyController@trade');
+
 });
 
+
+
 Route::fallback(function(){ 
+
     return response()->json(['error'=>['message' => 'Request Error!']], 404);
+
 });
 

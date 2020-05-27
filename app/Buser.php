@@ -17,6 +17,18 @@ class Buser extends Model
 
 
 	/**
+	 * [merchants 关联钱包信息表]
+	 * @author Pudding
+	 * @DateTime 2020-04-10T15:33:52+0800
+	 * @return   [type]                   [description]
+	 */
+ 	public function wallets()
+ 	{
+ 		return $this->hasOne('\App\BuserWallet', 'user_id', 'id');
+ 	}
+
+
+	/**
 	 * [merchants 关联上级信息表]
 	 * @author Pudding
 	 * @DateTime 2020-04-10T15:33:52+0800

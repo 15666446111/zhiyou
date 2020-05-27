@@ -23,16 +23,29 @@ class BuserObserver
             'parents'   =>  $ParentStr,
         ]);
 
+        // 初始化钱包表
+        \App\BuserWallet::create([ 'user_id'   =>  $buser->id ]);
+
+        // 初始化实名表数据
+        \App\BuserRealname::create([ 'user_id'   =>  $buser->id ]);    
+
         // 初始化用户费率和结算价
         \App\BuserRate::create([
             'user_id'               =>  $buser->id,
             'default_rate'          =>  config('fee.defaut'),
             'default_enjoy_rate'    =>  config('fee.default_enjoy'),
             'default_code_rate'     =>  config('fee.default_code'),
-
             'default_price'         =>  config('price.default'),
             'default_enjoy_price'   =>  config('price.default_enjoy'),
             'default_code_price'    =>  config('price.default_code'),
+        ]);
+
+        // 发送一条消息
+        \App\BuserMessage::create([
+            'user_id'               =>  $buser->id,
+            'type'                  =>  'Register',
+            'title'                 =>  '会员注册成功通知',
+            'message_text'          =>  '通知内容',
         ]);
     }
 

@@ -33,10 +33,10 @@ class BuserController extends AdminController
         $grid->column('phone', __('手机号'));
         $grid->column('headimg', __('头像图片'));
         $grid->column('groups.name', __('级别'))->label();
-        $grid->column('blance', __('余额'))->label();
-        $grid->column('score', __('积分'))->label();
-        $grid->column('active', __('活动'))->bool();
-        $grid->column('blance_active', __('钱包'))->bool();
+        $grid->column('wallets.cash_blance', __('分润余额'))->label();
+        $grid->column('wallets.return_blance', __('返现余额'))->label();
+        $grid->column('wallets.blance_active', __('钱包状态'))->bool();
+        $grid->column('active', __('状态'))->bool();
         $grid->column('last_ip', __('最后登录IP'));
         $grid->column('last_time', __('最后登录时间'));
         $grid->column('created_at', __('注册时间'));
@@ -121,14 +121,9 @@ class BuserController extends AdminController
         $form->text('headimg', __('头像图片'));
         $form->number('parent', __('上级ID'))->default(0);
         $form->number('group', __('用户级别'));
-        $form->number('blance', __('用户余额'))->default(0);
-        $form->number('score', __('用户积分'))->default(0);
+
         $form->switch('active', __('活动状态'))->default(1);
-        $form->switch('blance_active', __('钱包状态'))->default(1);
-        $form->text('blance_bak', __('冻结说明'));
-        //$form->text('last_ip', __('Last ip'));
-        //$form->datetime('last_time', __('Last time'))->default(date('Y-m-d H:i:s'));
-        //
+
         // MD5 保存密码
         $form->saving(function (Form $form) {
             $form->password = md5($form->password);
