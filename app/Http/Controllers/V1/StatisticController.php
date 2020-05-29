@@ -48,10 +48,10 @@ class StatisticController
         // 根据time的类型 获得开始时间  可以直接赋值
         switch ($time) {
             case 'month':
-                $this->StartTime = carbon::now()->startOfMonth()->toDateTimeString();
+                $this->StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
                 break;
             case 'day':
-                $this->StartTime = carbon::today()->toDateTimeString();
+                $this->StartTime = Carbon::today()->toDateTimeString();
                 break;
             case 'all':
                 $this->StartTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->toDateTimeString();
@@ -61,7 +61,7 @@ class StatisticController
                 break;
         }
 
-        $this->EndTime = carbon::now()->toDateTimeString();
+        $this->EndTime = Carbon::now()->toDateTimeString();
     }
 
     public function getStartTime()

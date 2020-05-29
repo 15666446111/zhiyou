@@ -72,17 +72,41 @@ class PolicyController extends AdminController
 
         $form->tab('基础信息配置', function ($form) {
             $form->text('title', __('活动政策'));
-            $form->switch('active', __('活动状态'))->default(1);
+
+            $form->switch('active', __('活动状态'))->default(1)->help('关闭活动状态时,配送无法选择此活动,已配送机器分润等不受影响');
+
+            $form->number('default_push', __('会员直推'))->default(2)->help('当机器持有人为普通用户的时候,该用户获得的交易分润推荐比例');
+            $form->number('indirect_push', __('会员间推'))->default(1)->help('当机器持有人为普通用户的时候,该用户上级临近的代理获得的交易分润推荐比例');
+
             $form->table('sett_price', '结算价设置',function ($table) {
                 $table->text('trade_name', '类型名称');
                 $table->text('trade_type', '交易类型');
                 $table->text('trade_bank', '交易卡类型');
-                $table->number('setprice', '结算价(万分位)')->default(0);
+                $table->number('setprice', '最低结算价(万分位)')->default(0);
+                $table->number('defaultPrice', '默认结算价(万分位)')->default(0);
                 $table->switch('open', '是否开启')->default(0);
             });
-        })->tab('结算价设置', function ($form) {
+            
+        })->tab('激活返现设置', function ($form) {
 
+            $form->number('default_active', __('直推激活'))->default(2)->help('机器激活,上级获得的直推奖励.(单位为分)');
+            $form->number('indirect_active', __('会员间推'))->default(1)->help('机器激活,上上级获得的间推奖励.(单位为分)');
 
+            $form->fieldset('用户激活返现', function (Form $form) {
+                $form->embeds('default_active_set', '用户激活',function ($form) {
+                    $form->number('return_money', '最高返现')->default(0)->rules('required')->help('(单位为分)');
+                    $form->number('default_money', '默认返现')->default(0)->rules('required')->help('(单位为分)');
+                });
+            });
+
+            $form->fieldset('代理激活返现', function (Form $form) {
+                $form->embeds('vip_active_set', '代理激活',function ($form) {
+                    $form->number('return_money', '最高返现')->default(0)->rules('required')->help('(单位为分)');
+                    $form->number('default_money', '默认返现')->default(0)->rules('required')->help('(单位为分)');
+                });
+            });
+
+        })->tab('达标奖励设置', function ($form) {
 
 
         });

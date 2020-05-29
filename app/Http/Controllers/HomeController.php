@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+
 class HomeController extends Controller
 {
     /**
@@ -25,15 +26,15 @@ class HomeController extends Controller
     {
         $trade = \App\Trade::orderBy('id', 'desc')->first();
 
-        
         /**
          * @version [< 给当前交易进行分润发放 >]
          */
-        $cash = new \App\Http\Controllers\CashMerchantController($trade);
+        $cash = new \App\Http\Controllers\ActiveMerchantController($trade);
 
-        $result = $cash->cash($trade);
+        $result = $cash->active();
 
         dd($result);
+        
         return view('home');
     }
 }

@@ -70,7 +70,9 @@ class TradeHandle implements ShouldQueue
          * 如果这时候机器没有绑定 ， 先去填写商户资料进行绑定机器
          */
         if(!$this->trade->merchants or empty($this->trade->merchants)){
-            dd("仓库中无此终端号:".$this->trade->terminal);
+            $this->trade->remark = '仓库中无此终端号!';
+            $this->trade->save();
+            return false;
         }
 
         /**
@@ -90,21 +92,51 @@ class TradeHandle implements ShouldQueue
          * @var [type]
          */
         if($this->trade->trade_type == 'VIPPAY'){
-            // 
-            $active = new \App\Http\Controllers\ActiveMerchantController();
 
-            $active->active($this->trade);
+            try{
+
+                $active = new \App\Http\Controllers\ActiveMerchantController($this->trade);
+
+                $activeResult = $active->active();
+
+                $this->trade->remark = $this->trade->remark."<br/>激活:".$cashResult['message'];
+
+                $this->trade->save();
+
+            } catch (\Exception $e) {
+
+                $this->trade->remark = $this->trade->remark."<br/>激活:".json_encode($e->getMessage());
+
+                $this->trade->save();
+
+            }
+
+            dd($activeResult);
         }
 
         /**
          * @version [< 给当前交易进行分润发放 >]
          */
-        $cash = new \App\Http\Controllers\CashMerchantController($this->trade);
+        try{
+            $cash = new \App\Http\Controllers\CashMerchantController($this->trade);
 
-        $cash->cash($this->trade);
+            $cashResult = $cash->cash();
+
+            $this->trade->remark = $cashResult['message'];
+
+            if(!$cashResult['status'] or $cashResult['status'] == false){
+                $this->trade->is_cash = 1;
+            }
+
+            $this->trade->save();
+
+        } catch (\Exception $e) {
+            $this->trade->remark = json_encode($e->getMessage());
+            $this->trade->save();
+        }
 
         /**
-         * @version [< 达标返现>] [<description>]
+         * @version [< 达标返现 或者累积达标返现 >] [<description>]
          */
         
 

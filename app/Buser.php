@@ -76,4 +76,25 @@ class Buser extends Model
 
  		return $User->parent > 0 ? self::getParentStr($User->parent, $parents) : $parents;
  	}
+
+
+ 	/**
+ 	 * @Author    Pudding
+ 	 * @DateTime  2020-05-28
+ 	 * @copyright [copyright]
+ 	 * @license   [license]
+ 	 * @version   [ 获取会员临近的第一个代理 ]
+ 	 * @param     [type]      $uid [description]
+ 	 * @return    [type]           [description]
+ 	 */
+ 	public static function getFirstVipParent($uid)
+ 	{
+ 		if(!$uid or $uid == 0) return 0;
+
+ 		$current = \App\Buser::where('id', $uid)->first();
+
+ 		if($current->group == 2) return $uid;
+
+ 		return self::getFirstVipParent($current->parent);
+ 	}
 }

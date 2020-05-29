@@ -9,6 +9,11 @@ class Policy extends Model
 	// 黑名单
 	protected $guarded = [];
 	
+    protected $casts = [
+        'default_active_set' 	=> 'json',
+        'vip_active_set' 		=> 'json'
+    ];
+
 	/**
 	 * @Author    Pudding
 	 * @DateTime  2020-05-21
