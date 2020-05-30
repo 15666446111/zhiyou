@@ -108,6 +108,39 @@ class PolicyController extends AdminController
 
         })->tab('达标奖励设置', function ($form) {
 
+            $form->table('default_standard_set', '普通用户达标设置',function ($table) {
+
+                $table->text('standard_name', '达标名称')->required();
+
+                $table->select('standard_type', '达标类型')->options(['1' => '连续达标', '2' => '累积达标'])->required();
+
+                $table->number('standard_start', '日期(起)')->default(0);
+
+                $table->number('standard_end', '日期(止)')->default(0);
+
+                $table->number('standard_trade', '满足交易')->default(0);
+
+                $table->number('standard_price', '本人奖励')->default(0);
+
+                $table->number('standard_parent_price', '上级奖励')->default(0);
+
+            });
+
+            $form->table('vip_standard_set', '代理用户达标设置',function ($table) {
+
+                $table->text('standard_name', '达标名称')->required();
+
+                $table->select('standard_type', '达标类型')->options(['1' => '连续达标', '2' => '累积达标'])->required();
+
+                $table->number('standard_start', '日期(起)')->default(0);
+
+                $table->number('standard_end', '日期(止)')->default(0);
+
+                $table->number('standard_trade', '满足交易')->default(0);
+
+                $table->number('standard_price', '达标奖励')->default(0);
+
+            });
 
         });
 

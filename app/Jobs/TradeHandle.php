@@ -110,8 +110,6 @@ class TradeHandle implements ShouldQueue
                 $this->trade->save();
 
             }
-
-            dd($activeResult);
         }
 
         /**
@@ -122,7 +120,7 @@ class TradeHandle implements ShouldQueue
 
             $cashResult = $cash->cash();
 
-            $this->trade->remark = $cashResult['message'];
+            $this->trade->remark = $this->trade->remark."<br/>分润:".$cashResult['message'];
 
             if(!$cashResult['status'] or $cashResult['status'] == false){
                 $this->trade->is_cash = 1;
@@ -131,7 +129,7 @@ class TradeHandle implements ShouldQueue
             $this->trade->save();
 
         } catch (\Exception $e) {
-            $this->trade->remark = json_encode($e->getMessage());
+            $this->trade->remark = $this->trade->remark."<br/>分润:".json_encode($e->getMessage());
             $this->trade->save();
         }
 

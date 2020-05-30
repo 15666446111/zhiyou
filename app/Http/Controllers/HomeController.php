@@ -24,6 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+
         $trade = \App\Trade::orderBy('id', 'desc')->first();
 
         /**
