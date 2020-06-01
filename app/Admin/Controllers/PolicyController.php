@@ -109,7 +109,7 @@ class PolicyController extends AdminController
         })->tab('达标奖励设置', function ($form) {
 
             $form->table('default_standard_set', '普通用户达标设置',function ($table) {
-
+                
                 $table->text('standard_name', '达标名称')->required();
 
                 $table->select('standard_type', '达标类型')->options(['1' => '连续达标', '2' => '累积达标'])->required();
