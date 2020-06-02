@@ -77,7 +77,7 @@ class ShareController extends Controller
     {
         try{
             /** 获取分享类型的素材  */
-            $list = \App\Share::where('active', '1')->where('type', '2')->first();
+            $list = \App\Share::where('active', '1')->where('type', '3')->first();
 
             if(!$list or empty($list))
                 return response()->json(['success'=>['message' => '获取成功!', 'data' => array()]]);
