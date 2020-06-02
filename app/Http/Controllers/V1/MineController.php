@@ -22,9 +22,11 @@ class MineController extends Controller
             return response()->json(['success'=>['message' => '获取成功!', 'data' => [
                 'headimg'   =>  $request->user->headimg,
                 'nickname'  =>  $request->user->nickname,
-                'blance'    =>  number_format(($request->user->blance / 100), 2, '.', ','),
+                'blance'    =>  $request->user->wallets->cash_blance+$request->user->wallets->return_blance,
                 'group'     =>  $request->user->groups->name,
                 'group_id'  =>  $request->user->group,
+                'cash_blance'   =>  $request->user->wallets->cash_blance,
+                'return_blance' =>  $request->user->wallets->return_blance,
             ]]]);
 
     	} catch (\Exception $e) {
