@@ -130,19 +130,19 @@ class SetUserController extends Controller
     {
         try{ 
             
-            // if($request->blance='cash'){
-            //     $info=\App\BuserWallet::where('cash_blance',$request->blance)->get();
-            //     $money=$info['cash_blance'];
-            // }
+            if($request->blance='cash'){
+                $info=\App\BuserWallet::where('cash_blance',$request->blance)->get();
+                $money=$info['cash_blance'];
+            }
 
-            // if($request->blance='return'){
-            //     $info=\App\BuserWallet::where('return_blance',$request->blance)->get();
-            //     $money=$info['return_blance'];
-            // }
+            if($request->blance='return'){
+                $info=\App\BuserWallet::where('return_blance',$request->blance)->get();
+                $money=$info['return_blance'];
+            }
 
-            // if($money!=$request->user_money){
-            //     return response()->json(['error'=>['message' => '提现金额错误']]);
-            // }
+            if($money!=$request->user_money){
+                return response()->json(['error'=>['message' => '提现金额错误']]);
+            }
 
             \App\Withdraw::where('user_id',$request->user->id)->create([
                 'user_id'=>$request->user->id,
