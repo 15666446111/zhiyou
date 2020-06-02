@@ -19,4 +19,16 @@ class Trade extends Model
     {
     	return $this->belongsTo('\App\Merchant', 'terminal', 'merchant_terminal');
     }
+
+
+    /**
+     * [tradess 关联分润模型]
+     * @author Pudding
+     * @DateTime 2020-04-10T16:35:15+0800
+     * @return   [type]                   [description]
+     */
+    public function cashs()
+    {
+        return $this->hasMany('\App\Cash', 'order', 'order');
+    }
 }
