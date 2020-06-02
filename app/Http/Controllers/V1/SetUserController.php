@@ -123,5 +123,45 @@ class SetUserController extends Controller
         }
     }
 
+    /**
+     * 用户提现接口
+     */
+    public function Withdrawal(Request $request)
+    {
+        try{ 
+            
+            // if($request->blance='cash'){
+            //     $info=\App\BuserWallet::where('cash_blance',$request->blance)->get();
+            //     $money=$info['cash_blance'];
+            // }
+
+            // if($request->blance='return'){
+            //     $info=\App\BuserWallet::where('return_blance',$request->blance)->get();
+            //     $money=$info['return_blance'];
+            // }
+
+            // if($money!=$request->user_money){
+            //     return response()->json(['error'=>['message' => '提现金额错误']]);
+            // }
+
+            \App\Withdraw::where('user_id',$request->user->id)->create([
+                'user_id'=>$request->user->id,
+                'money'=>$request->money,
+                'status'=>0,
+                'pay_time'=>date('Y-m-d H:i:s',time()),
+                'remark'=>$request->remark
+            ]);
+
+            return response()->json(['success'=>['message' => '提现申请提交成功!', []]]); 
+
+
+    	} catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => $e->getMessage()]]);
+
+        }
+
+    }
+
 
 }

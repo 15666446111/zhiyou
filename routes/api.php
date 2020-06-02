@@ -267,7 +267,12 @@ Route::prefix('V1')->group(function () {
      * 修改银行卡结算信息接口
      */
     Route::middleware('AuthToken')->get('/upBank', 'V1\SetUserController@updateBank');
- 
+
+
+    /**
+     * 用户提现接口
+     */
+    Route::middleware('AuthToken')->post('/getWithdrawal', 'V1\SetUserController@Withdrawal');
 });
 
 
