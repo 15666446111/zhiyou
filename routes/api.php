@@ -62,6 +62,13 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/team_share', 'V1\ShareController@team');
 
     /**
+     * @version [<团队扩展分享推广用户二维码>] [<description>]
+     * @return  [带二维码的推广用户分享海报]   [<description>]
+     * @version [<分享二维码] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/user_share', 'V1\ShareController@extendUser');
+
+    /**
      * @version [<团队扩展分享二维码>] [<description>]
      * @return  [带二维码的分享海报]   [<description>]
      * @version [<分享二维码] [<description>]
@@ -155,6 +162,22 @@ Route::prefix('V1')->group(function () {
      * @version [<未登记机器获取接口] [<description>]
      */
     Route::middleware('AuthToken')->get('/getNoBindMerchant', 'V1\MerchantController@getNoBindList');
+
+
+
+
+    /**
+     * @version [<APP 获取政策活动列表>] [<description>]
+     * @return  [获取平台所有的政策活动]   [<description>]
+     * @version [<获取政策后的] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getPolicy', 'V1\PolicyController@getPolicy');
+
+
+
+
+
+
 
 
 

@@ -24,6 +24,7 @@ class MineController extends Controller
                 'nickname'  =>  $request->user->nickname,
                 'blance'    =>  number_format(($request->user->blance / 100), 2, '.', ','),
                 'group'     =>  $request->user->groups->name,
+                'group_id'  =>  $request->user->group,
             ]]]);
 
     	} catch (\Exception $e) {
