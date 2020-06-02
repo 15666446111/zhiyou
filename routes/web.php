@@ -38,4 +38,19 @@ Route::get('/team/{code}', 'RegisterController@team');
  * @author  [Pudding] <[755969423@qq.com]>
  * @version [<会员注册>] [<description>]
  */
-Route::post('/team/{code}', 'RegisterController@team_in');
+Route::post('/team/{code}', 'RegisterController@team_in')->name('register');
+
+
+/**
+ * @version [<团队邀请人注册 扩展普通用户 扫描二维码>] [<description>]
+ * @author  [Pudding] <[755969423@qq.com]>
+ * @version [<会员注册>] [<description>]
+ */
+Route::get('/extendUser/{code}', 'RegisterController@extendUser');
+
+/**
+ * @version [<团队邀请人注册 扩展普通用户 扫描二维码>] [<description>]
+ * @author  [Pudding] <[755969423@qq.com]>
+ * @version [<会员注册>] [<description>]
+ */
+Route::post('/extendUser/{code}', 'RegisterController@extendUserIn')->name('registerUser');
