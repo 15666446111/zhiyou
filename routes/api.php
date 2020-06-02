@@ -239,10 +239,34 @@ Route::prefix('V1')->group(function () {
 
 
     /**
-     * 商户列表接口
+     * 修改个人登录密码接口
      */
-    Route::middleware('AuthToken')->get('/getMerchantInfo', 'V1\MerchantsController@merchantInfo');
+    Route::middleware('AuthToken')->get('/setUserPwd', 'V1\SetUserController@updatePwd');
+
+
     
+    /**
+     * 添加银行卡结算信息接口
+     */
+    Route::middleware('AuthToken')->post('/createBank', 'V1\SetUserController@insertBank');
+    
+
+    /**
+     * 查询银行卡结算信息接口
+     */
+    Route::middleware('AuthToken')->get('/getBankInfo', 'V1\SetUserController@selectBank');
+
+    
+    /**
+     * 删除银行卡结算信息接口
+     */
+    Route::middleware('AuthToken')->get('/deBank', 'V1\SetUserController@unsetBank');
+
+
+    /**
+     * 修改银行卡结算信息接口
+     */
+    Route::middleware('AuthToken')->get('/upBank', 'V1\SetUserController@updateBank');
  
 });
 
