@@ -163,8 +163,64 @@ Route::prefix('V1')->group(function () {
      * @return  [交易数据推送处理]   [<description>]
      * @version [<交易数据处理] [<description>]
      */
-    Route::post('/huifuTradeNotify', 'V1\TradeNotifyController@trade');
+    Route::post('/huifuTradeNotify', 'V1\TradeNotifyController@trade'); 
 
+
+    /**
+     * 添加用户收货地址接口
+     */
+    Route::middleware('AuthToken')->post('/addressAdd', 'V1\AddressController@address');
+
+
+    /**
+     * 查询用户收货地址接口
+     */
+    Route::middleware('AuthToken')->get('/getAddress', 'V1\AddressController@getAAddress');
+
+
+     /**
+     * 删除用户收货地址接口
+     */
+    Route::middleware('AuthToken')->get('/deAddress', 'V1\AddressController@deleteAddress');
+ 
+
+    /**
+     * 修改用户收货地址接口
+     */
+    Route::middleware('AuthToken')->get('/upAddress', 'V1\AddressController@updateAddress');
+
+
+
+    /**
+     * 收益页面接口
+     */
+    Route::middleware('AuthToken')->get('/cashs', 'V1\CashsController@cashsIndex');
+
+
+    /**
+     * 商户首页管理接口
+     */
+    Route::middleware('AuthToken')->get('/merchants', 'V1\MerchantsController@merchantsIndex');
+
+    
+    /**
+     * 首页商户登记绑定接口
+     */
+    Route::middleware('AuthToken')->get('/register', 'V1\MerchantsController@registers');
+
+    
+    /**
+     * 商户列表接口
+     */
+    Route::middleware('AuthToken')->get('/getMerchantsList', 'V1\MerchantsController@merchantsList');
+
+
+    /**
+     * 商户列表接口
+     */
+    Route::middleware('AuthToken')->get('/getMerchantInfo', 'V1\MerchantsController@merchantInfo');
+    
+ 
 });
 
 

@@ -37,7 +37,12 @@ class OrderController extends AdminController
         $grid->column('status', __('订单状态'));
         $grid->column('remark', __('订单备注'));
         $grid->column('created_at', __('创建时间'));
-
+        $grid->actions(function ($actions) {
+ 
+            //关闭行操作 删除 
+            $actions->disableDelete();
+           
+        });
         return $grid;
     }
 

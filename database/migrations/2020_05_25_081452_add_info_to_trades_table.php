@@ -13,7 +13,7 @@ class AddInfoToTradesTable extends Migration
      */
     public function up()
     {
-        Schema::table('trades', function (Blueprint $table) {
+        Schema::create('trades', function (Blueprint $table) {
 
             $table->bigInteger("notify_id")->after('id')->comment('通知id');
 

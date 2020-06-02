@@ -20,8 +20,8 @@ class MerchantController extends Controller
     public function getNoBindList(Request $request)
     {
     	try{
-
-            $merchant = \App\Merchant::where('user_id', $request->user->id)->where('bind_status', '0')->whereNull('user_phone')->get();
+			
+            $merchant = \App\Merchant::select('merchant_terminal')->where('user_id', $request->user->id)->where('bind_status', '0')->get();
             				
            	return response()->json(['success'=>['message' => '获取成功!', 'data' => $merchant]]);
 
