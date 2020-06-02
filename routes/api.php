@@ -62,6 +62,13 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/team_share', 'V1\ShareController@team');
 
     /**
+     * @version [<团队扩展分享推广用户二维码>] [<description>]
+     * @return  [带二维码的推广用户分享海报]   [<description>]
+     * @version [<分享二维码] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/user_share', 'V1\ShareController@extendUser');
+
+    /**
      * @version [<团队扩展分享二维码>] [<description>]
      * @return  [带二维码的分享海报]   [<description>]
      * @version [<分享二维码] [<description>]
