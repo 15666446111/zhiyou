@@ -113,6 +113,8 @@ class ShareController extends Controller
 
         } catch (\Exception $e) {
             
+            dd($e->getMessage());
+
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
         }

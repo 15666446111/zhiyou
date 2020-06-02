@@ -167,6 +167,13 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getPolicy', 'V1\PolicyController@getPolicy');
 
 
+
+
+
+
+
+
+
     /**
      * @version [<汇付方交易推送地址>] [<description>]
      * @return  [交易数据推送处理]   [<description>]
