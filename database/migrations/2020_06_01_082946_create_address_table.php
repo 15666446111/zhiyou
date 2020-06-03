@@ -14,7 +14,8 @@ class CreateAddressTable extends Migration
     public function up()
     {
         Schema::create('address', function (Blueprint $table) { 
-            $table->increments('id');//主键自增ID 
+
+            $table->bigIncrements('id');
 
             $table->bigInteger("user_id")->comment('用户id');
 

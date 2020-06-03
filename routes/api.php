@@ -175,6 +175,12 @@ Route::prefix('V1')->group(function () {
 
 
 
+    /**
+     * @version [<APP 获取政策活动列表>] [<description>]
+     * @return  [获取平台所有的政策活动]   [<description>]
+     * @version [<获取政策后的] [<description>]
+     */
+    Route::middleware('AuthToken')->post('/getPolicyInfo', 'V1\PolicyController@getPolicyInfo');
 
 
 

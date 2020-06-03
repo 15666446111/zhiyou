@@ -25,6 +25,8 @@ class HomeController extends Controller
     public function index()
     {
 
+        dd("request");
+
         $trade = \App\Trade::orderBy('id', 'desc')->first();
 
         /**
