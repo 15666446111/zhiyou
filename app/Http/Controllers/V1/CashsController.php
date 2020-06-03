@@ -38,15 +38,59 @@ class CashsController extends Controller
                 $data['balance']=$value['cash_blance']+$value['return_blance'];   
 
             }
-            
-            $aa=\App\Cash::join('merchants','merchants.user_id','=','cashs.user_id')
-                            ->where('cashs.user_id',$request->user->id)
+            //查询日期收益详情
+            $cashInfo=\App\Merchant::leftJoin('cashs','cashs.user_id','=','merchants.user_id')
+                            ->where('cashs.user_id',$request->user->id) 
                             ->get()
-                            ->toArray();
-            foreach($aa as $k=>$v){
-                unset($k['user_phone']);
+                            ->toArray();  
+            dd($cashInfo);
+            foreach($cashInfo as $k=>$v){  
+                
+                $cashInfo[$k]['created_time']=$v['created_at'];
+
+                $cashInfo[$k]['created_at']=strtotime($v['created_at']);
+
+                //删除无用的字段
+                unset($cashInfo[$k]['user_phone']);
+
+                unset($cashInfo[$k]['merchant_number']);
+
+                unset($cashInfo[$k]['merchant_terminal']);
+
+                unset($cashInfo[$k]['active_status']);
+
+                unset($cashInfo[$k]['brand_id']);
+
+                unset($cashInfo[$k]['policy_id']);
+
+                unset($cashInfo[$k]['merchant_name']);
+
+                unset($cashInfo[$k]['bind_status']);
+
+                unset($cashInfo[$k]['bind_time']);
+
+                unset($cashInfo[$k]['active_time']);
+
+                unset($cashInfo[$k]['standard_statis']);
+
             }
-            dd($aa);
+
+            //根据日期进行分组
+            $curyear = date('Y'); 
+
+            $visit_list = [];
+
+            foreach ($cashInfo as $v) {
+
+                if ($curyear == date('Y', $v['created_at'])) {
+
+                    $date = date('Y年m月d日', $v['created_at']);
+
+                }
+
+                $data[$date][] = $v;
+            }
+            dd($data);
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
     	} catch (\Exception $e) {
