@@ -14,6 +14,11 @@ class SetUserController extends Controller
     { 
         try{ 
             
+            $User = \App\Buser::where('id', $request->user->id)->first();
+            
+            if($User->password !=  md5($request->password)) 
+                return response()->json(['error'=>['message' => '账号密码错误']]);
+
             $data=\App\Buser::where('id',$request->user->id)
                             ->where('password',md5($request->password))
                             ->update(['password'=>md5($request->newPassword)]);
@@ -49,9 +54,7 @@ class SetUserController extends Controller
                 'is_default'=>0
             ]);
 
-
             return response()->json(['success'=>['message' => '添加成功!', []]]); 
-
 
     	} catch (\Exception $e) {
             
@@ -69,9 +72,7 @@ class SetUserController extends Controller
             
             $data=\App\Bank::where('user_id',$request->user->id)->where('is_del',0)->get();
 
-
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
-
 
     	} catch (\Exception $e) {
             
@@ -88,13 +89,10 @@ class SetUserController extends Controller
         try{ 
             
             $data=\App\Bank::where('user_id',$request->user->id)
-                            ->where('bank_name',$request->bank_name)
-                            ->where('bank',$request->bank)
+                            ->where('id',$request->id)
                             ->get();
 
-
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
-
 
     	} catch (\Exception $e) {
             
@@ -113,9 +111,7 @@ class SetUserController extends Controller
             
             \App\Bank::where('user_id',$request->user->id)->update(['is_del'=>1]);
 
-
             return response()->json(['success'=>['message' => '删除成功!', []]]); 
-
 
     	} catch (\Exception $e) {
             
@@ -130,8 +126,10 @@ class SetUserController extends Controller
     public function updateBank(Request $request)
     {
         try{ 
+
             if(!$request->is_default){
-                \App\Bank::where('user_id',$request->user->id)->update([
+
+                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
                     'name'=>$request->name,
                     'bank_name'=>$request->bank_name, 
                     'bank'=>$request->bank,
@@ -139,10 +137,12 @@ class SetUserController extends Controller
                     'open_bank'=>$request->open_bank,
                     'is_default'=>0
                 ]);
-            }else{
-                \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
 
-                \App\Bank::where('user_id',$request->user->id)->update([
+            }else{
+
+                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update(['is_default'=>0]);
+
+                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
                     'name'=>$request->name,
                     'bank_name'=>$request->bank_name, 
                     'bank'=>$request->bank,
@@ -150,6 +150,7 @@ class SetUserController extends Controller
                     'open_bank'=>$request->open_bank,
                     'is_default'=>1
                 ]);
+
             }
             
 
@@ -171,33 +172,62 @@ class SetUserController extends Controller
     {
         try{ 
 
-            if($request->money<200){
-                return response()->json(['error'=>['message' => '提现金额必须不低于200元']]);
-            }
+            $checkDayStr = date('Y-m-d ',time());
+            $timeBegin1 = strtotime($checkDayStr."09:00".":00");
+            $timeEnd1 = strtotime($checkDayStr."21:00".":00");
             
-            if($request->blance='cash'){
-                $info=\App\BuserWallet::where('cash_blance',$request->blance)->get();
-                $money=$info['cash_blance'];
+            $curr_time = time();
+
+            //判断是否在这个时间段内提现
+            if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
+            {
+
+                if($request->money<200){
+
+                    return response()->json(['error'=>['message' => '提现金额必须不低于200元']]);
+    
+                }
+    
+                //判断钱包类型
+                if($request->blance='cash'){
+    
+                    $info=\App\BuserWallet::where('cash_blance',$request->blance)->get();
+    
+                    $money=$info['cash_blance'];
+    
+                }
+    
+                //判断钱包类型
+                if($request->blance='return'){
+    
+                    $info=\App\BuserWallet::where('return_blance',$request->blance)->get();
+    
+                    $money=$info['return_blance'];
+    
+                }
+    
+                if($money<$request->user_money){
+    
+                    return response()->json(['error'=>['message' => '提现金额错误']]);
+    
+                }
+    
+                \App\Withdraw::where('user_id',$request->user->id)->create([
+                    'user_id'=>$request->user->id,
+                    'money'=>$request->money,
+                    'status'=>0,
+                    'pay_time'=>date('Y-m-d H:i:s',time()),
+                    'remark'=>$request->remark
+                ]);
+    
+                return response()->json(['success'=>['message' => '提现申请提交成功!', []]]);
+            }else{
+                
+                return response()->json(['error'=>['message' => '请在规定时间提现哦']]);
+
             }
 
-            if($request->blance='return'){
-                $info=\App\BuserWallet::where('return_blance',$request->blance)->get();
-                $money=$info['return_blance'];
-            }
-
-            if($money!=$request->user_money){
-                return response()->json(['error'=>['message' => '提现金额错误']]);
-            }
-
-            \App\Withdraw::where('user_id',$request->user->id)->create([
-                'user_id'=>$request->user->id,
-                'money'=>$request->money,
-                'status'=>0,
-                'pay_time'=>date('Y-m-d H:i:s',time()),
-                'remark'=>$request->remark
-            ]);
-
-            return response()->json(['success'=>['message' => '提现申请提交成功!', []]]); 
+             
 
 
     	} catch (\Exception $e) {
