@@ -41,6 +41,7 @@ class SetUserController extends Controller
             \App\Bank::create([
                 'user_id'=>$request->user->id,
                 'name'=>$request->name,
+                'bank_name'=>$request->bank_name,
                 'bank'=>$request->bank,
                 'number'=>$request->number,
                 'open_bank'=>$request->open_bank
@@ -107,6 +108,7 @@ class SetUserController extends Controller
             
             \App\Bank::where('user_id',$request->user->id)->update([
                 'name'=>$request->name,
+                'bank_name'=>$request->bank_name, 
                 'bank'=>$request->bank,
                 'number'=>$request->number,
                 'open_bank'=>$request->open_bank
