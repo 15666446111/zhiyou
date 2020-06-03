@@ -39,7 +39,8 @@ class CashsController extends Controller
 
             }
 
-            
+            $aa=\App\Cash::join('merchants','merchants.user_id','=','cashs.user_id')->where('user_id',$request->user->id)->get();
+            dd($aa);
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
     	} catch (\Exception $e) {

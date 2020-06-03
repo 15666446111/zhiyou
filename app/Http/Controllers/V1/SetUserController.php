@@ -45,6 +45,7 @@ class SetUserController extends Controller
                 'bank'=>$request->bank,
                 'number'=>$request->number,
                 'open_bank'=>$request->open_bank,
+                'is_del'=>0,
                 'is_default'=>0
             ]);
 
@@ -54,7 +55,7 @@ class SetUserController extends Controller
 
     	} catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+            return response()->json(['error'=>['message' => $e->getMessage()]]);
 
         }
     }
@@ -140,7 +141,7 @@ class SetUserController extends Controller
                 ]);
             }else{
                 \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
-                
+
                 \App\Bank::where('user_id',$request->user->id)->update([
                     'name'=>$request->name,
                     'bank_name'=>$request->bank_name, 
