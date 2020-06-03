@@ -14,7 +14,7 @@ class CreateBankTable extends Migration
     public function up()
     {
         Schema::create('bank', function (Blueprint $table) {
-            $table->bigInteger("id"); 
+            $table->increments('id');//主键自增ID
 
             $table->bigInteger("user_id")->comment('用户id');
 

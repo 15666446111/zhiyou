@@ -38,8 +38,14 @@ class CashsController extends Controller
                 $data['balance']=$value['cash_blance']+$value['return_blance'];   
 
             }
-
-            $aa=\App\Cash::join('merchants','merchants.user_id','=','cashs.user_id')->where('user_id',$request->user->id)->get();
+            
+            $aa=\App\Cash::join('merchants','merchants.user_id','=','cashs.user_id')
+                            ->where('cashs.user_id',$request->user->id)
+                            ->get()
+                            ->toArray();
+            foreach($aa as $k=>$v){
+                unset($k['user_phone']);
+            }
             dd($aa);
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
