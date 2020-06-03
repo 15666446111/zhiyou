@@ -24,7 +24,7 @@ class CashsController extends Controller
             ->where('user_id',$request->user->id)
             ->whereDate('created_at', date('Y-m-d',time()))
             ->sum('cash_money');
-
+            
             //本月收益
             $data['revenueMonth'] = \App\Cash::select('cash_money')
             ->where('user_id',$request->user->id)
