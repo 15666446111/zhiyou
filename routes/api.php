@@ -256,6 +256,12 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getBankInfo', 'V1\SetUserController@selectBank');
 
+
+    /**
+     * 查询单个银行卡信息接口
+     */
+    Route::middleware('AuthToken')->get('/getBankFirst', 'V1\SetUserController@bankFirst');
+
     
     /**
      * 删除银行卡结算信息接口

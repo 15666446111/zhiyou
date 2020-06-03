@@ -44,7 +44,8 @@ class SetUserController extends Controller
                 'bank_name'=>$request->bank_name,
                 'bank'=>$request->bank,
                 'number'=>$request->number,
-                'open_bank'=>$request->open_bank
+                'open_bank'=>$request->open_bank,
+                'is_default'=>0
             ]);
 
 
@@ -66,6 +67,29 @@ class SetUserController extends Controller
         try{ 
             
             $data=\App\Bank::where('user_id',$request->user->id)->where('is_del',0)->get();
+
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
+
+
+    	} catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+    }
+
+    /**
+     * 查询单个银行卡信息接口
+     */
+    public function bankFirst(Request $request)
+    {
+        try{ 
+            
+            $data=\App\Bank::where('user_id',$request->user->id)
+                            ->where('bank_name',$request->bank_name)
+                            ->where('bank',$request->bank)
+                            ->get();
 
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
@@ -105,14 +129,28 @@ class SetUserController extends Controller
     public function updateBank(Request $request)
     {
         try{ 
+            if(!$request->is_default){
+                \App\Bank::where('user_id',$request->user->id)->update([
+                    'name'=>$request->name,
+                    'bank_name'=>$request->bank_name, 
+                    'bank'=>$request->bank,
+                    'number'=>$request->number,
+                    'open_bank'=>$request->open_bank,
+                    'is_default'=>0
+                ]);
+            }else{
+                \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
+                
+                \App\Bank::where('user_id',$request->user->id)->update([
+                    'name'=>$request->name,
+                    'bank_name'=>$request->bank_name, 
+                    'bank'=>$request->bank,
+                    'number'=>$request->number,
+                    'open_bank'=>$request->open_bank,
+                    'is_default'=>1
+                ]);
+            }
             
-            \App\Bank::where('user_id',$request->user->id)->update([
-                'name'=>$request->name,
-                'bank_name'=>$request->bank_name, 
-                'bank'=>$request->bank,
-                'number'=>$request->number,
-                'open_bank'=>$request->open_bank
-            ]);
 
 
             return response()->json(['success'=>['message' => '修改成功!', []]]); 
