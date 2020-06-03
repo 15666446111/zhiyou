@@ -129,6 +129,10 @@ class SetUserController extends Controller
     public function Withdrawal(Request $request)
     {
         try{ 
+
+            if($request->money<200){
+                return response()->json(['error'=>['message' => '提现金额必须不低于200元']]);
+            }
             
             if($request->blance='cash'){
                 $info=\App\BuserWallet::where('cash_blance',$request->blance)->get();
@@ -157,7 +161,7 @@ class SetUserController extends Controller
 
     	} catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => $e->getMessage()]]);
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
         }
 
