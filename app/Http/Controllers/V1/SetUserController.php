@@ -88,8 +88,7 @@ class SetUserController extends Controller
         try{ 
             
             $data=\App\Bank::where('user_id',$request->user->id)
-                            ->where('bank_name',$request->bank_name)
-                            ->where('bank',$request->bank)
+                            ->where('id',$request->id)
                             ->get();
 
 
@@ -131,7 +130,7 @@ class SetUserController extends Controller
     {
         try{ 
             if(!$request->is_default){
-                \App\Bank::where('user_id',$request->user->id)->update([
+                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
                     'name'=>$request->name,
                     'bank_name'=>$request->bank_name, 
                     'bank'=>$request->bank,
@@ -140,9 +139,9 @@ class SetUserController extends Controller
                     'is_default'=>0
                 ]);
             }else{
-                \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
+                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update(['is_default'=>0]);
 
-                \App\Bank::where('user_id',$request->user->id)->update([
+                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
                     'name'=>$request->name,
                     'bank_name'=>$request->bank_name, 
                     'bank'=>$request->bank,

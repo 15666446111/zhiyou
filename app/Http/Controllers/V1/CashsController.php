@@ -13,7 +13,7 @@ class CashsController extends Controller
     public function cashsIndex(Request $request)
     {
         try{ 
-            
+
             //总收益
             $data['revenueAll'] = \App\Cash::select('cash_money')
             ->where('user_id',$request->user->id)
@@ -33,45 +33,35 @@ class CashsController extends Controller
 
             // 查询用户账号余额
             $res=\App\BuserWallet::where('user_id',$request->user->id)->get();
+
             foreach($res as $key=>$value){
 
                 $data['balance']=$value['cash_blance']+$value['return_blance'];   
 
             }
+
             //查询日期收益详情
-            $cashInfo=\App\Merchant::leftJoin('cashs','cashs.user_id','=','merchants.user_id')
+            $cashInfo=\App\cash::select('cashs.id','cashs.created_at','cash_money','cash_type','merchants.merchant_sn','price')
+                            ->Join('merchants','merchants.user_id','=','cashs.user_id')
+                            ->leftJoin('orders','orders.order_no','=','cashs.order')
                             ->where('cashs.user_id',$request->user->id) 
+                            ->orderByDesc('cashs.created_at')
                             ->get()
                             ->toArray();  
-            dd($cashInfo);
+            
             foreach($cashInfo as $k=>$v){  
-                
-                $cashInfo[$k]['created_time']=$v['created_at'];
 
-                $cashInfo[$k]['created_at']=strtotime($v['created_at']);
+                $id=$v['id'];
 
-                //删除无用的字段
-                unset($cashInfo[$k]['user_phone']);
+                $info[$id]=$v;
 
-                unset($cashInfo[$k]['merchant_number']);
+            }
 
-                unset($cashInfo[$k]['merchant_terminal']);
+            foreach($info as $k=>$v){
 
-                unset($cashInfo[$k]['active_status']);
+                $info[$k]['created_time']=$v['created_at'];
 
-                unset($cashInfo[$k]['brand_id']);
-
-                unset($cashInfo[$k]['policy_id']);
-
-                unset($cashInfo[$k]['merchant_name']);
-
-                unset($cashInfo[$k]['bind_status']);
-
-                unset($cashInfo[$k]['bind_time']);
-
-                unset($cashInfo[$k]['active_time']);
-
-                unset($cashInfo[$k]['standard_statis']);
+                $info[$k]['created_at']=strtotime($v['created_at']);
 
             }
 
@@ -80,17 +70,20 @@ class CashsController extends Controller
 
             $visit_list = [];
 
-            foreach ($cashInfo as $v) {
+            $weekarray=array("日","一","二","三","四","五","六");
 
-                if ($curyear == date('Y', $v['created_at'])) {
-
-                    $date = date('Y年m月d日', $v['created_at']);
+            foreach ($info as $key=>$value) {
+                
+                if ($curyear == date('Y', $value['created_at'])) {
+                    
+                    $date = date('m月d日'.'星期'.$weekarray[date('w',$value['created_at'])], $value['created_at']);
 
                 }
 
-                $data[$date][] = $v;
+                $data['cash'][$date][] = $value;
+                
             }
-            dd($data);
+            
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
     	} catch (\Exception $e) {
