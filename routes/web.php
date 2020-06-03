@@ -15,17 +15,6 @@ Route::get('/',  'HomeController@index');
 
 Auth::routes();
 
-
-
-/**
- * @version 接收汇开店Plus 推送过来的交易数据与激活数据
- */
-Route::any('/trade',  function(){
-	return 'SUCCESS';
-});
-
-
-
 /**
  * @version [<团队邀请人注册 扫描二维码>] [<description>]
  * @author  [Pudding] <[755969423@qq.com]>
