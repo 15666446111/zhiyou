@@ -7,39 +7,7 @@ use App\Http\Controllers\Controller;
 
 class MerchantsController extends Controller
 {
-    /**
-     * 商户首页管理
-     */
-    public function merchantsIndex(Request $request)
-    {
-        try{ 
-             
-            $limit = 15; 
-
-            $page  = $request->page ? $request->page - 1 : 0;
-
-            if(!is_numeric($page)){
-                return response()->json(['error'=>['message' => '参数错误!']]); 
-            }
-
-            $page   = $page < 0 ? 0 : $page ;
-
-            $page   = $page * $limit;
-
-            $data=\App\Merchant::where('bind_status',$request->bind_status)->orderBy('id', 'desc')
-            ->offset($page)->limit($limit)->get(); 
-            
-            return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
-
-    	} catch (\Exception $e) {
-            
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
-
-        }
-    }
-
-
-
+    
     /**
      * 首页商户登记绑定接口
      */

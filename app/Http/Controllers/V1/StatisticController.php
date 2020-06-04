@@ -60,7 +60,7 @@ class StatisticController
                 $this->StartTime = $time;
                 break;
         }
-
+        
         $this->EndTime = Carbon::now()->toDateTimeString();
     }
 

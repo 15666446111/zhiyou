@@ -61,6 +61,7 @@ class TeamController extends Controller
             $model      = new StatisticController($request->user, 'day');
             // 日交易数据
             $DayTrade = number_format(($model->getTradeSum() / 100), 2, ".", "," );
+            
             // 日激活数据
             $DayActive= 0;
             // 日商户个数
@@ -158,11 +159,93 @@ class TeamController extends Controller
     public function dataList(Request $request)
     {
         try{ 
+         
+            //团队所有id
+            $userAll=\App\Buser::select('id')->where('parent', $request->user->id)->orWhere('id',$request->user->id)->get()->toArray();
             
-            // 获取总下级人数id
-            $ArrUser = \App\BuserParent::where('parents', '=', $request->user->id)->pluck('id')->toArray();
+            /**
+             * @version [<vector>] [<获得团队日数据 , 日交易数据 >]
+             */
+            $model      = new StatisticController($request->user, 'day');
+            //获取所有机器数
+            foreach($userAll as $k=>$v){
+                $merchant = \App\Merchant::where('user_id', $v)->count();
+            }
+            //获取每天日期
+            $dayMoney=\App\Trade::select('trades.created_at')
+            ->join('orders','orders.order_no','=','trades.order')
+            ->whereIn('orders.user_id',$userAll)
+            ->get()
+            ->toArray();
+            
+            foreach($dayMoney as $k=>$v){
+                $timeDay=strtotime($v['created_at']);
+                $timeDayAll[]=date('Y-m-d',$timeDay);
+            }
+            //激活总数
+            $DayActive= 0;
+            foreach($timeDayAll as $k=>$v){
+                //交易总数
+                $dayMoney=\App\Trade::join('orders','orders.order_no','=','trades.order')
+                ->whereIn('orders.user_id',$userAll)
+                ->whereIn('trades.created_at',$timeDayAll)
+                ->sum('money');
+                //伙伴总数
+                $userCount=\App\Buser::where('parent', $request->user->id)
+                ->orWhere('id',$request->user->id)
+                ->whereIn('busers.created_at',$timeDayAll)
+                ->count();
+                //商户总数
+                $merchantCount=\App\Merchant::whereIn('user_id', $userAll)
+                ->join('trades','trades.merchant_sn','merchants.merchant_sn')
+                ->whereIn('trades.created_at',$timeDayAll)
+                ->count();
+            }
+            // dd($merchantCount);
+            //台均交易
+            $DayAvgTrade=$dayMoney / $merchant;
             
 
+            /**
+             * @version [<vector>] [<获得团队月数据 , 月交易数据 >]
+             */
+            $MonthModel = new StatisticController($request->user, 'month');
+            //获取所有机器数
+            foreach($userAll as $k=>$v){
+                $merchant = \App\Merchant::where('user_id', $v)->count();
+            }
+            //获取每天日期
+            $dayMoney=\App\Trade::select('trades.created_at')
+            ->join('orders','orders.order_no','=','trades.order')
+            ->whereIn('orders.user_id',$userAll)
+            ->get()
+            ->toArray();
+
+            foreach($dayMoney as $k=>$v){
+                $timeDay=strtotime($v['created_at']);
+                $timeDayAll=date('Y-m-d',$timeDay);
+            }
+            //激活总数
+            $DayActive= 0;
+            //交易总数
+            $dayMoney=\App\Trade::join('orders','orders.order_no','=','trades.order')
+            ->whereIn('orders.user_id',$userAll)
+            ->where('trades.created_at','like', "%".$timeDayAll."%")
+            ->sum('money');
+            //台均交易
+            $DayAvgTrade=$dayMoney / $merchant;
+            //伙伴总数
+            $userCount=\App\Buser::where('parent', $request->user->id)
+            ->orWhere('id',$request->user->id)
+            ->where('busers.created_at','like', "%".$timeDayAll."%")
+            ->count();
+            //商户总数
+            $merchantCount=\App\Merchant::whereIn('user_id', $userAll)
+            ->join('trades','trades.merchant_sn','merchants.merchant_sn')
+            ->where('trades.created_at','like', "%".$timeDayAll."%")
+            ->count();
+
+            
             return response()->json(['success'=>['message' => '获取成功!', 'data' => []]]); 
 
 

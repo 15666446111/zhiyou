@@ -225,12 +225,6 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/cashs', 'V1\CashsController@cashsIndex');
 
-
-    /**
-     * 商户首页管理接口
-     */
-    Route::middleware('AuthToken')->get('/merchants', 'V1\MerchantsController@merchantsIndex');
-
     
     /**
      * 首页商户登记绑定接口

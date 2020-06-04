@@ -39,22 +39,51 @@ class MerchantController extends Controller
 	{
 
 		try{
+			//获取用户的伙伴
+			$userAll=\App\Buser::select('id')->where('parent', $request->user->id)->get()->toArray();
+			
+			foreach($userAll as $k=>$v){
+
+				//获取伙伴机器总数
+				$data['friend']['all'] = \App\Merchant::where('user_id', $v)->count();
+				//获取伙伴未绑定机器总数
+				$data['friend']['NoMerchant'] = \App\Merchant::where('user_id', $v)->where('bind_status', '0')->count();
+				//查询伙伴已绑定机器总数
+				$data['friend']['Merchant'] = \App\Merchant::where('user_id', $v)->where('bind_status', '1')->count();
+				//查询伙伴已激活机器总数
+				$data['friend']['Merchant_status'] = \App\Merchant::where('user_id', $v)->where('active_status', '1')->count();
+				//查询伙伴已达标机器总数
+				$data['friend']['standard_statis'] = \App\Merchant::where('user_id', $v)->where('standard_statis', '1')->count();
+
+			}
+
 			//获取用户机器总数
-			$data['all'] = \App\Merchant::where('user_id', $request->user->id)->count();
+			$data['user']['all'] = \App\Merchant::where('user_id', $request->user->id)->count();
 			//获取用户未绑定机器总数
-			$data['NoMerchant'] = \App\Merchant::where('user_id', $request->user->id)->where('bind_status', '0')->count();
+			$data['user']['NoMerchant'] = \App\Merchant::where('user_id', $request->user->id)->where('bind_status', '0')->count();
 			//查询用户已绑定机器总数
-			$data['Merchant'] = \App\Merchant::where('user_id', $request->user->id)->where('bind_status', '1')->count();
+			$data['user']['Merchant'] = \App\Merchant::where('user_id', $request->user->id)->where('bind_status', '1')->count();
 			//查询用户已激活机器总数
-			$data['Merchant_status'] = \App\Merchant::where('user_id', $request->user->id)->where('active_status', '1')->count();
+			$data['user']['Merchant_status'] = \App\Merchant::where('user_id', $request->user->id)->where('active_status', '1')->count();
 			//查询用户已达标机器总数
-			$data['standard_statis'] = \App\Merchant::where('user_id', $request->user->id)->where('standard_statis', '1')->count();
-            
+			$data['user']['standard_statis'] = \App\Merchant::where('user_id', $request->user->id)->where('standard_statis', '1')->count();
+			
+			//获取全部机器总数
+			$data['count']['all']=$data['friend']['all']+$data['user']['all'];
+			//获取用户未绑定机器总数
+			$data['count']['NoMerchant']=$data['friend']['NoMerchant']+$data['user']['NoMerchant'];
+			//查询用户已绑定机器总数
+			$data['count']['Merchant']=$data['friend']['Merchant']+$data['user']['Merchant'];
+			//查询伙伴已激活机器总数
+			$data['count']['Merchant_status']=$data['friend']['Merchant_status']+$data['user']['Merchant_status'];
+			//查询用户已达标机器总数
+			$data['count']['standard_statis']=$data['friend']['standard_statis']+$data['user']['standard_statis'];
+			
            	return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]);
 
     	} catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+            return response()->json(['error'=>['message' => $e->getMessage()]]);
 
 		}
 		

@@ -50,7 +50,7 @@ class OrdersController extends Controller
 
         try{ 
             
-            $data=\App\Order::join('products','orders.product_id','=','products.    id')->where('user_id',$request->user->id)->get();
+            $data=\App\Order::join('products','orders.product_id','=','products.id')->where('user_id',$request->user->id)->get();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
