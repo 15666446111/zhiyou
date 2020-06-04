@@ -238,6 +238,12 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getMerchantsList', 'V1\MerchantsController@merchantsList');
 
 
+     /**
+     * 个人商户详情接口
+     */
+    Route::middleware('AuthToken')->get('/getMerchantInfo', 'V1\MerchantsController@merchantInfo');
+
+
     /**
      * 修改个人登录密码接口
      */
