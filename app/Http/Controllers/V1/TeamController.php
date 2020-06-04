@@ -151,4 +151,26 @@ class TeamController extends Controller
 
         }
     }
+
+    /**
+     * 团队业绩详情接口
+     */
+    public function dataList(Request $request)
+    {
+        try{ 
+            
+            // 获取总下级人数id
+            $ArrUser = \App\BuserParent::where('parents', '=', $request->user->id)->pluck('id')->toArray();
+            
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data' => []]]); 
+
+
+    	} catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => $e->getMessage()]]);
+
+        }
+
+    }
 }

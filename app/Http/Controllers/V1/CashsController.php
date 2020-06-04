@@ -88,7 +88,7 @@ class CashsController extends Controller
 
     	} catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => '提现金额错误']]);
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
         }
     }

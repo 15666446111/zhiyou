@@ -47,9 +47,9 @@ class MerchantsController extends Controller
     {
         try{ 
              
-            \App\Merchant::where('user_id',$request->user->id)->update([
+            \App\Merchant::where('user_id',$request->user->id)->where('merchant_terminal',$request->merchant_terminal)->update([
                 'merchant_name'=>$request->merchant_name,
-                'user_phone'=>$request->user_phone,
+                'user_phone'=>$request->merchant_phone,
                 'bind_status'=>1
             ]);
             

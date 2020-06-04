@@ -285,6 +285,31 @@ Route::prefix('V1')->group(function () {
      * 用户提现接口
      */
     Route::middleware('AuthToken')->post('/getWithdrawal', 'V1\SetUserController@Withdrawal');
+
+
+    /**
+     * 生成订单接口
+     */
+    Route::middleware('AuthToken')->post('/addOrderCreate', 'V1\OrdersController@orderCreate');
+
+
+    /**
+     * 查询订单接口
+     */
+    Route::middleware('AuthToken')->get('/getOrderUser', 'V1\OrdersController@getOrder');
+
+
+    /**
+     * 团队业绩详情接口
+     */
+    Route::middleware('AuthToken')->get('/getDataList', 'V1\TeamController@dataList');
+
+
+    /**
+     * 机具管理页面接口
+     */
+    Route::middleware('AuthToken')->get('/getBindAll', 'V1\MerchantController@getBind');
+
 });
 
 
