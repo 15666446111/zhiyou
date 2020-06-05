@@ -83,7 +83,7 @@ class PolicyController extends Controller
             if($User->group == 2 )
                 $arrs['active_price']['money'] = $userPolicy->vip_active_set['return_money'];
 
-            $arrs['active_price']['max'] = (int)$this->getActivePriceMax($request->user, $policy);
+            $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
             $arrs['active_price']['min'] = 0;
         }else{
             // 设置结算价
@@ -102,7 +102,7 @@ class PolicyController extends Controller
             if($User->group == 2 )
                 $arrs['active_price']['return_money'] = $policy->vip_active_set['default_money'];
 
-            $arrs['active_price']['max'] = (int)$this->getActivePriceMax($request->user, $policy);
+            $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
             $arrs['active_price']['min'] = 0;
         }
 
