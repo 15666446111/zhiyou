@@ -271,6 +271,12 @@ Route::prefix('V1')->group(function () {
 
 
     /**
+     * 查询默认银行卡信息接口
+     */
+    Route::middleware('AuthToken')->get('/getBankDefault', 'V1\SetUserController@bankDefault');
+
+
+    /**
      * 查询单个银行卡信息接口
      */
     Route::middleware('AuthToken')->get('/getBankFirst', 'V1\SetUserController@bankFirst');

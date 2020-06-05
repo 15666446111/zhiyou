@@ -104,6 +104,26 @@ class SetUserController extends Controller
         }
     }
 
+    /**
+     * 查询默认银行卡信息接口
+     */
+    public function bankDefault(Request $request)
+    {
+        try{ 
+            
+            $data=\App\Bank::where('user_id',$request->user->id)
+                            ->where('is_default','1')
+                            ->first();
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
+
+    	} catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+    }
+
 
     /**
      * 删除银行卡结算信息接口

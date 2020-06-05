@@ -48,7 +48,7 @@ class CashsController extends Controller
                             ->orderByDesc('cashs.created_at')
                             ->get()
                             ->toArray();  
-            
+            $info=[];
             foreach($cashInfo as $k=>$v){  
 
                 $id=$v['id'];
