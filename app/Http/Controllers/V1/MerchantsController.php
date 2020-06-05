@@ -93,7 +93,7 @@ class MerchantsController extends Controller
              
             $data=\App\Merchant::where('user_id',$request->user->id)
             ->where('id',$request->id)
-            ->get();
+            ->first();
             
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]);   
 

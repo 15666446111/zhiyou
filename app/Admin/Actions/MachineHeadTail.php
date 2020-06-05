@@ -13,9 +13,6 @@ class MachineHeadTail extends Action
     {
         // $request ...
         try { 
-            if(!$request->head or !$request->tail or !$request->brand){
-                return $this->response()->error('参数无效!')->refresh();
-            }
 
             //验证首位
             if(!is_numeric($request->head) or !is_numeric($request->tail)){
