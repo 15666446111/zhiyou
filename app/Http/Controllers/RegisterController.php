@@ -17,8 +17,6 @@ class RegisterController extends Controller
     public function team(Request $request)
     {
 
-        return view('register_success');
-
         try{
 
             $result = Hashids::decode($request->route('code'));

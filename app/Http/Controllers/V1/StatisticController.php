@@ -33,6 +33,13 @@ class StatisticController
 
 
     /**
+     * [$team 我的团队用户 ]
+     * @var [array]
+     */
+    protected  $team;
+
+
+    /**
      * [__construct 初始化  赋值变量]
      * @author Pudding
      * @DateTime 2020-04-10T16:27:28+0800
@@ -62,13 +69,12 @@ class StatisticController
         }
         
         $this->EndTime = Carbon::now()->toDateTimeString();
-    }
 
-    public function getStartTime()
-    {
-        return $this->StartTime;
-    }
 
+        $this->team = $this->getMyTeam();
+
+        $this->team[] = $user->id;
+    }
 
     /**
      * [getMyTeam 获取我的团队所有会员ID]
@@ -78,10 +84,8 @@ class StatisticController
      */
     public function getMyTeam()
     {
-        return \App\BuserParent::where('parents', 'like', "%_".$this->Users->id."_%")->pluck('id')->toArray();
+        return \App\BuserParent::where('parents', 'like', "%_".$this->Users->id."_%")->pluck('user_id')->toArray();
     }
-
-
 
     /**
      * [getTeam 获取新增的商户数量]
@@ -91,15 +95,9 @@ class StatisticController
      */
     public function getNewAddMerchant()
     {
-
-        $Arr =  $this->getMyTeam();
-
-        return \App\Merchant::where('bind_status', '1')->whereBetween('created_at', [ 
-                    $this->StartTime,  $this->EndTime])->whereHas('busers', function($q) use ($Arr){
-                        $q->whereIn('id', $Arr);
-                    })->count();     
+        return \App\Merchant::where('bind_status', '1')->whereBetween('created_at', [ $this->StartTime,  $this->EndTime])
+                ->whereIn('user_id', $this->team)->count();     
     }
-
 
     /**
      * [getTradeSum 获取新的交易金额]
@@ -110,15 +108,13 @@ class StatisticController
      */
     public function getTradeSum($rule = 'team')
     {
-        $Arr = $rule == 'team' ? $this->getMyTeam() :  array($this->Users->id);
+        $Arr = $rule == 'team' ? $this->team :  array($this->Users->id);
 
-        return \App\Trade::where('trade_status' , '1')->whereBetween('created_at', [ 
-                    $this->StartTime,  $this->EndTime])->whereHas('merchants.busers', function($q) use ($Arr){
-                        $q->whereIn('id', $Arr);
-                    })->sum('money');
+        return \App\Trade::where('trade_status', '>=', '1')->whereBetween('created_at', [ $this->StartTime,  $this->EndTime])
+                ->whereHas('merchants', function($q) use ($Arr){
+                    $q->whereIn('user_id', $Arr);
+                })->sum('money');
     }
-
-
 
     /**
      * [getTeam 获取新增的伙伴数量]
@@ -128,15 +124,21 @@ class StatisticController
      */
     public function getNewAddTeamCount()
     {
-        $Start = $this->StartTime;
-
-        $End   = $this->EndTime;
-
-        return \App\BuserParent::where('parents', 'like', '%_'.$this->Users->id.'_%')->whereHas('busers', function($q) use ($Start, $End){
-                $q->whereBetween('created_at', [ $Start, $End]);
-        })->count();
+        return \App\Buser::whereIn('id', $this->team)->whereBetween('created_at', [ $this->StartTime, $this->EndTime])->count();
     }
 
 
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-05
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [获取团队月收益]
+     * @return    [type]      [description]
+     */
+    public function getIncome()
+    {
+        return \App\Cash::whereIn('user_id', $this->team)->whereBetween('created_at', [ $this->StartTime, $this->EndTime])->sum('cash_money');
+    }
 
 }
