@@ -214,15 +214,22 @@ class SetUserController extends Controller
                 //判断钱包类型
                 if($request->blance='1'){
     
-                    $info=\App\BuserWallet::where('blance_active',$request->blance)->first();
+                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->first();
                     
                     $user_money=$info['cash_blance'];
+
+                    $update_money=$user_money-$request->money;
                     
+                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->update(['cash_blance'=>$update_money]);
     
                 }else{
-                    $info=\App\BuserWallet::where('blance_active',$request->blance)->first();
+                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->first();
     
                     $user_money=$info['return_blance'];
+
+                    $update_money=$user_money-$request->money;
+
+                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->update(['cash_blance'=>$update_money]);
                 }
     
                 if($user_money<$request->money){
@@ -230,7 +237,7 @@ class SetUserController extends Controller
                     return response()->json(['error'=>['message' => '余额不足']]);
     
                 }
-    
+                
                 \App\Withdraw::where('user_id',$request->user->id)->create([
                     'user_id'=>$request->user->id,
                     'money'=>$request->money,
