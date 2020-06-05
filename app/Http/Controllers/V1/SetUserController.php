@@ -175,15 +175,15 @@ class SetUserController extends Controller
     {
         try{ 
 
-            $checkDayStr = date('Y-m-d ',time());
-            $timeBegin1 = strtotime($checkDayStr."09:00".":00");
-            $timeEnd1 = strtotime($checkDayStr."21:00".":00");
+            // $checkDayStr = date('Y-m-d ',time());
+            // $timeBegin1 = strtotime($checkDayStr."09:00".":00");
+            // $timeEnd1 = strtotime($checkDayStr."21:00".":00");
             
-            $curr_time = time();
+            // $curr_time = time();
 
-            //判断是否在这个时间段内提现
-            if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
-            {
+            // //判断是否在这个时间段内提现
+            // if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
+            // {
 
                 if($request->money<200){
 
@@ -192,24 +192,20 @@ class SetUserController extends Controller
                 }
     
                 //判断钱包类型
-                if($request->blance='cash'){
+                if($request->blance='1'){
     
-                    $info=\App\BuserWallet::where('cash_blance',$request->blance)->get();
+                    $info=\App\BuserWallet::where('blance_active',$request->blance)->first();
+                    
+                    $user_money=$info['cash_blance'];
+                    
     
-                    $money=$info['cash_blance'];
+                }else{
+                    $info=\App\BuserWallet::where('blance_active',$request->blance)->first();
     
+                    $user_money=$info['return_blance'];
                 }
     
-                //判断钱包类型
-                if($request->blance='return'){
-    
-                    $info=\App\BuserWallet::where('return_blance',$request->blance)->get();
-    
-                    $money=$info['return_blance'];
-    
-                }
-    
-                if($money<$request->user_money){
+                if($user_money<$request->money){
     
                     return response()->json(['error'=>['message' => '提现金额错误']]);
     
@@ -218,17 +214,19 @@ class SetUserController extends Controller
                 \App\Withdraw::where('user_id',$request->user->id)->create([
                     'user_id'=>$request->user->id,
                     'money'=>$request->money,
+                    'rate'=>$request->rate,
+                    'rate_money'=>$request->money * $request->rate,
                     'status'=>0,
                     'pay_time'=>date('Y-m-d H:i:s',time()),
                     'remark'=>$request->remark
                 ]);
     
                 return response()->json(['success'=>['message' => '提现申请提交成功!', []]]);
-            }else{
+            // }else{   
                 
-                return response()->json(['error'=>['message' => '请在规定时间提现哦']]);
+            //     return response()->json(['error'=>['message' => '请在规定时间提现哦']]);
 
-            }
+            // }
 
              
 
@@ -250,7 +248,7 @@ class SetUserController extends Controller
         try{ 
             // dd(config('draw.rate'));
             //获取提现税点
-            $data['point']=$config('draw.rate');
+            $data['point']=config('draw.rate');
             //最小提现金额
             $data['min_money']=200;
             //提现范围时间
