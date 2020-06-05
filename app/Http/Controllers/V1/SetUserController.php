@@ -227,7 +227,7 @@ class SetUserController extends Controller
     
                 if($user_money<$request->money){
     
-                    return response()->json(['error'=>['message' => '提现金额错误']]);
+                    return response()->json(['error'=>['message' => '余额不足']]);
     
                 }
     
