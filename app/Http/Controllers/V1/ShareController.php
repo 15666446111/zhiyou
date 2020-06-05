@@ -39,8 +39,29 @@ class ShareController extends Controller
             // 生成二维码
             QrCode::format('png')->size($list->code_width)->margin($list->code_margin)->generate($Url, $CodeFile);
 
+            $typeArr=getimagesize(storage_path('app/public/'.$list->image));
+
+            switch($typeArr['mime'])
+            {
+                case "image/png":
+                    $BackGroud=imagecreatefrompng(storage_path('app/public/'.$list->image));
+                    break;
+
+                case "image/jpg":
+                    $BackGroud=imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+                    break;
+                case "image/jpeg":
+                    $BackGroud=imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+                    break;
+
+                case "image/gif":
+                    $BackGroud=imagecreatefromgif(storage_path('app/public/'.$list->image));
+                    break;
+            }
+
+
             // 合成图片
-            $BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+            //$BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
             $qrcode    =  imagecreatefrompng($CodeFile);
 
             imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, 112, 112, imagesx($qrcode), imagesy($qrcode));
@@ -93,8 +114,32 @@ class ShareController extends Controller
             // 生成二维码
             QrCode::format('png')->size($list->code_width)->margin($list->code_margin)->generate($Url, $CodeFile);
 
+
+            $typeArr=getimagesize(storage_path('app/public/'.$list->image));
+
+            switch($typeArr['mime'])
+            {
+                case "image/png":
+                    $BackGroud=imagecreatefrompng(storage_path('app/public/'.$list->image));
+                    break;
+
+                case "image/jpg":
+                    $BackGroud=imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+                    break;
+                case "image/jpeg":
+                    $BackGroud=imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+                    break;
+
+                case "image/gif":
+                    $BackGroud=imagecreatefromgif(storage_path('app/public/'.$list->image));
+                    break;
+            }
+
+            //dd($typeArr['mime']);
             // 合成图片
-            $BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+            //$BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+
+
             $qrcode    =  imagecreatefrompng($CodeFile);
 
             imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, 112, 112, imagesx($qrcode), imagesy($qrcode));
@@ -146,8 +191,28 @@ class ShareController extends Controller
             // 生成二维码
             QrCode::format('png')->size($list->code_width)->margin($list->code_margin)->generate($Url, $CodeFile);
 
+            $typeArr=getimagesize(storage_path('app/public/'.$list->image));
+
+            switch($typeArr['mime'])
+            {
+                case "image/png":
+                    $BackGroud=imagecreatefrompng(storage_path('app/public/'.$list->image));
+                    break;
+
+                case "image/jpg":
+                    $BackGroud=imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+                    break;
+                case "image/jpeg":
+                    $BackGroud=imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+                    break;
+
+                case "image/gif":
+                    $BackGroud=imagecreatefromgif(storage_path('app/public/'.$list->image));
+                    break;
+            }
+
             // 合成图片
-            $BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
+            //$BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
             $qrcode    =  imagecreatefrompng($CodeFile);
 
             imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, 112, 112, imagesx($qrcode), imagesy($qrcode));

@@ -18,7 +18,7 @@
     <h1 class="demos-title">Register User</h1>
 </header>
 
-<form action="{{ route('registerUser') }}" method="post" name="register" id="register_form">
+<form action="" method="post" name="register" id="register_form">
 @csrf
 <div class="weui-cells weui-cells_form">
 
