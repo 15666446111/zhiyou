@@ -41,7 +41,7 @@ class MerchantController extends Controller
 		try{
 			//获取用户的伙伴
 			$userAll=\App\Buser::select('id')->where('parent', $request->user->id)->get()->toArray();
-			
+			$data=[];
 			foreach($userAll as $k=>$v){
 
 				//获取伙伴机器总数
