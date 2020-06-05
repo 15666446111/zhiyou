@@ -175,15 +175,15 @@ class SetUserController extends Controller
     {
         try{ 
 
-            // $checkDayStr = date('Y-m-d ',time());
-            // $timeBegin1 = strtotime($checkDayStr."09:00".":00");
-            // $timeEnd1 = strtotime($checkDayStr."21:00".":00");
+            $checkDayStr = date('Y-m-d ',time());
+            $timeBegin1 = strtotime($checkDayStr."09:00".":00");
+            $timeEnd1 = strtotime($checkDayStr."21:00".":00");
             
-            // $curr_time = time();
+            $curr_time = time();
 
-            // //判断是否在这个时间段内提现
-            // if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
-            // {
+            //判断是否在这个时间段内提现
+            if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
+            {
 
                 if($request->money<200){
 
@@ -222,11 +222,11 @@ class SetUserController extends Controller
                 ]);
     
                 return response()->json(['success'=>['message' => '提现申请提交成功!', []]]);
-            // }else{   
+            }else{   
                 
-            //     return response()->json(['error'=>['message' => '请在规定时间提现哦']]);
+                return response()->json(['error'=>['message' => '请在规定时间提现哦']]);
 
-            // }
+            }
 
              
 
