@@ -42,4 +42,4 @@ Route::get('/extendUser/{code}', 'RegisterController@extendUser');
  * @author  [Pudding] <[755969423@qq.com]>
  * @version [<会员注册>] [<description>]
  */
-Route::post('/extendUser/{code}', 'RegisterController@extendUserIn')->name('registerUser');
+Route::post('/extendUser/{code}', 'RegisterController@extendUserIn');
