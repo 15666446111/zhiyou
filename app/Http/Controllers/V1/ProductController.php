@@ -18,7 +18,7 @@ class ProductController extends Controller
     {
     	try{
 
-    		$type = \App\TerminalType::where('active', '1')->get();
+    		$type = \App\Brand::where('active', '1')->get();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $type]]);
 
