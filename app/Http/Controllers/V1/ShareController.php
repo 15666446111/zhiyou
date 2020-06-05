@@ -162,7 +162,7 @@ class ShareController extends Controller
 
             $link = env('APP_URL')."/share/".$request->user->id."/merchant_share/".$list->id.".png";
 
-            return response()->json(['success'=>['message' => '获取成功!', 'data' => ['link' => $link ]]]);
+            return response()->json(['success'=>['message' => '获取成功!', 'data' => ['link' => $link."?time=".time() ]]]);
 
         } catch (\Exception $e) {
             
