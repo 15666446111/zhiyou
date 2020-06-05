@@ -300,15 +300,11 @@ Route::prefix('V1')->group(function () {
 
 
     /**
-     * 团队业绩详情接口
-     */
-    Route::middleware('AuthToken')->get('/getDataList', 'V1\TeamController@dataList');
-
-
-    /**
      * 机具管理页面接口
      */
     Route::middleware('AuthToken')->get('/getBindAll', 'V1\MerchantController@getBind');
+
+    
 
     /**
      * 提现税点接口
