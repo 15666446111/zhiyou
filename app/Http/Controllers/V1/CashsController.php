@@ -82,13 +82,19 @@ class CashsController extends Controller
                 
                 
             }
-            
+            $result =[];
             foreach($info as $k=>$v){
 
-                $data['cash'][] = $v;
+                $result[$v['date']][] = $v;
 
             }
-            // dd($info);
+            $results =[];
+            foreach($result as $k=>$v){
+
+                $results[] = $v;
+
+            }
+            $data['cachs']=$results;
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
     	} catch (\Exception $e) {
