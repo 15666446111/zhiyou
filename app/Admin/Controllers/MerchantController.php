@@ -106,6 +106,8 @@ class MerchantController extends AdminController
 
         $form->text('merchant_terminal', __('终端编号'));
 
+        $form->select('brand_id', __('所属品牌'))->options(\App\Brand::where('active', '1')->get()->pluck('brand_name', 'id'));
+
         return $form;
     }
 }
