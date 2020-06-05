@@ -74,7 +74,7 @@ class ShareController extends Controller
      */
     public function extendUser(Request $request)
     {
-        try{
+        // try{
             /** 获取分享类型的素材  */
             $list = \App\Share::where('active', '1')->where('type', '1')->first();
 
@@ -111,11 +111,11 @@ class ShareController extends Controller
 
             return response()->json(['success'=>['message' => '获取成功!', 'data' => ['link' => $link."?time=".time() ]]]);
 
-        } catch (\Exception $e) {
+        // } catch (\Exception $e) {
 
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+        //     return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
-        }
+        // }
     }
 
 
