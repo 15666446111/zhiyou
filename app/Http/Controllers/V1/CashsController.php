@@ -12,7 +12,7 @@ class CashsController extends Controller
      */
     public function cashsIndex(Request $request)
     {
-        // try{ 
+        try{ 
 
             //总收益
             $data['revenueAll'] = \App\Cash::select('cash_money')
@@ -86,10 +86,10 @@ class CashsController extends Controller
             
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
-    	// } catch (\Exception $e) {
+    	} catch (\Exception $e) {
             
-        //     return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
-        // }
+        }
     }
 }
