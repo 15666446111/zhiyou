@@ -48,7 +48,7 @@ class MerchantsController extends Controller
 
             $page   = $page * $limit;
              
-            $data['Bound']=\App\Merchant::select('merchant_name','merchant_number','merchant_sn')
+            $data['Bound']=\App\Merchant::select('id','merchant_name','merchant_number','merchant_sn')
                             ->where(['user_id'=>$request->user->id,'bind_status'=>1]) 
                             ->orderBy('id', 'desc')
                             ->offset($page)
@@ -62,7 +62,7 @@ class MerchantsController extends Controller
             }
 
 
-            $data['Unbound']=\App\Merchant::select('merchant_name','merchant_number','merchant_sn')
+            $data['Unbound']=\App\Merchant::select('id','merchant_name','merchant_number','merchant_sn')
                             ->where(['user_id'=>$request->user->id,'bind_status'=>0]) 
                             ->orderBy('id', 'desc')
                             ->offset($page)

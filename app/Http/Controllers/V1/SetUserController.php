@@ -70,7 +70,10 @@ class SetUserController extends Controller
     {
         try{ 
             
-            $data=\App\Bank::where('user_id',$request->user->id)->where('is_del',0)->get();
+            $data=\App\Bank::where('user_id',$request->user->id)
+            ->where('is_del',0)
+            ->orderBy('is_default','desc')
+            ->get();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
 
