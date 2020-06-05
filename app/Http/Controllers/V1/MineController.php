@@ -23,6 +23,7 @@ class MineController extends Controller
                 'id'        =>  $request->user->id,
                 'headimg'   =>  $request->user->headimg,
                 'nickname'  =>  $request->user->nickname,
+                'username'  =>  $request->user->account,
                 'blance'    =>  $request->user->wallets->cash_blance+$request->user->wallets->return_blance,
                 'group'     =>  $request->user->groups->name,
                 'group_id'  =>  $request->user->group,
