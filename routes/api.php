@@ -311,12 +311,18 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getBindAll', 'V1\MerchantController@getBind');
 
-    
+
 
     /**
      * 提现税点接口
      */
     Route::middleware('AuthToken')->get('/getPoint', 'V1\SetUserController@point');
+
+
+    /**
+     * 文章详情接口
+     */
+    Route::middleware('AuthToken')->get('/getArticle', 'V1\ArticleController@Article');
 
 });
 

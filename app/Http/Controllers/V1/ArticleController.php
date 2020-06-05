@@ -30,6 +30,7 @@ class ArticleController extends Controller
         }
     }
 
+
     /**
      * @version  [<获取常见问题列表>]
      * @author   Pudding   
@@ -50,5 +51,26 @@ class ArticleController extends Controller
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
         }
+    }
+
+
+    /**
+     * 获取文章详情接口
+     */
+    public function Article(Request $request)
+    {
+
+        try{
+            
+            $data = \App\Article::where('active', '1')->where('type_id', $request->type_id)->first();
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]);
+
+        } catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+
     }
 }

@@ -36,50 +36,81 @@ class MerchantsController extends Controller
     public function merchantsList(Request $request)
     {
         try{ 
-            $limit = 15; 
+            
+            $Bound=\App\Merchant::select('merchants.id','merchants.merchant_name','merchant_number','merchants.merchant_sn','money','merchants.created_at','merchants.bind_time','active_time')
+            ->join('trades','trades.terminal','=','merchants.merchant_terminal')
+            ->where(['user_id'=>$request->user->id,'bind_status'=>1]) 
+            ->get()
+            ->toArray();
 
-            $page  = $request->page ? $request->page - 1 : 0;
+            foreach($Bound as $k=>$v){
 
-            if(!is_numeric($page)){
-                return response()->json(['error'=>['message' => '参数错误!']]); 
+                $UnBound[$k]['time'] = $v['bind_time'] ? $v['bind_time'] : $v['active_time'];
+
+                if($v['created_at']){
+
+                    $Bound[$k]['time'] = $v['created_at'];
+                    
+                }else{
+
+                    $Bound[$k]['time'] = $v['bind_time'];
+
+                }
+
+            }
+            $item = array();
+            foreach($Bound as $k=>$v){
+                
+                if(!isset($item[$v['id']])){
+
+                    $item[$v['id']]=$v;
+
+                }else{
+
+                    $item[$v['id']]['money']+=$v['money'];
+
+                }
+
+            }
+            
+            $data=[];
+            $data['Bound']=$item;
+            
+            $UnBound=\App\Merchant::select('merchants.id','merchants.merchant_name','merchant_number','merchants.merchant_sn','money','merchants.created_at','merchants.bind_time','active_time')
+            ->join('trades','trades.terminal','=','merchants.merchant_terminal')
+            ->where(['user_id'=>$request->user->id,'bind_status'=>0]) 
+            ->get()
+            ->toArray();
+            
+            foreach($UnBound as $k=>$v){
+
+                $UnBound[$k]['time'] = $v['bind_time'] ? $v['bind_time'] : $v['active_time'];
+
+            }
+            
+            $items = array();
+            foreach($UnBound as $k=>$v){
+
+                if(!isset($items[$v['id']])){
+
+                    $items[$v['id']]=$v;
+
+                }else{
+
+                    $items[$v['id']]['money']+=$v['money'];
+
+                }
+                
+
             }
 
-            $page   = $page < 0 ? 0 : $page ;
-
-            $page   = $page * $limit;
-             
-            $data['Bound']=\App\Merchant::select('id','merchant_name','merchant_number','merchant_sn')
-                            ->where(['user_id'=>$request->user->id,'bind_status'=>1]) 
-                            ->orderBy('id', 'desc')
-                            ->offset($page)
-                            ->limit($limit)
-                            ->get()
-                            ->toArray();
-
-            foreach($data['Bound'] as $k=>$v){
-                $data['Bound'][$k]['create_time']='2020-06-02 11:39:01';
-                $data['Bound'][$k]['amount']='80000'; 
-            }
-
-
-            $data['Unbound']=\App\Merchant::select('id','merchant_name','merchant_number','merchant_sn')
-                            ->where(['user_id'=>$request->user->id,'bind_status'=>0]) 
-                            ->orderBy('id', 'desc')
-                            ->offset($page)
-                            ->limit($limit)
-                            ->get()
-                            ->toArray();
-
-            foreach($data['Unbound'] as $key=>$value){
-                $data['Unbound'][$key]['create_time']='2020-06-02 11:39:01';
-                $data['Unbound'][$key]['amount']='80000'; 
-            }
+            $data['UnBound']=$items;
             
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
     	} catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+            return response()->json(['error'=>['message' => $e->getMessage()]]);
 
         }
     }
@@ -95,11 +126,14 @@ class MerchantsController extends Controller
             ->where('id',$request->id)
             ->first();
             
+            $data['time'] = $data->bind_time ? $data->bind_time : $data->active_time;
+
+            
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]);   
 
     	} catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+            return response()->json(['error'=>['message' => $e->getMessage()]]);
 
         }
     }
