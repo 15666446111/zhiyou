@@ -56,7 +56,7 @@ class CashsController extends Controller
                 $info[$id]=$v;
 
             }
-
+            // dd($info);
             foreach($info as $k=>$v){
 
                 $info[$k]['created_time']=$v['created_at'];
@@ -64,7 +64,7 @@ class CashsController extends Controller
                 $info[$k]['created_at']=strtotime($v['created_at']);
 
             }
-
+            
             //根据日期进行分组
             $curyear = date('Y'); 
 
@@ -76,14 +76,19 @@ class CashsController extends Controller
                 
                 if ($curyear == date('Y', $value['created_at'])) {
                     
-                    $date = date('m月d日'.'星期'.$weekarray[date('w',$value['created_at'])], $value['created_at']);
+                    $info[$key]['date'] = date('m月d日'.'星期'.$weekarray[date('w',$value['created_at'])], $value['created_at']);
 
                 }
                 
-                $data['cash'][$date][] = $value;
                 
             }
             
+            foreach($info as $k=>$v){
+
+                $data['cash'][] = $v;
+
+            }
+            // dd($info);
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
     	} catch (\Exception $e) {
