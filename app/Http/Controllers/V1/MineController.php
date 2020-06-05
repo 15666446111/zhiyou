@@ -20,6 +20,7 @@ class MineController extends Controller
     	try{
 
             return response()->json(['success'=>['message' => '获取成功!', 'data' => [
+                'id'        =>  $request->user->id,
                 'headimg'   =>  $request->user->headimg,
                 'nickname'  =>  $request->user->nickname,
                 'blance'    =>  $request->user->wallets->cash_blance+$request->user->wallets->return_blance,
