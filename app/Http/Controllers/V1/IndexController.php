@@ -31,7 +31,7 @@ class IndexController extends Controller
             $MonthTrade     = number_format(($model->getTradeSum() / 100), 2, ".", "," );
 
             // 获取本月收益
-            $MonthIncome   = number_format((0 / 100), 2, ".", "," );
+            $MonthIncome   = number_format(($model->getIncome() / 100), 2, ".", "," );
 
             return response()->json(['success'=>
                     [
