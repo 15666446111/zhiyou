@@ -241,5 +241,31 @@ class SetUserController extends Controller
 
     }
 
+    /**
+     * 提现税点接口
+     */
+    public function point(Request $request)
+    {
+
+        try{ 
+            // dd(config('draw.rate'));
+            //获取提现税点
+            $data['point']=$config('draw.rate');
+            //最小提现金额
+            $data['min_money']=200;
+            //提现范围时间
+            $data['point_time']='9:00~21:00';
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
+
+
+    	} catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+
+    }
+
 
 }
