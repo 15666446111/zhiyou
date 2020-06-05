@@ -193,8 +193,7 @@ class SetUserController extends Controller
      */
     public function Withdrawal(Request $request)
     {
-        // try{ 
-
+        try{ 
             $checkDayStr = date('Y-m-d ',time());
             $timeBegin1 = strtotime($checkDayStr."09:00".":00");
             $timeEnd1 = strtotime($checkDayStr."21:00".":00");
@@ -256,11 +255,11 @@ class SetUserController extends Controller
             }
 
 
-    	// } catch (\Exception $e) {
+    	} catch (\Exception $e) {
             
-        //     return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
-        // }
+        }
 
     }
 
