@@ -42,6 +42,13 @@ class MerchantController extends Controller
 			//获取用户的伙伴
 			$userAll=\App\Buser::select('id')->where('parent', $request->user->id)->get()->toArray();
 			$data=[];
+			if(!$userAll){
+				$data['friend']['all'] = 0;
+				$data['friend']['NoMerchant'] =0;
+				$data['friend']['Merchant'] =0;
+				$data['friend']['Merchant_status'] = 0;
+				$data['friend']['standard_statis'] =0;
+			}
 			foreach($userAll as $k=>$v){
 
 				//获取伙伴机器总数
@@ -56,7 +63,7 @@ class MerchantController extends Controller
 				$data['friend']['standard_statis'] = \App\Merchant::where('user_id', $v)->where('standard_statis', '1')->count();
 
 			}
-
+			
 			//获取用户机器总数
 			$data['user']['all'] = \App\Merchant::where('user_id', $request->user->id)->count();
 			//获取用户未绑定机器总数
