@@ -71,7 +71,7 @@ class CashsController extends Controller
             $visit_list = [];
 
             $weekarray=array("日","一","二","三","四","五","六");
-
+            $data['cash']=[];
             foreach ($info as $key=>$value) {
                 
                 if ($curyear == date('Y', $value['created_at'])) {
@@ -79,7 +79,7 @@ class CashsController extends Controller
                     $date = date('m月d日'.'星期'.$weekarray[date('w',$value['created_at'])], $value['created_at']);
 
                 }
-
+                
                 $data['cash'][$date][] = $value;
                 
             }
