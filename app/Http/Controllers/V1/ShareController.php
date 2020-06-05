@@ -55,7 +55,7 @@ class ShareController extends Controller
 
             $link = env('APP_URL')."/share/".$request->user->id."/team_share/".$list->id.".png";
 
-            return response()->json(['success'=>['message' => '获取成功!', 'data' => ['link' => $link ]]]);
+            return response()->json(['success'=>['message' => '获取成功!', 'data' => ['link' => $link."?time=".time() ]]]);
 
     	} catch (\Exception $e) {
 
@@ -109,7 +109,7 @@ class ShareController extends Controller
 
             $link = env('APP_URL')."/share/".$request->user->id."/user_share/".$list->id.".png";
 
-            return response()->json(['success'=>['message' => '获取成功!', 'data' => ['link' => $link ]]]);
+            return response()->json(['success'=>['message' => '获取成功!', 'data' => ['link' => $link."?time=".time() ]]]);
 
         } catch (\Exception $e) {
 
