@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\V1;
 
+use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -9,92 +11,70 @@ class CashsController extends Controller
 {
     /**
      * 收益页面接口
+     * 
      */
+    
+
     public function cashsIndex(Request $request)
     {
-        try{ 
+        //try{ 
 
             //总收益
-            $data['revenueAll'] = \App\Cash::select('cash_money')
-            ->where('user_id',$request->user->id)
-            ->sum('cash_money');
+            $data['revenueAll'] = \App\Cash::where('user_id',$request->user->id)->sum('cash_money');
 
             //今日收益
-            $data['revenueDay'] = \App\Cash::select('cash_money')
-            ->where('user_id',$request->user->id)
-            ->whereDate('created_at', date('Y-m-d',time()))
-            ->sum('cash_money');
+            $data['revenueDay'] = \App\Cash::where('user_id',$request->user->id)->whereDate('created_at', Carbon::today())->sum('cash_money');
             
             //本月收益
-            $data['revenueMonth'] = \App\Cash::select('cash_money')
-            ->where('user_id',$request->user->id)
-            ->whereBetween('created_at', [date('Y-m-01',time()),date('Y-m-t',time())])
-            ->sum('cash_money');
+            $data['revenueMonth'] = \App\Cash::where('user_id',$request->user->id)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('cash_money');
 
             // 查询用户账号余额
-            $res=\App\BuserWallet::where('user_id',$request->user->id)->get();
+            $data['balance'] = $request->user->wallets->cash_blance + $request->user->wallets->return_blance;
 
-            foreach($res as $key=>$value){
 
-                $data['balance']=$value['cash_blance']+$value['return_blance'];   
-
-            }
-
-            //查询日期收益详情
-            $cashInfo=\App\cash::select('cashs.id','cashs.created_at','cash_money','cash_type','merchants.merchant_sn','price')
-                            ->Join('merchants','merchants.user_id','=','cashs.user_id')
-                            ->leftJoin('orders','orders.order_no','=','cashs.order')
-                            ->where('cashs.user_id',$request->user->id) 
-                            ->orderByDesc('cashs.created_at')
-                            ->get()
-                            ->toArray();  
-            $info=[];
-            foreach($cashInfo as $k=>$v){  
-
-                $id=$v['id'];
-
-                $info[$id]=$v;
-
-            }
-            // dd($info);
-            foreach($info as $k=>$v){
-
-                $info[$k]['created_time']=$v['created_at'];
-
-                $info[$k]['created_at']=strtotime($v['created_at']);
-
-            }
-            
-            //根据日期进行分组
-            $curyear = date('Y'); 
-
-            $visit_list = [];
+            // 
+            $list = \App\cash::where('user_id', $request->user->id)->groupBy('date')->orderBy('date', 'desc')->get(
+                        array(
+                            DB::raw('Date(created_at) as date'),
+                            DB::raw('SUM(cash_money) as money')
+                        )
+                    );
 
             $weekarray=array("日","一","二","三","四","五","六");
-            $data['cash']=[];
-            foreach ($info as $key=>$value) {
-                
-                if ($curyear == date('Y', $value['created_at'])) {
-                    
-                    $info[$key]['date'] = date('m月d日'.'星期'.$weekarray[date('w',$value['created_at'])], $value['created_at']);
 
+            foreach ($list as $key => $value) {
+
+                $dt = Carbon::parse($value->date);
+
+                //dd(\App\Cash::where('user_id', $request->user->id)->whereDay('created_at', $value->date)->orderBy('created_at', 'desc')->get());
+                $listdata = \App\Cash::where('user_id', $request->user->id)->orderBy('created_at', 'desc')->get();
+
+                $arrs = [];
+                foreach ($listdata as $k => $v) {
+                    $arrs[] = [
+                        'type'  => $v->cash_type, 
+                        'money' => $v->cash_money, 
+                        'sn'    => $v->trades->merchants->sn, 
+                        'orderMoney' => $v->trades->money,
+                        'date'  => $v->created_at->toDateTimeString(),
+                    ];
                 }
-                
-                
-            }
-            
-            foreach($info as $k=>$v){
 
-                $data['cash'][] = $v;
-
+                $data['cash'][] = array(
+                    'title' => $dt->year."年".$dt->month."月".$dt->day."日", 
+                    'money' => $value->money, 
+                    'week'  => "星期".$weekarray[$dt->dayOfWeek],
+                    'list'  => $arrs,
+                );
             }
+
             // dd($info);
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
-    	} catch (\Exception $e) {
+    	// } catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+     //        return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
-        }
+     //    }
     }
 }
