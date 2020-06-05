@@ -132,7 +132,7 @@ class SetUserController extends Controller
 
             if(!$request->is_default){
 
-                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
+                \App\Bank::where('user_id',$request->user->id)->update([
                     'name'=>$request->name,
                     'bank_name'=>$request->bank_name, 
                     'bank'=>$request->bank,
