@@ -21,25 +21,33 @@ class TradeController extends Controller
 	 */
     public function getDetail(Request $request)
     {
-    	// 按日  按月  day 按照天。 month 按月
-    	// 日期。月份参数
-    	// 本人  团队  传过来的参数为 current 本人 或者 team  团队
-    	$current 	= $request->current ?? 'current';
+		try{
 
-    	$dataType   = $request->data_type ?? 'day';
+			// 按日  按月  day 按照天。 month 按月
+			// 日期。月份参数
+			// 本人  团队  传过来的参数为 current 本人 或者 team  团队
+			$current 	= $request->current ?? 'current';
 
-    	if($dataType == 'day'){
-    		$date  		= $request->date ?? Carbon::today()->toDateTimeString();
-    	}else
-    		$date       = $request->date ?? Carbon::today()->toDateTimeString();
+			$dataType   = $request->data_type ?? 'day';
+
+			if($dataType == 'day'){
+				$date  		= $request->date ?? Carbon::today()->toDateTimeString();
+			}else
+				$date       = $request->date ?? Carbon::today()->toDateTimeString();
 
 
 
-    	$server = new \App\Http\Controllers\V1\ServerController($dataType, $date, $current, $request->user);
+			$server = new \App\Http\Controllers\V1\ServerController($dataType, $date, $current, $request->user);
 
-    	$data   = $server->getInfo();
+			$data   = $server->getInfo();
 
-    	dd($data);
+			return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
+		
+		} catch (\Exception $e) {
+
+			return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+		
+		}
     	
     }
 }

@@ -112,7 +112,7 @@ class SetUserController extends Controller
     {
         try{ 
             
-            \App\Bank::where('user_id',$request->user->id)->update(['is_del'=>1]);
+            \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update(['is_del'=>1]);
 
             return response()->json(['success'=>['message' => '删除成功!', []]]); 
 
@@ -227,8 +227,6 @@ class SetUserController extends Controller
                 return response()->json(['error'=>['message' => '请在规定时间提现哦']]);
 
             }
-
-             
 
 
     	} catch (\Exception $e) {

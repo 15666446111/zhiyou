@@ -96,7 +96,13 @@ class ServerController extends Controller
 
     	$arrs['activeCount'] = $this->getActiveCount();
 
-    	$arrs['income']		= $this->getIncome();
+		$arrs['income']		= $this->getIncome();
+		
+		$arrs['friends']    = $this->getFriends();
+
+		$arrs['merchants']    = $this->getMerchants();
+
+		$arrs['Avg']    = $this->getAvg();
 
     	return $arrs;
     }
@@ -160,7 +166,55 @@ class ServerController extends Controller
     	}
 
     	return $select->count();
-    }
+	}
+
+
+	/**
+	 * 获取伙伴总数
+	 */
+	public function getFriends()
+	{
+
+		$users = $this->users;
+
+		$select = \App\BuserParent::where('parents', 'like', '%'.$this->user->id.'%')->whereHas('busers', function($q) use ($users){
+    		$q->whereIn('parents', $users);
+    	});
+		
+		return $select->count();
+
+	}
+
+
+	/**
+	 * 获取终端号总数
+	 */
+	public function getMerchants()
+	{
+		$users = $this->users;
+
+		$Arr = \App\BuserParent::where('parents', 'like', "%".$this->user->id."%")->pluck('id')->toArray();
+		
+		$select = \App\Merchant::whereIn('user_id',$Arr)->count();
+		
+		return $select;
+	}
+
+	/**
+	 * 获取台均交易量
+	 */
+	public function getAvg()
+	{
+
+		$money = $this->getTrade();
+		
+		$count = $this->getMerchants();
+
+		$avg = round($money / $count,2);
+		
+		return $avg;
+
+	}
 
     /**
      * @Author    Pudding
