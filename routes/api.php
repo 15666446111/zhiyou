@@ -228,6 +228,20 @@ Route::prefix('V1')->group(function () {
 
 
     /**
+     * 查询单个收货地址接口
+     */
+    Route::middleware('AuthToken')->get('/getFirstAddress', 'V1\AddressController@firstAddress');    
+
+
+    
+    /**
+     * 查询默认收货地址接口
+     */
+    Route::middleware('AuthToken')->get('/getDefaultAddress', 'V1\AddressController@defaultAddress');    
+
+
+
+    /**
      * 收益页面接口
      */
     Route::middleware('AuthToken')->get('/cashs', 'V1\CashsController@cashsIndex');
@@ -328,6 +342,11 @@ Route::prefix('V1')->group(function () {
      * 文章详情接口
      */
     Route::middleware('AuthToken')->get('/getArticle', 'V1\ArticleController@Article');
+
+    /**
+     * 机具详情接口
+     */
+    Route::middleware('AuthToken')->get('/getTail', 'V1\MerchantTailController@getMerchantsTail');
 
 });
 

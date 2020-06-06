@@ -22,7 +22,7 @@ class AddressController extends Controller
                 'city'=>$request->city,
                 'area'=>$request->area,
                 'detail'=>$request->detail,
-                'is_default'=>'0',  
+                'is_default'=>$request->is_default ?? '0',  
             ]); 
             if($data){
 
@@ -100,5 +100,54 @@ class AddressController extends Controller
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
         }
+    }
+
+    /**
+     * 查询单个收货地址接口
+     */
+    public function firstAddress(Request $request)
+    {
+
+        try{ 
+            
+            $data=\App\Address::where('id',$request->id)->where('user_id',$request->user->id)->first();
+
+            if($data){
+
+                return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
+
+            }
+
+    	} catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+
+    }
+
+
+    /**
+     * 查询默认收货地址接口
+     */
+    public function defaultAddress(Request $request)
+    {
+
+        try{ 
+            
+            $data=\App\Address::where('is_default',1)->where('user_id',$request->user->id)->first();
+
+            if($data){
+
+                return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
+
+            }
+
+    	} catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+
     }
 }

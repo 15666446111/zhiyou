@@ -47,16 +47,6 @@ class MerchantsController extends Controller
 
                 $UnBound[$k]['time'] = $v['bind_time'] ? $v['bind_time'] : $v['active_time'];
 
-                if($v['created_at']){
-
-                    $Bound[$k]['time'] = $v['created_at'];
-                    
-                }else{
-
-                    $Bound[$k]['time'] = $v['bind_time'];
-
-                }
-
             }
             $item = array();
             foreach($Bound as $k=>$v){
