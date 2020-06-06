@@ -91,13 +91,15 @@ class ServersController
         ->whereIn('cashs.user_id',$users)
         ->get()
         ->toArray();
-        // dd($select);
+        
         foreach($select as $k=>$v){
-            
-            $select[$k]['title']=\App\Policy::where('id',$v['policy_id'])->get()->toArray();
-            
+        
+            $title = \App\Policy::select('title')->where('id',$v['policy_id'])->first();
+
+            $select[$k]['title']= $title->title;
+
         }
-        dd($select);
+   
         return $select;
     }
     /**
@@ -108,7 +110,7 @@ class ServersController
 
         $users = $this->users;
 
-        $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.bind_time','trades.money','cashs.cash_type','cashs.cash_money')
+        $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.bind_time','trades.money','cashs.cash_type','cashs.cash_money','merchants.policy_id')
         ->join('trades','merchants.merchant_sn','=','trades.merchant_sn')
         ->join('cashs','cashs.order','=','trades.order')
         ->whereIn('merchants.user_id',$users)
@@ -116,6 +118,14 @@ class ServersController
         ->where('bind_status',1)
         ->get()
         ->toArray();
+
+        foreach($select as $k=>$v){
+        
+            $title = \App\Policy::select('title')->where('id',$v['policy_id'])->first();
+
+            $select[$k]['title']= $title->title;
+
+        }
         
         return $select;
     }
@@ -127,7 +137,7 @@ class ServersController
     {
         $users = $this->users;
 
-        $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','trades.money','cashs.cash_type','cashs.cash_money')
+        $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','trades.money','cashs.cash_type','cashs.cash_money','merchants.policy_id')
         ->join('trades','merchants.merchant_sn','=','trades.merchant_sn')
         ->join('cashs','cashs.status','=','trades.is_cash')
         ->whereIn('merchants.user_id',$users)
@@ -135,6 +145,14 @@ class ServersController
         ->where('bind_status',0)
         ->get()
         ->toArray();
+
+        foreach($select as $k=>$v){
+        
+            $title = \App\Policy::select('title')->where('id',$v['policy_id'])->first();
+
+            $select[$k]['title']= $title->title;
+
+        }
         
         return $select;
     }
@@ -146,7 +164,7 @@ class ServersController
     {
         $users = $this->users;
 
-        $select = \App\Merchant::select('merchants.merchant_sn','merchants.active_status','trades.money','cashs.cash_type','cashs.cash_money')
+        $select = \App\Merchant::select('merchants.merchant_sn','merchants.active_status','trades.money','cashs.cash_type','cashs.cash_money','merchants.policy_id')
         ->join('trades','merchants.merchant_sn','=','trades.merchant_sn')
         ->join('cashs','cashs.status','=','trades.is_cash')
         ->whereIn('merchants.user_id',$users)
@@ -154,6 +172,14 @@ class ServersController
         ->where('active_status',1)
         ->get()
         ->toArray();
+
+        foreach($select as $k=>$v){
+        
+            $title = \App\Policy::select('title')->where('id',$v['policy_id'])->first();
+
+            $select[$k]['title']= $title->title;
+
+        }
         
         return $select;
     }

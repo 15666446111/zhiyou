@@ -343,6 +343,7 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getArticle', 'V1\ArticleController@Article');
 
+    
     /**
      * 机具详情接口
      */

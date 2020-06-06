@@ -44,7 +44,7 @@ class AddressController extends Controller
     {
         try{ 
             
-            $data=\App\Address::where('user_id',$request->user->id)->get();
+            $data=\App\Address::where('user_id',$request->user->id)->orderBy('is_default','desc')->get();
             
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
