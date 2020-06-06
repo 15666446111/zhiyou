@@ -127,6 +127,19 @@ class StatisticController
         return \App\Buser::whereIn('id', $this->team)->whereBetween('created_at', [ $this->StartTime, $this->EndTime])->count();
     }
 
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-06
+     * @copyright [copyright]
+     * @license   [获取新增激活商户]
+     * @version   [version]
+     * @return    [type]      [description]
+     */
+    public function getNewActiveMerchant()
+    {
+        return \App\Merchant::where('active_status', '1')->whereBetween('active_time', [ $this->StartTime,  $this->EndTime])
+                ->whereIn('user_id', $this->team)->count();   
+    }
 
     /**
      * @Author    Pudding

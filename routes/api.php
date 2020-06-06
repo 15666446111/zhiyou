@@ -55,6 +55,14 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/problem', 'V1\ArticleController@problem');
 
     /**
+     * @version [<获取微信分享文案>] [<description>]
+     * @return  [<返回微信分享文案列表>]
+     * @version [<微信分享文案列表>] 
+     */
+    Route::middleware('AuthToken')->get('/wx_share_list', 'V1\ArticleController@wxShare');
+
+
+    /**
      * @version [<团队扩展分享二维码>] [<description>]
      * @return  [带二维码的分享海报]   [<description>]
      * @version [<分享二维码] [<description>]
