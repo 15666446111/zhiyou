@@ -84,7 +84,7 @@ class ArticleController extends Controller
 
         try{
             
-            $data = \App\Article::where('active', '1')->where('type_id', $request->aid)->first();
+            $data = \App\Article::where('active', '1')->where('id', $request->aid)->first();
 
             if(!$data or empty($data))
                 return response()->json(['success'=>['message' => '暂无数据!', 'data' => []]]);
