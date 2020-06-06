@@ -19,6 +19,8 @@ class CashsController extends Controller
     {
         try{ 
 
+            $type = $request->type ?? 'all';
+
             //总收益
             $data['revenueAll'] = \App\Cash::where('user_id',$request->user->id)->sum('cash_money');
 
@@ -33,7 +35,17 @@ class CashsController extends Controller
 
 
             // 
-            $list = \App\cash::where('user_id', $request->user->id)->groupBy('date')->orderBy('date', 'desc')->get(
+            $list = \App\cash::where('user_id', $request->user->id);
+            // 收益类型
+            if($type == 'cash'){
+                $list->whereIn('cash_type', ['1', '2', '3', '4']);
+            }
+
+            if($type == 'return'){
+                $list->whereIn('cash_type', ['5', '6', '7', '8']);
+            }
+
+            $list = $list->groupBy('date')->orderBy('date', 'desc')->get(
                         array(
                             DB::raw('Date(created_at) as date'),
                             DB::raw('SUM(cash_money) as money')
@@ -47,7 +59,17 @@ class CashsController extends Controller
                 $dt = Carbon::parse($value->date);
 
                 //dd(\App\Cash::where('user_id', $request->user->id)->whereDay('created_at', $value->date)->orderBy('created_at', 'desc')->get());
-                $listdata = \App\Cash::where('user_id', $request->user->id)->orderBy('created_at', 'desc')->get();
+                $listdata = \App\Cash::where('user_id', $request->user->id);
+
+                if($type == 'cash'){
+                    $listdata->whereIn('cash_type', ['1', '2', '3', '4']);
+                }
+
+                if($type == 'return'){
+                    $listdata->whereIn('cash_type', ['5', '6', '7', '8']);
+                }
+
+                $listdata = $listdata->orderBy('created_at', 'desc')->get();
 
                 $arrs = [];
                 foreach ($listdata as $k => $v) {
