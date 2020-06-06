@@ -21,7 +21,18 @@ class TradeController extends Controller
 	 */
     public function getDetail(Request $request)
     {
-		try{
+			
+			/**
+			 * [$user 获取查询的用户]
+			 * @var [type]
+			 */
+    		$user = $request->uid ?? $request->user->id;
+
+    		$user = \App\Buser::where('id', $user)->first();
+
+    		if(!$user or empty($user)){
+    			return response()->json(['error'=>['message' => '无此用户!', 'data'=>[]]]);
+    		}
 
 			// 按日  按月  day 按照天。 month 按月
 			// 日期。月份参数
@@ -30,24 +41,14 @@ class TradeController extends Controller
 
 			$dataType   = $request->data_type ?? 'day';
 
-			if($dataType == 'day'){
-				$date  		= $request->date ?? Carbon::today()->toDateTimeString();
-			}else
-				$date       = $request->date ?? Carbon::today()->toDateTimeString();
 
-
-
-			$server = new \App\Http\Controllers\V1\ServerController($dataType, $date, $current, $request->user);
+			$server = new \App\Http\Controllers\V1\ServerController($dataType, $current, $user);
 
 			$data   = $server->getInfo();
 
 			return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
 		
-		} catch (\Exception $e) {
 
-			return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
-		
-		}
     	
     }
 }

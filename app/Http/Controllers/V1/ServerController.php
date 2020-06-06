@@ -15,11 +15,20 @@ class ServerController extends Controller
 	 */
 	protected $dateType;
 
-	/**
-	 * [$date 查询日期]
-	 * @var [type]
-	 */
-	protected $date;
+
+    /**
+     * [$StartTime 开始时间]
+     * @var [time]
+     */
+    protected $StartTime;
+
+
+    /**
+     * [$Users 查询的时间截止]
+     * @var [Time String]
+     */
+    protected  $EndTime;
+
 
 	/**
 	 * [$Type 查询的类型]
@@ -39,7 +48,10 @@ class ServerController extends Controller
 	 * [$users 查询的用户]
 	 * @var [type]
 	 */
-	protected $users;
+	protected $team;
+
+
+
 	/**
 	 * @Author    Pudding
 	 * @DateTime  2020-06-05
@@ -50,30 +62,56 @@ class ServerController extends Controller
 	 * @param     [type]      $date     [description]
 	 * @param     [type]      $current  [description]
 	 */
-    public function __construct($dateType, $date, $current, $user)
+    public function __construct($dateType, $current, $user)
     {
 
-    	$this->dateType = $dateType == "month" ? $dateType : "day";
+    	$this->dateType = $dateType;
 
-    	/**
-    	 * [$this->dateType description]
-    	 * @var [type]
-    	 */
-    	$this->date     = $date;
+        switch ($this->dateType) {
+            case 'month':
+                $this->StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
+                break;
+            case 'day':
+                $this->StartTime = Carbon::today()->toDateTimeString();
+                break;
+            case 'all':
+                $this->StartTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->toDateTimeString();
+                break;
+            default:
+                $this->StartTime = $time;
+                break;
+        }
 
+        $this->EndTime = Carbon::now()->toDateTimeString();
 
     	$this->Type     = $current;
 
     	//
     	$this->user     = $user;
+
     	//dd($this->user);
     	if($this->Type == "current") 
-    		$this->users = array($this->user->id);
+    		$this->team = array($this->user->id);
 
     	if($this->Type == "team"){
-    		$this->users   = \App\BuserParent::where('parents', 'like', '%_'.$this->user->id.'_%')->pluck('user_id')->toArray();
-    		$this->users[] = $this->user->id;
+    		$this->team       = $this->getTeam();
+            $this->team[]     = $this->user->id;
     	}
+
+    }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-06
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [获取用户的团队数组]
+     * @return    [type]      [description]
+     */
+    public function getTeam()
+    {
+        return \App\BuserParent::where('parents', 'like', '%_'.$this->user->id.'_%')->pluck('user_id')->toArray();
     }
 
 
@@ -90,19 +128,19 @@ class ServerController extends Controller
     	$arrs = array();
 
     	// 返回查询的日期
-    	$arrs['date'] = $this->getDate();
+    	$arrs['date']         = $this->getDate();
 
-    	$arrs['trade']		= $this->getTrade();
+     	$arrs['trade']	      = $this->getTrade();
 
-    	$arrs['activeCount'] = $this->getActiveCount();
+     	$arrs['activeCount']  = $this->getActiveCount();
 
-		$arrs['income']		= $this->getIncome();
+		$arrs['income']		  = $this->getIncome();
 		
-		$arrs['friends']    = $this->getFriends();
+		$arrs['friends']      = $this->getFriends();
 
 		$arrs['merchants']    = $this->getMerchants();
 
-		$arrs['Avg']    = $this->getAvg();
+		$arrs['Avg']          = number_format($arrs['trade'] / $arrs['merchants'] / 100, 2, '.', ',');
 
     	return $arrs;
     }
@@ -121,21 +159,11 @@ class ServerController extends Controller
     {
     	//DB::connection()->enableQueryLog();#开启执行日志
 
-		$dt = Carbon::parse($this->date);
+        $team = $this->team;
 
-		$users = $this->users;
-
-    	$select = \App\Trade::whereHas('merchants', function($q) use ($users){
-    		$q->whereIn('user_id', $users);
-    	});
-
-    	if($this->dateType == "month"){
-    		$select->whereMonth('created_at', $dt->month)->whereYear('created_at', $dt->year);
-    	}
-
-    	if($this->dateType == "day"){
-    		$select->whereDate('created_at', $this->date);
-    	}
+    	$select = \App\Trade::whereHas('merchants', function($q) use ($team){
+    		$q->whereIn('user_id', $team);
+    	})->whereBetween('created_at', [ $this->StartTime,  $this->EndTime]);
 
     	return $select->sum('money');
     }
@@ -153,19 +181,7 @@ class ServerController extends Controller
     {
     	//DB::connection()->enableQueryLog();#开启执行日志
 
-		$dt = Carbon::parse($this->date);
-
-    	$select = \App\Merchant::whereIn('user_id', $this->users);
-
-    	if($this->dateType == "month"){
-    		$select->whereMonth('active_time', $dt->month)->whereYear('active_time', $dt->year);
-    	}
-
-    	if($this->dateType == "day"){
-    		$select->whereDate('active_time', $this->date);
-    	}
-
-    	return $select->count();
+    	return \App\Merchant::whereIn('user_id', $this->team)->whereBetween('active_time', [ $this->StartTime,  $this->EndTime])->count();
 	}
 
 
@@ -174,15 +190,7 @@ class ServerController extends Controller
 	 */
 	public function getFriends()
 	{
-
-		$users = $this->users;
-
-		$select = \App\BuserParent::where('parents', 'like', '%'.$this->user->id.'%')->whereHas('busers', function($q) use ($users){
-    		$q->whereIn('parents', $users);
-    	});
-		
-		return $select->count();
-
+		return \App\BuserParent::where('parents', 'like', '%'.$this->user->id.'%')->count();
 	}
 
 
@@ -191,29 +199,7 @@ class ServerController extends Controller
 	 */
 	public function getMerchants()
 	{
-		$users = $this->users;
-
-		$Arr = \App\BuserParent::where('parents', 'like', "%".$this->user->id."%")->pluck('id')->toArray();
-		
-		$select = \App\Merchant::whereIn('user_id',$Arr)->count();
-		
-		return $select;
-	}
-
-	/**
-	 * 获取台均交易量
-	 */
-	public function getAvg()
-	{
-
-		$money = $this->getTrade();
-		
-		$count = $this->getMerchants();
-
-		$avg = round($money / $count,2);
-		
-		return $avg;
-
+		return \App\Merchant::whereIn('user_id',$this->team)->count();
 	}
 
     /**
@@ -228,19 +214,9 @@ class ServerController extends Controller
     {
     	//DB::connection()->enableQueryLog();#开启执行日志
 
-		$dt = Carbon::parse($this->date);
+    	$select = \App\Cash::whereIn('user_id', $this->team)->where('status', '1');
 
-    	$select = \App\Cash::whereIn('user_id', $this->users)->where('status', '1');
-
-    	if($this->dateType == "month"){
-    		$select->whereMonth('created_at', $dt->month)->whereYear('created_at', $dt->year);
-    	}
-
-    	if($this->dateType == "day"){
-    		$select->whereDate('created_at', $this->date);
-    	}
-
-    	return $select->sum('cash_money');
+        return $select->whereBetween('created_at', [ $this->StartTime,  $this->EndTime])->sum('cash_money');
     }
 
     /**
@@ -253,7 +229,20 @@ class ServerController extends Controller
      */
     protected function getDate()
     {
-    	return array('date'=>$this->date, 'type' => $this->dateType);
+        $date = "";
+
+        switch ($this->dateType) {
+            case 'month':
+                $date = Carbon::now()->year."年".Carbon::now()->month."月";
+                break;
+            case 'day':
+                $date = Carbon::now()->year."年".Carbon::now()->month."月".Carbon::now()->day."日";
+                break;    
+            default:
+                $date = $this->StartTime;
+                break;
+        }
+        return $date;
     }
 
 }
