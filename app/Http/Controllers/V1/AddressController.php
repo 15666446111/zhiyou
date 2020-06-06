@@ -79,6 +79,10 @@ class AddressController extends Controller
     public function updateAddress(Request $request)
     {
         try{ 
+
+            if($request->is_default=='1'){
+                $data=\App\Address::where('user_id',$request->user->id)->update(['is_default'=>0]);
+            }
             
             $data=\App\Address::where('id',$request->id)->where('user_id',$request->user->id)->update([ 
                 'name'=>$request->name,
