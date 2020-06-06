@@ -46,14 +46,14 @@ class CashsController extends Controller
             if($type == 'other'){
                 $list->whereIn('cash_type', ['10', '11']);
             }        
-
+            
             $list = $list->groupBy('date')->orderBy('date', 'desc')->get(
                         array(
                             DB::raw('Date(created_at) as date'),
                             DB::raw('SUM(cash_money) as money')
                         )
                     );
-
+            
             $weekarray=array("日","一","二","三","四","五","六");
 
             foreach ($list as $key => $value) {
@@ -76,7 +76,7 @@ class CashsController extends Controller
                 }   
                 
                 $listdata = $listdata->orderBy('created_at', 'desc')->get();
-
+                
                 $arrs = [];
                 foreach ($listdata as $k => $v) {
                     $arrs[] = [
@@ -87,7 +87,7 @@ class CashsController extends Controller
                         'date'  => $v->created_at->toDateTimeString(),
                     ];
                 }
-
+                
                 $data['cash'][] = array(
                     'title' => $dt->year."年".$dt->month."月".$dt->day."日", 
                     'money' => $value->money, 
@@ -95,7 +95,7 @@ class CashsController extends Controller
                     'list'  => $arrs,
                 );
             }
-
+            
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
     	} catch (\Exception $e) {
