@@ -318,7 +318,6 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getBindAll', 'V1\MerchantController@getBind');
 
 
-
     /**
      * 提现税点接口
      */
