@@ -80,7 +80,7 @@ class AddressController extends Controller
     {
         try{ 
             
-            $data=\App\Address::where('user_id',$request->user->id)->update([ 
+            $data=\App\Address::where('id',$request->id)->where('user_id',$request->user->id)->update([ 
                 'name'=>$request->name,
                 'tel'=>$request->tel,
                 'province'=>$request->province,
