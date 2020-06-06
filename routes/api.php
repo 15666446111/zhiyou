@@ -206,8 +206,8 @@ Route::prefix('V1')->group(function () {
      * @return  [代理的商户分布情况]   [<description>]
      * @version [<获取某代理的商户分布情况] [<description>]
      */
-    Route::middleware('AuthToken')->get('/getAgentMerchant', 'V1\MerchantsController@getAgentDetail');
-
+    Route::middleware('AuthToken')->get('/getAgentMerchant', 'V1\AgentController@getAgentDetail');
+    Route::middleware('AuthToken')->get('/getAgentTeam',     'V1\AgentController@getAgentTeamDetail');
 
 
 
