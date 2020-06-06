@@ -82,7 +82,7 @@ class CashsController extends Controller
                     $arrs[] = [
                         'type'  => $v->cash_type, 
                         'money' => $v->cash_money, 
-                        'sn'    => $v->trades->merchants->sn, 
+                        'sn'    => $v->trades->merchant_sn, 
                         'orderMoney' => $v->trades->money,
                         'date'  => $v->created_at->toDateTimeString(),
                     ];
