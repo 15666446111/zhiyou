@@ -123,8 +123,24 @@ class MerchantsController extends Controller
 
     	} catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => $e->getMessage()]]);
+            return response()->json(['error'=>['message' => '系统错误，请联系客服']]);
 
         }
+    }
+
+    /**
+     * 商户交易明细
+     */
+    public function getMerchantDetails(Request $request)
+    {
+        //参数 终端号
+        $merchant = $request->merchant;
+
+        if(!$merchant){
+            return response()->json(['error'=>['message' => '终端号无效']]);
+        }
+
+        $server = new \App\Http\Controllers\V1\ServersController($merchant);
+
     }
 }
