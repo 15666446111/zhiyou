@@ -201,6 +201,15 @@ Route::prefix('V1')->group(function () {
 
 
 
+    /**
+     * @version [<APP 获取某代理的商户分布情况 >] [<description>]
+     * @return  [代理的商户分布情况]   [<description>]
+     * @version [<获取某代理的商户分布情况] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getAgentMerchant', 'V1\AgentController@getAgentDetail');
+    Route::middleware('AuthToken')->get('/getAgentTeam',     'V1\AgentController@getAgentTeamDetail');
+    Route::middleware('AuthToken')->get('/getAgentTemail',   'V1\AgentController@getAgentTemail');
+
 
     /**
      * @version [<汇付方交易推送地址>] [<description>]

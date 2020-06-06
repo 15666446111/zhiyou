@@ -155,4 +155,7 @@ class MerchantsController extends Controller
 		return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
 
     }
+
+
+
 }
