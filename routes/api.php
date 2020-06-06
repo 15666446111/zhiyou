@@ -351,7 +351,7 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getArticle', 'V1\ArticleController@Article');
 
-    
+
     /**
      * 机具详情接口
      */
@@ -362,6 +362,12 @@ Route::prefix('V1')->group(function () {
      * 查询用户未绑定终端机器
      */
     Route::middleware('AuthToken')->get('/getUnBoundInfo', 'V1\TransferController@getUnBound');
+
+
+    /**
+     * 查询商户交易明细
+     */
+    Route::middleware('AuthToken')->get('/getMerchantDetails', 'V1\MerchantsController@MerchantDetails');
 
 });
 

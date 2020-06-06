@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -131,16 +132,27 @@ class MerchantsController extends Controller
     /**
      * 商户交易明细
      */
-    public function getMerchantDetails(Request $request)
+    public function MerchantDetails(Request $request)
     {
         //参数 终端号
         $merchant = $request->merchant;
+
+        $dateType   = $request->data_type ?? 'day';
+
+        if($dateType == 'day'){
+            $date  		= $request->date ?? Carbon::today()->toDateTimeString();
+        }else
+            $date       = $request->date ?? Carbon::today()->toDateTimeString();
 
         if(!$merchant){
             return response()->json(['error'=>['message' => '终端号无效']]);
         }
 
-        $server = new \App\Http\Controllers\V1\ServersController($merchant);
+        $server = new \App\Http\Controllers\V1\MerchantMoneyController($merchant,$dateType,$date);
+
+        $data   = $server->getInfo();
+
+		return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
 
     }
 }
