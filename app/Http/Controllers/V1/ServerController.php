@@ -127,22 +127,27 @@ class ServerController extends Controller
     {
     	$arrs = array();
 
+        $trade = $this->getTrade();
+
     	// 返回查询的日期
     	$arrs['date']         = $this->getDate();
 
-     	$arrs['trade']	      = $this->getTrade();
+     	$arrs['trade']	      = number_format( $trade / 100, 2, '.', ',');
 
      	$arrs['activeCount']  = $this->getActiveCount();
 
-		$arrs['income']		  = $this->getIncome();
+		$arrs['income']		  = number_format($this->getIncome() / 100, 2, '.', ',');
 		
 		$arrs['friends']      = $this->getFriends();
 
 		$arrs['merchants']    = $this->getMerchants();
-
-		$arrs['Avg']          = number_format($arrs['trade'] / $arrs['merchants'] / 100, 2, '.', ',');
-
-    	return $arrs;
+        
+        if ($arrs['merchants'] > 0 )
+		    $arrs['Avg']          = number_format(($trade / $arrs['merchants']) / 100, 2, '.', ',');
+    	else
+            $arrs['Avg']          = 0;
+        
+        return $arrs;
     }
 
 
