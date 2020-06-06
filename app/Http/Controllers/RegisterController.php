@@ -135,6 +135,7 @@ class RegisterController extends Controller
                 'password'      =>  md5($request->register_password),
                 'phone'         =>  $request->register_phone,
                 'parent'        =>  $Parent->id,
+                'group'         =>  1,
             ]);
 
             if(!$NewUser) return back()->withErrors(['注册失败,系统错误!'])->withInput(); 
