@@ -50,7 +50,11 @@ class OrdersController extends Controller
 
         try{ 
             
-            $data=\App\Order::select('image','products.id','title','order_no','address','orders.price','status','numbers','products.price','products.price as goos_price')->join('products','orders.product_id','=','products.id')->where('user_id',$request->user->id)->get();
+            $data=\App\Order::
+            select('image','products.id','title','order_no','address','orders.price','status','numbers','products.price','products.price as good_price','orders.price as order_price')
+            ->join('products','orders.product_id','=','products.id')
+            ->where('orders.user_id',$request->user->id)
+            ->get();
             
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
 
