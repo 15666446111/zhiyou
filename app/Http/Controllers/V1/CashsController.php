@@ -13,8 +13,6 @@ class CashsController extends Controller
      * 收益页面接口
      * 
      */
-    
-
     public function cashsIndex(Request $request)
     {
         try{ 
@@ -45,6 +43,10 @@ class CashsController extends Controller
                 $list->whereIn('cash_type', ['5', '6', '7', '8']);
             }
 
+            if($type == 'other'){
+                $list->whereIn('cash_type', ['10', '11']);
+            }        
+
             $list = $list->groupBy('date')->orderBy('date', 'desc')->get(
                         array(
                             DB::raw('Date(created_at) as date'),
@@ -69,6 +71,10 @@ class CashsController extends Controller
                     $listdata->whereIn('cash_type', ['5', '6', '7', '8']);
                 }
 
+                if($type == 'other'){
+                    $listdata->whereIn('cash_type', ['10', '11']);
+                }   
+                
                 $listdata = $listdata->orderBy('created_at', 'desc')->get();
 
                 $arrs = [];
