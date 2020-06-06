@@ -64,7 +64,7 @@ class TeamController extends Controller
             $DayTrade = number_format(($model->getTradeSum() / 100), 2, ".", "," );
             
             // 日激活数据
-            $DayActive= 0;
+            $DayActive= $model->getNewActiveMerchant();
             // 日商户个数
             $DayMerchant = $model->getNewAddMerchant();
             // 日收益数据
@@ -73,6 +73,7 @@ class TeamController extends Controller
             $DayTeam  = $model->getNewAddTeamCount();
             // 日台均交易
             $DayAvgTrade = number_format( 0, 2, ".", "," );
+            // 获取今天日期
 
 
             /**
@@ -82,7 +83,7 @@ class TeamController extends Controller
             // 月交易数据
             $MonthTrade = number_format(($MonthModel->getTradeSum() / 100), 2, ".", "," );
             // 日激活数据
-            $MonthActive= 0;
+            $MonthActive= $model->getNewActiveMerchant();
             // 日商户个数
             $MonthMerchant = $MonthModel->getNewAddMerchant();
             // 日收益数据
@@ -100,7 +101,7 @@ class TeamController extends Controller
             // 月交易数据
             $CountTrade = number_format(($CountModel->getTradeSum() / 100), 2, ".", "," );
             // 日激活数据
-            $CountActive= 0;
+            $CountActive= $model->getNewActiveMerchant();
             // 日商户个数
             $CountMerchant = $CountModel->getNewAddMerchant();
             // 日收益数据
@@ -122,7 +123,8 @@ class TeamController extends Controller
                                 'merchant'  =>  $DayMerchant,
                                 'income'    =>  $DayIncome,
                                 'team'      =>  $DayTeam,
-                                'avg_trade' =>  $DayAvgTrade
+                                'avg_trade' =>  $DayAvgTrade,
+                                'date'      =>  Carbon::now()->day,
                             ],
 
                             'month' =>  [
@@ -131,7 +133,8 @@ class TeamController extends Controller
                                 'merchant'  =>  $MonthMerchant,
                                 'income'    =>  $MonthIncome,
                                 'team'      =>  $MonthTeam,
-                                'avg_trade' =>  $MonthAvgTrade
+                                'avg_trade' =>  $MonthAvgTrade,
+                                'date'      =>  Carbon::now()->month,
                             ],
 
                             'all'   =>  [
@@ -140,7 +143,8 @@ class TeamController extends Controller
                                 'merchant'  =>  $CountMerchant,
                                 'income'    =>  $CountIncome,
                                 'team'      =>  $CountTeam,
-                                'avg_trade' =>  $CountAvgTrade
+                                'avg_trade' =>  $CountAvgTrade,
+                                'date'      =>  '全部',
                             ]
                         ]
                     ]
