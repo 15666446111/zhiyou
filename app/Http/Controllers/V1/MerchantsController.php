@@ -17,9 +17,10 @@ class MerchantsController extends Controller
         try{ 
              
             \App\Merchant::where('user_id',$request->user->id)->where('merchant_terminal',$request->merchant_terminal)->update([
-                'merchant_name'=>$request->merchant_name,
-                'user_phone'=>$request->merchant_phone,
-                'bind_status'=>1
+                'merchant_name'     => $request->merchant_name,
+                'user_phone'        => $request->merchant_phone,
+                'bind_status'       => 1,
+                'bind_time'         => Carbon::now()->toDateTimeString(),
             ]);
             
             return response()->json(['success'=>['message' => '登记成功!', []]]); 
@@ -37,67 +38,44 @@ class MerchantsController extends Controller
     public function merchantsList(Request $request)
     {
         try{ 
+
+            $arrs;
             
-            $Bound=\App\Merchant::select('merchants.id','merchants.merchant_name','merchant_number','merchants.merchant_sn','money','merchants.created_at','merchants.bind_time','active_time')
-            ->join('trades','trades.terminal','=','merchants.merchant_terminal')
-            ->where(['user_id'=>$request->user->id,'bind_status'=>1]) 
-            ->get()
-            ->toArray();
+            $bind = \App\Merchant::where('user_id', $request->user->id)->where('bind_status', '1')->get();
 
-            foreach($Bound as $k=>$v){
 
-                $UnBound[$k]['time'] = $v['bind_time'] ? $v['bind_time'] : $v['active_time'];
-
-            }
-            $item = array();
-            foreach($Bound as $k=>$v){
-                
-                if(!isset($item[$v['id']])){
-
-                    $item[$v['id']]=$v;
-
-                }else{
-
-                    $item[$v['id']]['money']+=$v['money'];
-
-                }
-
+            foreach ($bind as $key => $value) {
+                $arrs['Bound'][] = array([
+                    'id'                =>  $value->id,
+                    'merchant_name'     =>  $value->merchant_name,
+                    'merchant_number'   =>  $value->merchant_number,
+                    'merchant_sn'       =>  $value->merchant_sn,
+                    'money'             =>  $value->tradess->sum('money'),
+                    'created_at'        =>  $value->created_at,
+                    'bind_time'         =>  $value->bind_time,
+                    'active_time'       =>  $value->active_time,
+                    'time'              =>  $value->bind_time ?? $value->active_time
+                ])
             }
             
-            $data=[];
-            $data['Bound']=$item;
             
-            $UnBound=\App\Merchant::select('merchants.id','merchants.merchant_name','merchant_number','merchants.merchant_sn','money','merchants.created_at','merchants.bind_time','active_time')
-            ->join('trades','trades.terminal','=','merchants.merchant_terminal')
-            ->where(['user_id'=>$request->user->id,'bind_status'=>0]) 
-            ->get()
-            ->toArray();
+            $UnBind =\App\Merchant::where('user_id', $request->user->id)->where('bind_status', '0')->get();
             
-            foreach($UnBound as $k=>$v){
-
-                $UnBound[$k]['time'] = $v['bind_time'] ? $v['bind_time'] : $v['active_time'];
-
+            foreach ($UnBind as $key => $value) {
+                $arrs['UnBound'][] = array([
+                    'id'                =>  $value->id,
+                    'merchant_name'     =>  $value->merchant_name,
+                    'merchant_number'   =>  $value->merchant_number,
+                    'merchant_sn'       =>  $value->merchant_sn,
+                    'money'             =>  $value->tradess->sum('money'),
+                    'created_at'        =>  $value->created_at,
+                    'bind_time'         =>  $value->bind_time,
+                    'active_time'       =>  $value->active_time,
+                    'time'              =>  $value->bind_time ?? $value->active_time
+                ])
             }
             
-            $items = array();
-            foreach($UnBound as $k=>$v){
-
-                if(!isset($items[$v['id']])){
-
-                    $items[$v['id']]=$v;
-
-                }else{
-
-                    $items[$v['id']]['money']+=$v['money'];
-
-                }
-                
-
-            }
-
-            $data['UnBound']=$items;
-            
-            return response()->json(['success'=>['message' => '获取成功!', 'data' => $data]]); 
+            return response()->json(['success'=>['message' => '获取成功!', 'data' => $arrs]]); 
 
     	} catch (\Exception $e) {
             
