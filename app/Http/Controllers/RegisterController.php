@@ -202,7 +202,7 @@ class RegisterController extends Controller
             $agent = $user->id;
 
             if($user->group != 2){
-                $agent = \App\Buser::getFirstVipParent($user->id)
+                $agent = \App\Buser::getFirstVipParent($user->id);
             }
 
             // 创建请求
