@@ -23,7 +23,7 @@ class ServersController
     /**
      * 查询的用户
      */
-    protected $Users;
+    protected $team;
 
 
     /**
@@ -37,23 +37,22 @@ class ServersController
         // dd($this->Users->id);
         if($this->Type == "user"){
 
-            $this->users = array($this->Users->id);
+            $this->team = array($this->Users->id);
 
         }else if($this->Type == "friends"){
     
-            $this->users   = \App\BuserParent::where('parents', 'like', "%\_".$this->Users->id."\_%")->pluck('user_id')->toArray();
+            $this->team   = \App\BuserParent::where('parents', 'like', "%\_".$this->Users->id."\_%")->pluck('user_id')->toArray();
             
         }else{
 
-            $this->users   = \App\BuserParent::where('parents', 'like', '%\_'.$this->Users->id.'\_%')->pluck('user_id')->toArray();
-            $this->users[] = $this->Users->id;
+            $this->team   = \App\BuserParent::where('parents', 'like', '%\_'.$this->Users->id.'\_%')->pluck('user_id')->toArray();
+            $this->team[] = $this->Users->id;
 
         }
         
     }
 
 
-    
     /**
      * 获取终端机器管理所有信息
      */
@@ -77,10 +76,9 @@ class ServersController
      */
     public function getAllMerchants()
     {
-        $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.active_time','merchants.bind_time','merchants.policy_id')
-        ->whereIn('merchants.user_id',$users)
+        ->whereIn('merchants.user_id', $this->team)
         ->get()
         ->toArray();
         
@@ -94,6 +92,7 @@ class ServersController
    
         return $select;
     }
+
     /**
      * 查询已绑定机器详情信息
      */
@@ -103,7 +102,7 @@ class ServersController
         $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.bind_time','merchants.policy_id')
-        ->whereIn('merchants.user_id',$users)
+        ->whereIn('merchants.user_id', $this->team)
         ->where('bind_status',1)
         ->get()
         ->toArray();
@@ -127,7 +126,7 @@ class ServersController
         $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.policy_id')
-        ->whereIn('merchants.user_id',$users)
+        ->whereIn('merchants.user_id',  $this->team)
         ->where('bind_status',0)
         ->get()
         ->toArray();
@@ -151,7 +150,7 @@ class ServersController
         $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.active_status','merchants.policy_id')
-        ->whereIn('merchants.user_id',$users)
+        ->whereIn('merchants.user_id',  $this->team)
         ->where('active_status',1)
         ->get()
         ->toArray();
