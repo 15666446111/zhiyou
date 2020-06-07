@@ -194,60 +194,57 @@ class SetUserController extends Controller
     public function Withdrawal(Request $request)
     {
         try{ 
+
+            if($request->user->wallets->blance_active !="1"){
+                return response()->json(['error'=>['message' => $request->user->wallets->blance_bak]]);
+            }
+
             $checkDayStr = date('Y-m-d ',time());
-            $timeBegin1 = strtotime($checkDayStr."09:00".":00");
-            $timeEnd1 = strtotime($checkDayStr."21:00".":00");
+            $timeBegin1  = strtotime($checkDayStr."09:00".":00");
+            $timeEnd1    = strtotime($checkDayStr."21:00".":00");
             
-            $curr_time = time();
+            $curr_time   = time();
 
             //判断是否在这个时间段内提现
             if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
             {
 
-                if($request->money<200){
+                if($request->money < 20000 ){
 
                     return response()->json(['error'=>['message' => '提现金额必须不低于200元']]);
     
                 }
-    
+        
                 //判断钱包类型
                 if($request->blance='1'){
-    
-                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->first();
                     
-                    $user_money=$info['cash_blance'];
+                    if($request->user->wallets->cash_blance < $request->money ){
+                        return response()->json(['error'=>['message' => '当前钱包余额不足']]);
+                    }
 
-                    $update_money=$user_money-$request->money;
-                    
-                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->update(['cash_blance'=>$update_money]);
+                    $request->user->wallets->cash_blance = $request->user->wallets->cash_blance - $request->money;
     
                 }else{
-                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->first();
-    
-                    $user_money=$info['return_blance'];
 
-                    $update_money=$user_money-$request->money;
+                    if($request->user->wallets->return_blance < $request->money ){
+                        return response()->json(['error'=>['message' => '当前钱包余额不足']]);
+                    }
 
-                    $info=\App\BuserWallet::where('blance_active',$request->blance)->where('user_id',$request->user->id)->update(['cash_blance'=>$update_money]);
+                    $request->user->wallets->return_blance = $request->user->wallets->return_blance - $request->money;
                 }
-    
-                if($user_money<$request->money){
-    
-                    return response()->json(['error'=>['message' => '余额不足']]);
-    
-                }
+
+                $request->user->wallets->save();
                 
-                \App\Withdraw::where('user_id',$request->user->id)->create([
-                    'user_id'=>$request->user->id,
-                    'money'=>$request->money,
-                    'rate'=>$request->rate,
-                    'rate_money'=>$request->money * $request->rate,
-                    'status'=>0,
-                    'pay_time'=>date('Y-m-d H:i:s',time()),
-                    'remark'=>$request->remark
+                
+                \App\Withdraw::create([
+                    'user_id'   => $request->user->id,
+                    'money'     => $request->money,
+                    'rate'      => $request->rate,
+                    'rate_money'=> $request->money * $request->rate,
                 ]);
     
-                return response()->json(['success'=>['message' => '提现申请提交成功!', []]]);
+                return response()->json(['success'=>['message' => '提现申请提交成功!', 'data' => []]]);
+
             }else{   
                 
                 return response()->json(['error'=>['message' => '请在规定时间提现哦']]);
