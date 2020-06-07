@@ -84,7 +84,7 @@ class StatisticController
      */
     public function getMyTeam()
     {
-        return \App\BuserParent::where('parents', 'like', "%_".$this->Users->id."_%")->pluck('user_id')->toArray();
+        return \App\BuserParent::where('parents', 'like', "%\_".$this->Users->id."\_%")->pluck('user_id')->toArray();
     }
 
     /**

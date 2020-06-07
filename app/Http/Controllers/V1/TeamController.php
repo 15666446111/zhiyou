@@ -24,7 +24,7 @@ class TeamController extends Controller
 
 
             // 获取总下级人数
-            $Arr = \App\BuserParent::where('parents', 'like', "%_".$request->user->id."_%")->pluck('id')->toArray();
+            $Arr = \App\BuserParent::where('parents', 'like', "%\_".$request->user->id."\_%")->pluck('id')->toArray();
 
             return response()->json(['success'=>
                     [

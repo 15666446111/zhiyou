@@ -41,13 +41,13 @@ class ServersController
 
         }else if($this->Type == "friends"){
     
-            $this->users   = \App\BuserParent::where('parents', 'like', "%_".$this->Users->id."_%")->pluck('user_id')->toArray();
+            $this->users   = \App\BuserParent::where('parents', 'like', "%\_".$this->Users->id."\_%")->pluck('user_id')->toArray();
             // dd($this->users);
             $this->users[] = $this->Users->id;
             
         }else{
 
-            $this->users   = \App\Buser::where('parent', 'like', '%'.$this->Users->id.'%')->orWhere('id',$this->Users->id)->pluck('id')->toArray();
+            $this->users   = \App\Buser::where('parent', 'like', '%\_'.$this->Users->id.'\_%')->orWhere('id',$this->Users->id)->pluck('id')->toArray();
             $this->users[] = $this->Users->id;
 
         }

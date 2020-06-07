@@ -42,7 +42,7 @@ class MerchantController extends Controller
 			//获取用户的伙伴
 			//
 			$userAll = \App\BuserParent::where('parents', 'like', "%\_".$request->user->id."\_%")->pluck('user_id')->toArray();
-			dd($userAll);
+			
 			$data=[];
 			if(!$userAll){
 				$data['friend']['all'] = 0;

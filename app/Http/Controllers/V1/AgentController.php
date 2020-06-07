@@ -24,7 +24,7 @@ class AgentController extends Controller
         $arrs = array();
 
         // 获取代理
-        $team = \App\BuserParent::where('parents', 'like', '%_'.$request->uid.'_%')->pluck('user_id')->toArray();
+        $team = \App\BuserParent::where('parents', 'like', '%\_'.$request->uid.'\_%')->pluck('user_id')->toArray();
 
         $arrs['agent']  = \App\Merchant::whereIn('user_id', $team)->count();
 
@@ -53,7 +53,7 @@ class AgentController extends Controller
 
         $arrs['me'] = \App\Buser::where('parent', $request->uid)->count();
 
-        $arrs['agent'] = \App\BuserParent::where('parents', 'like', '%_'.$request->uid.'_%')->count() - $arrs['me'];
+        $arrs['agent'] = \App\BuserParent::where('parents', 'like', '%\_'.$request->uid.'\_%')->count() - $arrs['me'];
 
         return response()->json(['success'=>['message' => '获取成功!', 'data'=>$arrs]]);
     }
@@ -77,7 +77,7 @@ class AgentController extends Controller
     	// 获取所有正常列表
     	$policy = \App\Policy::get();
 
-    	$team = \App\BuserParent::where('parents', 'like', '%_'.$request->uid.'_%')->pluck('user_id')->toArray();
+    	$team = \App\BuserParent::where('parents', 'like', '%\_'.$request->uid.'\_%')->pluck('user_id')->toArray();
 
     	//
     	foreach ($policy as $key => $value) 
@@ -109,7 +109,7 @@ class AgentController extends Controller
     	// 获取所有正常列表
     	$policy = \App\Policy::get();
 
-    	$team = \App\BuserParent::where('parents', 'like', '%_'.$request->uid.'_%')->pluck('user_id')->toArray();
+    	$team = \App\BuserParent::where('parents', 'like', '%\_'.$request->uid.'\_%')->pluck('user_id')->toArray();
 
     	//
     	foreach ($policy as $key => $value) 

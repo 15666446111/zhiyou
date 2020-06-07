@@ -111,7 +111,7 @@ class ServerController extends Controller
      */
     public function getTeam()
     {
-        return \App\BuserParent::where('parents', 'like', '%_'.$this->user->id.'_%')->pluck('user_id')->toArray();
+        return \App\BuserParent::where('parents', 'like', '%\_'.$this->user->id.'\_%')->pluck('user_id')->toArray();
     }
 
 
@@ -195,7 +195,7 @@ class ServerController extends Controller
 	 */
 	public function getFriends()
 	{
-		return \App\BuserParent::where('parents', 'like', '%'.$this->user->id.'%')->count();
+		return \App\BuserParent::where('parents', 'like', '%\_'.$this->user->id.'\_%')->count();
 	}
 
 
