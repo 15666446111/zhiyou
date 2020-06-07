@@ -84,6 +84,14 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/merchant_share', 'V1\ShareController@merchant');
 
     /**
+     * @version [<商户推荐海报>] [<description>]
+     * @return  [生产商户推荐海报， 扫码填写表单]   [<description>]
+     * @version [<分享二维码] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/temail_share', 'V1\ShareController@extendTemail');
+
+
+    /**
      * @version [<APP 首页 伙伴管理>] [<description>]
      * @return  [首页的伙伴管理直接下级列表]   [<description>]
      * @version [<伙伴管理] [<description>]
