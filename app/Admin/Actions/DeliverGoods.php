@@ -34,10 +34,24 @@ class DeliverGoods extends RowAction
 
             	$policy = \App\Policy::where('id', $request->policy)->first();
 
+                $sett_price = $policy['sett_price'];
+
+                foreach ($sett_price as $key => $value) {
+                    $sett_price[$key]['setprice'] = $value['defaultPrice'];
+                }
+
+                $default_active_set = $policy['default_active_set'];
+                $default_active_set['return_money'] = $default_active_set['default_money'];
+
+                $vip_active_set = $policy['vip_active_set'];
+                $vip_active_set['return_money'] = $vip_active_set['default_money'];
+
             	\App\UserPolicy::create([
             		'user_id'		=>	$request->user,
             		'policy_id'		=>	$request->policy,
-            		'sett_price'	=>	$policy->sett_price
+            		'sett_price'	=>	$policy->sett_price,
+                    'default_active_set'    => $default_active_set,
+                    'vip_active_set'        => $vip_active_set,
             	]);
             }
 
@@ -55,7 +69,7 @@ class DeliverGoods extends RowAction
     /* 发货按钮需要提交资料 */
 	public function form()
 	{
-		$user = \App\Buser::pluck('nickname as name','id');
+		$user = \App\Buser::pluck('account as name','id');
 		$this->select('user', '配送会员')->options($user)->rules('required', ['required' => '请选择品牌']);
 
 

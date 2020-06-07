@@ -44,7 +44,7 @@ class ArticleController extends AdminController
             $filter->disableIdFilter();
 
             $filter->column(1/4, function ($filter) {
-                $filter->like('name', '标题');
+                $filter->like('title', '标题');
             });
             // 在这里添加字段过滤器
             
