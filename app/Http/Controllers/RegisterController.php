@@ -173,4 +173,55 @@ class RegisterController extends Controller
 
         }
     }
+
+
+
+    /**
+     * [extendTemailIn  表单申请pos机器 提交页面]
+     * @author Pudding
+     * @DateTime 2020-04-13T15:52:33+0800
+     * @param    Request                  $request [description]
+     * @return   [type]                            [description]
+     */
+    public function extendTemailIn(RegisterRequest $request)
+    {
+        try{
+
+            if(!$request->name or !$request->phone or !$request->address)
+                return back()->withErrors(['请填写资料!'])->withInput();
+
+            $result = Hashids::decode($request->route('code'));
+
+            if(empty($result)) return back()->withErrors(['参数无效!'])->withInput();
+
+            // 获取会员信息信息
+            $user = \App\Buser::where('id', $result[0])->first();
+
+            if(!$user or empty($user)) return back()->withErrors(['信息错误!'])->withInput();
+
+            $agent = $user->id;
+
+            if($user->group != 2){
+                $agent = \App\Buser::getFirstVipParent($user->id)
+            }
+
+            // 创建请求
+            $NewPost = \App\ApplicationForm::create([
+                'name'      =>  $request->name,
+                'phone'     =>  $request->phone,
+                'address'   =>  $request->address,
+                'user_id'   =>  $user->id,
+                'agent_id'  =>  $agent,
+            ]);
+
+            if(!$NewPost) return back()->withErrors(['申请失败,系统错误!'])->withInput(); 
+
+            return view('application_success');
+
+        } catch (\Exception $e) {
+
+            return back()->withErrors(['申请失败,系统错误!'])->withInput(); 
+
+        }
+    }
 }

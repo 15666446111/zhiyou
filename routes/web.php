@@ -44,9 +44,17 @@ Route::get('/extendUser/{code}', 'RegisterController@extendUser');
  */
 Route::post('/extendUser/{code}', 'RegisterController@extendUserIn');
 
+
 /**
  * @version [<扫码 提交表单 申请机器 无需注册即可申请>] [<description>]
  * @author  [Pudding] <[755969423@qq.com]>
  * @version [<朋友圈申请机器>] [<description>]
  */
 Route::get('/extendTemail/{code}', 'RegisterController@extendTemail');
+
+/**
+ * @version [<扫码 提交表单 申请机器 无需注册即可申请>] [<description>]
+ * @author  [Pudding] <[755969423@qq.com]>
+ * @version [<提交表单>] [<description>]
+ */
+Route::post('/extendTemail/{code}', 'RegisterController@extendTemailIn');
