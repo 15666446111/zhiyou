@@ -33,20 +33,21 @@ class ServersController
     {
         $this->Type = $Type;
 
-        $this->Users = $user;
+        $this->user = $user;
+
         // dd($this->Users->id);
         if($this->Type == "user"){
 
-            $this->team = array($this->Users->id);
+            $this->team = array($this->user->id);
 
-        }else if($this->Type == "friends"){
+        }else if($this->Type == "friend"){
     
-            $this->team   = \App\BuserParent::where('parents', 'like', "%\_".$this->Users->id."\_%")->pluck('user_id')->toArray();
+            $this->team   = \App\BuserParent::where('parents', 'like', "%\_".$this->user->id."\_%")->pluck('user_id')->toArray();
             
         }else{
 
-            $this->team   = \App\BuserParent::where('parents', 'like', '%\_'.$this->Users->id.'\_%')->pluck('user_id')->toArray();
-            $this->team[] = $this->Users->id;
+            $this->team   = \App\BuserParent::where('parents', 'like', '%\_'.$this->user->id.'\_%')->pluck('user_id')->toArray();
+            $this->team[] = $this->user->id;
 
         }
         
@@ -98,9 +99,6 @@ class ServersController
      */
     public function getBound()
     {
-
-        $users = $this->users;
-
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.bind_time','merchants.policy_id')
         ->whereIn('merchants.user_id', $this->team)
         ->where('bind_status',1)
@@ -123,8 +121,6 @@ class ServersController
      */
     public function getUnBound()
     {
-        $users = $this->users;
-
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.policy_id')
         ->whereIn('merchants.user_id',  $this->team)
         ->where('bind_status',0)
@@ -147,7 +143,6 @@ class ServersController
      */
     public function getBind()
     {
-        $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.active_status','merchants.policy_id')
         ->whereIn('merchants.user_id',  $this->team)
