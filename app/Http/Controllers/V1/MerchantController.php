@@ -41,7 +41,7 @@ class MerchantController extends Controller
 		try{
 			//获取用户的伙伴
 			//
-			$userAll = \App\BuserParent::where('parents', 'like', "%_".$this->Users->id."_%")->pluck('user_id')->toArray();
+			$userAll = \App\BuserParent::where('parents', 'like', "%_".$request->user->id."_%")->pluck('user_id')->toArray();
 			
 			$data=[];
 			if(!$userAll){
@@ -51,7 +51,7 @@ class MerchantController extends Controller
 				$data['friend']['Merchant_status'] = 0;
 				$data['friend']['standard_statis'] =0;
 			}
-			
+
 			foreach($userAll as $k=>$v){
 
 				//获取伙伴机器总数
