@@ -402,6 +402,12 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getMerchantDetails', 'V1\MerchantsController@MerchantDetails');
 
+
+    /**
+     * 忘记密码接口
+     */
+    Route::post('/forgetPwd', 'V1\LoginController@forget');
+
 });
 
 

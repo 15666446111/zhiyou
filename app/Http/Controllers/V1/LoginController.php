@@ -44,4 +44,31 @@ class LoginController extends Controller
 
         }
     }
+
+
+    /**
+     * 忘记密码接口
+     */
+    public function forget(Request $request)
+    {
+
+        try{
+
+            if($request->code !== '8888'){
+                
+                return response()->json(['error'=>['message' => '验证码错误']]);
+
+            }
+
+            \App\Buser::where('account',$request->account)->update(['password'=>md5($request->password)]);
+
+            return response()->json(['success'=>['message' => '修改成功!', 'data'=>[]]]);
+
+    	} catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+
+    }
 }
