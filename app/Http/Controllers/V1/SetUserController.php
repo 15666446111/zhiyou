@@ -216,7 +216,7 @@ class SetUserController extends Controller
                 }
         
                 //判断钱包类型
-                if($request->blance='1'){
+                if($request->blance =='1'){
                     
                     if($request->user->wallets->cash_blance < $request->money ){
                         return response()->json(['error'=>['message' => '当前钱包余额不足']]);
