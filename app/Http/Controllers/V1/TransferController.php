@@ -18,8 +18,10 @@ class TransferController extends Controller
             //获取该用户该政策下未绑定未激活终端机器
             $list = \App\Merchant::select('id','merchant_terminal','merchant_sn')->where('user_id',$request->user->id)
             ->where('policy_id',$request->policy_id)
-            ->where('active_status',0)
-            ->where('bind_status',0)
+            ->orWhere('active_status',0)
+            ->orWhere('active_status','')
+            ->orWhere('bind_status',0)
+            ->orWhere('bind_status','')
             ->get()->toArray();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$list]]);
@@ -48,7 +50,7 @@ class TransferController extends Controller
                     return response()->json(['error'=>['message' => '请选择未绑定并且未激活的终端']]);
                 }
 
-                \App\Merchant::where('user_id',$request->user->id)->update(['user_id'=>$request->friend_id]);
+                \App\Merchant::where('id',$v->id)->where('user_id',$request->user->id)->update(['user_id'=>$request->friend_id]);
 
             }
 
@@ -88,6 +90,7 @@ class TransferController extends Controller
             
             $data = \App\Merchant::select('id','merchant_terminal','merchant_sn')
             ->whereIn('id',$list)
+            ->where('policy_id',$request->policy_id)
             ->where('active_status',0)
             ->where('bind_status',0)
             ->get()
