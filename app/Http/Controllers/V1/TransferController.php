@@ -14,23 +14,23 @@ class TransferController extends Controller
     public function getUnBound(Request $request)
     {
 
-        try{
+        // try{
             //获取该用户该政策下未绑定未激活终端机器
-            $list = \App\Merchant::select('id','merchant_terminal','merchant_sn')->where('user_id',$request->user->id)
-            ->where('policy_id',$request->policy_id)
-            ->orWhere('active_status',0)
-            ->orWhere('active_status','')
-            ->orWhere('bind_status',0)
-            ->orWhere('bind_status','')
-            ->get()->toArray();
+            $list = \App\Merchant::select('id','merchant_terminal','merchant_sn')
+            ->where('user_id','=',$request->user->id)
+            ->where('policy_id','=',$request->policy_id)
+            ->where('active_status','!=',1)
+            ->where('bind_status','!=',1)
+            ->get()
+            ->toArray();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$list]]);
         
-        } catch (\Exception $e) {
+        // } catch (\Exception $e) {
             
-            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+        //     return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
-        }
+        // }
 
     }
 
@@ -114,11 +114,24 @@ class TransferController extends Controller
 
         try{
 
-            $res=\App\Merchant::whereIn('user_id',$request->friend_id)->whereIn('id',$request->merchant_id)->update(['user_id'=>$request->user->id]);
+            $res=\App\Merchant::whereIn('user_id',$request->friend_id)
+            ->whereIn('id',$request->merchant_id)
+            ->update(['user_id'=>$request->user->id]);
 
-            \App\MachineLog::where('user_id',$request->user->id)->whereIn('friend_id',$request->friend_id)->whereIn('merchant_id',$request->merchant_id)->update(['is_back'=>1]);
-    
-            return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
+            if($res){
+
+                $data=\App\MachineLog::where('user_id',$request->user->id)
+                ->whereIn('friend_id',$request->friend_id)
+                ->whereIn('merchant_id',$request->merchant_id)
+                ->update(['is_back'=>1]);
+
+            }
+            
+            if($data){
+
+                return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
+
+            }
         } catch (\Exception $e) {
             
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
@@ -134,8 +147,38 @@ class TransferController extends Controller
     {
         try{
 
-            $data=\App\MachineLog::where('user_id',$request->user->id)->orderBy('created_at','desc')->get();
+            $data=\App\MachineLog::select('nickname','friend_id','merchant_terminal','is_back','merchants_transfer_log.created_at')
+            ->join('busers','busers.id','=','merchants_transfer_log.user_id')
+            ->join('merchants','merchants_transfer_log.merchant_id','=','merchants.id')
+            ->where('merchants_transfer_log.user_id',$request->user->id)
+            ->orderBy('merchants_transfer_log.created_at','desc')
+            ->get()
+            ->toArray();
 
+            $friends_id=[];
+
+            foreach($data as $k=>$v){
+
+                $friends_id[]=$v['friend_id'];
+     
+            }
+            
+            $title = \App\Buser::select('id','nickname')->whereIn('id',$friends_id)->get()->toArray();
+
+            // dd($title);
+            foreach($title as $key=>$value){
+
+                foreach($data as $i=>$p){
+
+                    if($data[$i]['friend_id'] == $value['id']){
+
+                        $data[$i]['friend_name']= $value['nickname'];
+    
+                    }
+                }
+
+            }
+            
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
         
         } catch (\Exception $e) {
