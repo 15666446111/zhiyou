@@ -15,7 +15,7 @@
 @section('content')
 
 <header class="demos-header">
-    <h1 class="demos-title">Register User</h1>
+    <h1 class="demos-title">Register Vip User</h1>
 </header>
 
 <form action="" method="post" name="register" id="register_form">

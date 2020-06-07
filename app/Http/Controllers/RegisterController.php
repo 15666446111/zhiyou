@@ -60,6 +60,31 @@ class RegisterController extends Controller
 
 
     /**
+     * Show the application dashboard.  扫码 填写表单 申请机器
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function extendTemail(Request $request)
+    {
+
+        try{
+
+            $result = Hashids::decode($request->route('code'));
+
+            if(empty($result)) return response()->json(['error'=>['message' => '解密失败!']]);
+
+            return view('register_temail');
+
+        } catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+
+    }
+
+
+    /**
      * [team_in  会员注册 提交数据]
      * @author Pudding
      * @DateTime 2020-04-13T15:52:33+0800
