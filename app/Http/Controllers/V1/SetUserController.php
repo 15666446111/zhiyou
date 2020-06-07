@@ -243,7 +243,7 @@ class SetUserController extends Controller
                     'rate_money'=> $request->money * $request->rate,
                 ]);
     
-                return response()->json(['success'=>['message' => '提现申请提交成功!', 'data' => []]]);
+                return response()->json(['success'=>['message' => '提现申请提交成功!', 'data' => $request->user->wallets]]);
 
             }else{   
                 
