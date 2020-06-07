@@ -48,9 +48,19 @@
 
 </div>
 
+<!-- <div class="weui-cells__tips">请牢记您的注册信息</div> -->
+
+<label for="weuiAgree" class="weui-agree" style="display: hidden">
+      <input id="weuiAgree" type="checkbox" checked="checked" class="weui-agree__checkbox">
+      <span class="weui-agree__text">
+        阅读并同意<a href="javascript:void(0);">《相关条款》</a>
+      </span>
+</label>
+
 
 <div class="weui-btn-area">
     <button class="weui-btn weui-btn_primary" id="Register">立即申请</button>
+   
 </div>
 
 </form>
