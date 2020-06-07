@@ -187,7 +187,7 @@ class RegisterController extends Controller
     {
         try{
 
-            if(!$request->name or !$request->phone or !$request->address)
+            if(!$request->register_name or !$request->register_phone or !$request->register_address)
                 return back()->withErrors(['请填写资料!'])->withInput();
 
             $result = Hashids::decode($request->route('code'));
@@ -207,9 +207,9 @@ class RegisterController extends Controller
 
             // 创建请求
             $NewPost = \App\ApplicationForm::create([
-                'name'      =>  $request->name,
-                'phone'     =>  $request->phone,
-                'address'   =>  $request->address,
+                'name'      =>  $request->register_name,
+                'phone'     =>  $request->register_phone,
+                'address'   =>  $request->register_address,
                 'user_id'   =>  $user->id,
                 'agent_id'  =>  $agent,
             ]);
