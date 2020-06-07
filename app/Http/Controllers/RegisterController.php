@@ -183,7 +183,7 @@ class RegisterController extends Controller
      * @param    Request                  $request [description]
      * @return   [type]                            [description]
      */
-    public function extendTemailIn(RegisterRequest $request)
+    public function extendTemailIn(Request $request)
     {
         try{
 
