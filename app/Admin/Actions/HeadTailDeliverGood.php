@@ -5,9 +5,9 @@ namespace App\Admin\Actions;
 use Encore\Admin\Actions\Action;
 use Illuminate\Http\Request;
 
-class MachineHeadTail extends Action
+class HeadTailDeliverGood extends Action
 {
-    protected $selector = '.machine-head-tail';
+    protected $selector = '.head-tail-deliver-good';
 
     public function handle(Request $request)
     {
@@ -69,7 +69,7 @@ class MachineHeadTail extends Action
     public function html()
     {
         return <<<HTML
-        <a class="btn btn-sm btn-default machine-head-tail"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾补全</a>
+        <a class="btn btn-sm btn-default head-tail-deliver-good"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾补全1</a>
 HTML;
     }
 

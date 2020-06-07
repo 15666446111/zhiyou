@@ -6,22 +6,20 @@ use Throwable;
 use Encore\Admin\Admin;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Imports\ImportMachines as ImportMachine;
+use App\Imports\ImportDeliverGoods as ImportDeliverGood;
 use Encore\Admin\Actions\Action;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Validators\ValidationException;
 
 class ImportDeliverGoods extends Action
 {
-    protected $selector = '.import-machines';
+    protected $selector = '.import-deliver-goods';
 
     public function handle(Request $request)
     {
         try {
 
-            $brand  = $request->brand;
-
-            $result = Excel::toArray(null, request()->file('file'));
+            $result = Excel::toArray(null, request()->file('file1'));
 
             // 只取第一个Sheet
             if (count($result[0]) > 0) 
@@ -46,14 +44,11 @@ class ImportDeliverGoods extends Action
                 // 差集
                 $InsertData = array_diff($data, $eplice);
 
-                foreach ($InsertData as $key => $value) {
-                    \App\Merchant::create([
-                        'merchant_terminal' =>  $value,
-                        'brand_id'          =>  $brand,
-                    ]);
+                foreach ($epliceRows as $key => $value) {
+                    // 循环配送
                 }
 
-                return $this->response()->success('入库成功, 入库'.count($InsertData).'台!')->refresh();
+                return $this->response()->success('配送成功, 配送'.count($epliceRows).'台!')->refresh();
 
             } else  return $this->response()->success('无数据!')->refresh();
 
@@ -67,8 +62,6 @@ class ImportDeliverGoods extends Action
 
             return $this->response()->swal()->error($throwable->getMessage());
         }
-
-        return $this->response()->success('导入成功!')->refresh();
     }
 
     /**
@@ -80,7 +73,7 @@ class ImportDeliverGoods extends Action
     public function html()
     {
         return <<<HTML
-        <a class="btn btn-sm btn-default import-machines" style="position:absolute;  right: 350px;"><i class="fa fa-upload" style="margin-right: 3px;"></i>导入发货</a>
+        <a class="btn btn-sm btn-default import-deliver-goods" style="position:absolute;  right: 350px;"><i class="fa fa-upload" style="margin-right: 3px;"></i>导入发货</a>
 HTML;
     }
 
@@ -92,14 +85,14 @@ HTML;
      */
     public function form()
     {
-        $user = \App\Buser::pluck('nickname as name','id');
+        $user = \App\Buser::pluck('account as name','id');
         $this->select('user', '配送会员')->options($user)->rules('required', ['required' => '请选择品牌']);
 
 
         $policy = \App\Policy::where('active', '1')->pluck('title as name','id');
         $this->select('policy', '政策活动')->options($policy)->rules('required', ['required' => '请选择品牌']);
 
-        $this->file('file', '上传导入模版')->rules('required', ['required' => '文件不能为空']);
+        $this->file('file1', '上传导入模版')->rules('required', ['required' => '文件不能为空']);
     }
 
 

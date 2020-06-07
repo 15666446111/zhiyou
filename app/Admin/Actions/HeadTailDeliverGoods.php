@@ -2,12 +2,14 @@
 
 namespace App\Admin\Actions;
 
+use Throwable;
+use Encore\Admin\Admin;
 use Encore\Admin\Actions\Action;
 use Illuminate\Http\Request;
 
 class HeadTailDeliverGoods extends Action
 {
-    protected $selector = '.machine-head-tail';
+    protected $selector = '.head-tail-deliver-goods';
 
     public function handle(Request $request)
     {
@@ -65,7 +67,7 @@ class HeadTailDeliverGoods extends Action
     public function html()
     {
         return <<<HTML
-        <a class="btn btn-sm btn-default machine-head-tail" style="position:absolute;  right: 250px;"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾发货</a>
+        <a class="btn btn-sm btn-default head-tail-deliver-goods" style="position:absolute;  right: 250px;"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾发货</a>
 HTML;
     }
 
