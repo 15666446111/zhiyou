@@ -118,6 +118,7 @@ class MerchantsController extends Controller
         $dateType   = $request->data_type ?? 'day';
 
         if($dateType == 'day'){
+            
             $date  		= $request->date ?? Carbon::today()->toDateTimeString();
         }else
             $date       = $request->date ?? Carbon::today()->toDateTimeString();

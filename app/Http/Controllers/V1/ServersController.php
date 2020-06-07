@@ -29,7 +29,7 @@ class ServersController
     /**
      * 初始化数据  查询条件
      */
-    public function __construct($Type,$user)
+    public function __construct($Type, $user)
     {
         $this->Type = $Type;
 
@@ -42,12 +42,10 @@ class ServersController
         }else if($this->Type == "friends"){
     
             $this->users   = \App\BuserParent::where('parents', 'like', "%\_".$this->Users->id."\_%")->pluck('user_id')->toArray();
-            // dd($this->users);
-            $this->users[] = $this->Users->id;
             
         }else{
 
-            $this->users   = \App\Buser::where('parent', 'like', '%\_'.$this->Users->id.'\_%')->orWhere('id',$this->Users->id)->pluck('id')->toArray();
+            $this->users   = \App\BuserParent::where('parents', 'like', '%\_'.$this->Users->id.'\_%')->pluck('user_id')->toArray();
             $this->users[] = $this->Users->id;
 
         }
@@ -65,14 +63,11 @@ class ServersController
 
         $arrs['AllMerchants'] = $this->getAllMerchants();
 
-
         $arrs['Bound']        = $this->getBound();
 
         $arrs['UnBound']      = $this->getUnBound();
 
         $arrs['Bind']         = $this->getBind();
-
-
 
         return $arrs;
     }
