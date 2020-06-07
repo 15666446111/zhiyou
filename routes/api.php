@@ -209,7 +209,7 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getAgentMerchant', 'V1\AgentController@getAgentDetail');
     Route::middleware('AuthToken')->get('/getAgentTeam',     'V1\AgentController@getAgentTeamDetail');
     Route::middleware('AuthToken')->get('/getAgentTemail',   'V1\AgentController@getAgentTemail');
-
+    Route::middleware('AuthToken')->get('/getAgentActive',   'V1\AgentController@getAgentActive');
 
     /**
      * @version [<汇付方交易推送地址>] [<description>]

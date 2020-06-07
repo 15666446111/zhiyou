@@ -90,7 +90,7 @@ class PolicyController extends Controller
             foreach ($policy->sett_price as $key => $value) {
                 $arrs['trade_price']['list'][] = [
                     'name' => $value['trade_name'],
-                    'rate' => $value['setprice'],
+                    'rate' => $value['defaultPrice'],
                     'max'  => $this->getSetPriceMax($policy, $value['trade_type'], $value['trade_bank']),
                     'min'  => $this->getSetPriceMin($request->user, $policy, $value['trade_type'], $value['trade_bank']),   
                 ];
