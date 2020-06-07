@@ -29,7 +29,7 @@ class ShareController extends AdminController
         $grid->column('id', __('索引'));
         $grid->column('title', __('分享标题'));
         $grid->column('image', __('分享素材'));
-        $grid->column('type', __('分享类型'));
+        $grid->column('types.name', __('分享类型'))->label();
         $grid->column('share_text', __('分享文案'));
         $grid->column('code_width', __('二维码宽度'));
         $grid->column('code_height', __('二维码高度'));
@@ -80,13 +80,13 @@ class ShareController extends AdminController
 
         $form->text('title', __('分享标题'));
         $form->image('image', __('分享素材'));
-        $form->number('type', __('分享类型'));
+        $form->select('type', __('分享类型'))->options(\App\ShareType::get()->pluck('name', 'id'));
         $form->text('share_text', __('分享文案'));
         $form->number('code_width', __('二维码宽度'))->default(100);
         $form->number('code_height', __('二维码高度'))->default(100);
-        $form->number('code_margin', __('二维码边距'));
-        $form->number('pos_x', __('X轴定位'));
-        $form->number('pos_y', __('Y轴定位'));
+        $form->number('code_margin', __('二维码边距'))->default(0);
+        $form->number('pos_x', __('X轴定位'))->default(200);
+        $form->number('pos_y', __('Y轴定位'))->default(700);
         $form->switch('active', __('活动状态'))->default(1);
 
         return $form;
