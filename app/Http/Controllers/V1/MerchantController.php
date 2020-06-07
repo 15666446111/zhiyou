@@ -50,22 +50,20 @@ class MerchantController extends Controller
 				$data['friend']['Merchant'] =0;
 				$data['friend']['Merchant_status'] = 0;
 				$data['friend']['standard_statis'] =0;
-			}
-
-			foreach($userAll as $k=>$v){
-
+			}else{
 				//获取伙伴机器总数
-				$data['friend']['all'] = \App\Merchant::where('user_id', $v)->count();
+				$data['friend']['all'] = \App\Merchant::whereIn('user_id', $userAll)->count();
 				//获取伙伴未绑定机器总数
-				$data['friend']['NoMerchant'] = \App\Merchant::where('user_id', $v)->where('bind_status', '0')->count();
+				$data['friend']['NoMerchant'] = \App\Merchant::whereIn('user_id', $userAll)->where('bind_status', '0')->count();
 				//查询伙伴已绑定机器总数
-				$data['friend']['Merchant'] = \App\Merchant::where('user_id', $v)->where('bind_status', '1')->count();
+				$data['friend']['Merchant'] = \App\Merchant::whereIn('user_id', $userAll)->where('bind_status', '1')->count();
 				//查询伙伴已激活机器总数
-				$data['friend']['Merchant_status'] = \App\Merchant::where('user_id', $v)->where('active_status', '1')->count();
+				$data['friend']['Merchant_status'] = \App\Merchant::whereIn('user_id', $userAll)->where('active_status', '1')->count();
 				//查询伙伴已达标机器总数
-				$data['friend']['standard_statis'] = \App\Merchant::where('user_id', $v)->where('standard_statis', '1')->count();
-
+				$data['friend']['standard_statis'] = \App\Merchant::whereIn('user_id', $userAll)->where('standard_statis', '1')->count();
 			}
+
+
 			
 			//获取用户机器总数
 			$data['user']['all'] = \App\Merchant::where('user_id', $request->user->id)->count();
