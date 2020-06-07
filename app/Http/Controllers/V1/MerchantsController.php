@@ -112,24 +112,30 @@ class MerchantsController extends Controller
      */
     public function MerchantDetails(Request $request)
     {
-        //参数 终端号
-        $merchant = $request->merchant;
 
-        $dateType   = $request->data_type ?? 'day';
-
-        if($dateType == 'day'){
-            
-            $date  		= $request->date ?? Carbon::today()->toDateTimeString();
-        }else
-            $date       = $request->date ?? Carbon::today()->toDateTimeString();
-
-        if(!$merchant){
+        if(!$request->merchant){
             return response()->json(['error'=>['message' => '终端号无效']]);
         }
 
-        $server = new \App\Http\Controllers\V1\MerchantMoneyController($merchant,$dateType,$date);
+        switch ($request->data_type) {
+            case 'month':
+                $StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
+                break;
+            case 'day':
+                $StartTime = Carbon::today()->toDateTimeString();
+                break;
+            case 'count':
+                $StartTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->toDateTimeString();
+                break;
+            default:
+                $StartTime = Carbon::today()->toDateTimeString();
+                break;
+        }
 
-        $data   = $server->getInfo();
+        $EndTime = Carbon::now()->toDateTimeString();
+
+        $data = \App\Trade::select('card_type','card_number','trade_type','money','trade_time','trade_status')->where('terminal', $request->merchant)->whereBetween('created_at', [ $StartTime,  $EndTime])->get();
+
 
 		return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
 
