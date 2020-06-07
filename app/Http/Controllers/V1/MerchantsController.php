@@ -45,7 +45,7 @@ class MerchantsController extends Controller
 
 
             foreach ($bind as $key => $value) {
-                $arrs['Bound'][] = array([
+                $arrs['Bound'][] = array(
                     'id'                =>  $value->id,
                     'merchant_name'     =>  $value->merchant_name,
                     'merchant_number'   =>  $value->merchant_number,
@@ -55,14 +55,14 @@ class MerchantsController extends Controller
                     'bind_time'         =>  $value->bind_time,
                     'active_time'       =>  $value->active_time,
                     'time'              =>  $value->bind_time ?? $value->active_time
-                ])
+                );
             }
             
             
             $UnBind =\App\Merchant::where('user_id', $request->user->id)->where('bind_status', '0')->get();
             
             foreach ($UnBind as $key => $value) {
-                $arrs['UnBound'][] = array([
+                $arrs['UnBound'][] = array(
                     'id'                =>  $value->id,
                     'merchant_name'     =>  $value->merchant_name,
                     'merchant_number'   =>  $value->merchant_number,
@@ -72,7 +72,7 @@ class MerchantsController extends Controller
                     'bind_time'         =>  $value->bind_time,
                     'active_time'       =>  $value->active_time,
                     'time'              =>  $value->bind_time ?? $value->active_time
-                ])
+                );
             }
             
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $arrs]]); 
