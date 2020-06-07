@@ -200,6 +200,14 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->post('/getTradeDetail', 'V1\TradeController@getDetail');
 
 
+    /**
+     * @version [<APP 获取机具活动详情>] [<description>]
+     * @return  [机具的达标返现与交易情况]   [<description>]
+     * @version [<机具的达标返现情况] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getTerminalActiveDetail', 'V1\TerminalController@getActiveDetail');
+
+
 
     /**
      * @version [<APP 获取某代理的商户分布情况 >] [<description>]

@@ -119,8 +119,10 @@ class BuserController extends AdminController
         $form->text('realname', __('真实姓名'));
         $form->mobile('phone', __('用户手机'));
         $form->text('headimg', __('头像图片'));
+
         $form->number('parent', __('上级ID'))->default(0);
-        $form->number('group', __('用户级别'));
+        
+        $form->select('group', __('用户级别'))->options(\App\UserGroup::get()->pluck('name', 'id'));
 
         $form->switch('active', __('活动状态'))->default(1);
 
