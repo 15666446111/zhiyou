@@ -51,15 +51,14 @@ class ProductController extends AdminController
     {
         $show = new Show(Product::findOrFail($id));
 
-        $show->field('id', __('Id'));
-        $show->field('title', __('Title'));
-        $show->field('image', __('Image'));
-        $show->field('active', __('Active'));
-        $show->field('type', __('Type'));
-        $show->field('price', __('Price'));
-        $show->field('content', __('Content'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+        $show->field('title', __('产品标题'));
+        $show->field('image', __('缩略图'));
+        $show->field('active', __('状态'));
+        $show->field('type', __('品牌'));
+        $show->field('price', __('价格'));
+        $show->field('content', __('内容'));
+        $show->field('created_at', __('创建时间'));
+        $show->field('updated_at', __('修改时间'));
 
         return $show;
     }
@@ -73,12 +72,12 @@ class ProductController extends AdminController
     {
         $form = new Form(new Product());
 
-        $form->text('title', __('Title'));
-        $form->image('image', __('Image'));
-        $form->switch('active', __('Active'))->default(1);
-        $form->switch('type', __('Type'));
-        $form->number('price', __('Price'));
-        $form->textarea('content', __('Content'));
+        $form->text('title', __('产品标题'));
+        $form->image('image', __('缩略图'));
+        $form->switch('active', __('状态'))->default(1);
+        $form->select('type', __('品牌'))->options(\App\Brand::where('active', '1')->get()->pluck('brand_name', 'id'));
+        $form->number('price', __('价格'));
+        $form->UEditor('content', __('内容'));
 
         return $form;
     }
