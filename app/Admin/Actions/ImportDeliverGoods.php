@@ -19,6 +19,12 @@ class ImportDeliverGoods extends Action
     {
         try {
 
+            if(!$request->policy)
+                return $this->response()->swal()->error('请选择活动政策');
+
+            if(!$request->user)
+                return $this->response()->swal()->error('请选择配送用户');
+
             $result = Excel::toArray(null, request()->file('file1'));
 
             // 只取第一个Sheet
@@ -44,9 +50,41 @@ class ImportDeliverGoods extends Action
                 // 差集
                 $InsertData = array_diff($data, $eplice);
 
-                foreach ($epliceRows as $key => $value) {
-                    // 循环配送
+                \App\Merchant::whereIn('merchant_terminal', $epliceRows)->whereNull('user_id')->update([
+                    'user_id'   => $request->user,
+                    'policy_id' => $request->policy,
+                ]);
+
+                /*
+                    检查该会员在该政策下是否有结算激活等配置。如果没有 进行默认该政策配置
+                */
+                $userPolicy  = \App\UserPolicy::where('user_id', $request->user)->where('policy_id', $request->policy)->first();
+
+                if(!$userPolicy or empty($userPolicy)){
+
+                    $policy = \App\Policy::where('id', $request->policy)->first();
+
+                    $sett_price = $policy['sett_price'];
+
+                    foreach ($sett_price as $key => $value) {
+                        $sett_price[$key]['setprice'] = $value['defaultPrice'];
+                    }
+
+                    $default_active_set = $policy['default_active_set'];
+                    $default_active_set['return_money'] = $default_active_set['default_money'];
+
+                    $vip_active_set = $policy['vip_active_set'];
+                    $vip_active_set['return_money'] = $vip_active_set['default_money'];
+
+                    \App\UserPolicy::create([
+                        'user_id'       =>  $request->user,
+                        'policy_id'     =>  $request->policy,
+                        'sett_price'    =>  $policy->sett_price,
+                        'default_active_set'    => $default_active_set,
+                        'vip_active_set'        => $vip_active_set,
+                    ]);
                 }
+
 
                 return $this->response()->success('配送成功, 配送'.count($epliceRows).'台!')->refresh();
 

@@ -47,10 +47,41 @@ class HeadTailDeliverGoods extends Action
             }
 
 
-            \App\Merchant::whereIn('merchant_terminal', $data)->where('bind_status', '0')->update([
+            \App\Merchant::whereIn('merchant_terminal', $data)->where('bind_status', '0')->whereNull('user_id')->update([
                 'user_id'   =>  $request->user,
                 'policy_id' =>  $request->policy
             ]);
+
+
+            /*
+                检查该会员在该政策下是否有结算激活等配置。如果没有 进行默认该政策配置
+            */
+            $userPolicy  = \App\UserPolicy::where('user_id', $request->user)->where('policy_id', $request->policy)->first();
+
+            if(!$userPolicy or empty($userPolicy)){
+
+                $policy = \App\Policy::where('id', $request->policy)->first();
+
+                $sett_price = $policy['sett_price'];
+
+                foreach ($sett_price as $key => $value) {
+                    $sett_price[$key]['setprice'] = $value['defaultPrice'];
+                }
+
+                $default_active_set = $policy['default_active_set'];
+                $default_active_set['return_money'] = $default_active_set['default_money'];
+
+                $vip_active_set = $policy['vip_active_set'];
+                $vip_active_set['return_money'] = $vip_active_set['default_money'];
+
+                \App\UserPolicy::create([
+                    'user_id'       =>  $request->user,
+                    'policy_id'     =>  $request->policy,
+                    'sett_price'    =>  $policy->sett_price,
+                    'default_active_set'    => $default_active_set,
+                    'vip_active_set'        => $vip_active_set,
+                ]);
+            }
 
             return $this->response()->success('发货成功')->refresh();
 
