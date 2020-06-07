@@ -25,7 +25,7 @@
     <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" type="tel" placeholder="请输入您的手机号" name="register_phone" 
+            <input class="weui-input" type="tel" placeholder="请输入您的手机号" name="phone" 
                 value="{{old('register_phone')}}">
         </div>
     </div>
@@ -34,7 +34,7 @@
     <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" type="text" placeholder="请输入您的姓名" name="register_name">
+            <input class="weui-input" type="text" placeholder="请输入您的姓名" name="name">
         </div>
     </div>
 
@@ -42,7 +42,7 @@
     <div class="weui-cell">
         <div class="weui-cell__hd"><label class="weui-label">地址</label></div>
         <div class="weui-cell__bd">
-            <input class="weui-input" type="text" placeholder="请输入您的地址" name="register_address">
+            <input class="weui-input" type="text" placeholder="请输入您的地址" name="address">
         </div>
     </div>
 
