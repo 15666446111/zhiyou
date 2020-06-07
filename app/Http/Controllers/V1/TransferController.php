@@ -88,6 +88,7 @@ class TransferController extends Controller
             
             $data = \App\Merchant::select('id','merchant_terminal','merchant_sn')
             ->whereIn('id',$list)
+            ->where('policy_id',$request->policy_id)
             ->where('active_status',0)
             ->where('bind_status',0)
             ->get()
