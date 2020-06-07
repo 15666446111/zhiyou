@@ -114,11 +114,24 @@ class TransferController extends Controller
 
         try{
 
-            $res=\App\Merchant::whereIn('user_id',$request->friend_id)->whereIn('id',$request->merchant_id)->update(['user_id'=>$request->user->id]);
+            $res=\App\Merchant::whereIn('user_id',$request->friend_id)
+            ->whereIn('id',$request->merchant_id)
+            ->update(['user_id'=>$request->user->id]);
 
-            \App\MachineLog::where('user_id',$request->user->id)->whereIn('friend_id',$request->friend_id)->whereIn('merchant_id',$request->merchant_id)->update(['is_back'=>1]);
-    
-            return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
+            if($res){
+
+                $data=\App\MachineLog::where('user_id',$request->user->id)
+                ->whereIn('friend_id',$request->friend_id)
+                ->whereIn('merchant_id',$request->merchant_id)
+                ->update(['is_back'=>1]);
+
+            }
+            
+            if($data){
+
+                return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
+
+            }
         } catch (\Exception $e) {
             
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
@@ -134,8 +147,34 @@ class TransferController extends Controller
     {
         try{
 
-            $data=\App\MachineLog::where('user_id',$request->user->id)->orderBy('created_at','desc')->get();
+            $data=\App\MachineLog::select('nickname','friend_id','merchant_terminal')
+            ->join('busers','busers.id','=','merchants_transfer_log.user_id')
+            ->join('merchants','merchants_transfer_log.merchant_id','=','merchants.id')
+            ->where('merchants_transfer_log.user_id',$request->user->id)
+            ->orderBy('merchants_transfer_log.created_at','desc')
+            ->get()
+            ->toArray();
 
+            foreach($data as $k=>$v){
+                
+                $title = \App\Buser::select('id','nickname')->where('id',$v['friend_id'])->get()->toArray();
+                
+
+            }
+            
+            foreach($title as $key=>$value){
+
+                foreach($data as $i=>$p){
+
+                    if($data[$i]['friend_id'] == $value['id']){
+
+                        $data[$i]['friend_name']= $value['nickname'];
+    
+                    }
+                }
+
+            }
+            
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
         
         } catch (\Exception $e) {
