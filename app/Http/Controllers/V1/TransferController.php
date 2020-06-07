@@ -19,8 +19,8 @@ class TransferController extends Controller
             $list = \App\Merchant::select('id','merchant_terminal','merchant_sn')
             ->where('user_id','=',$request->user->id)
             ->where('policy_id','=',$request->policy_id)
-            ->where('active_status','!=',1)
-            ->where('bind_status','!=',1)
+            ->where('active_status','<>',1)
+            ->where('bind_status','=',0)
             ->get()
             ->toArray();
 
