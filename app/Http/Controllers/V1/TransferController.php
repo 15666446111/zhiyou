@@ -15,12 +15,15 @@ class TransferController extends Controller
     {
 
         // try{
+            if(!$request->policy_id)  
+                return response()->json(['error'=>['message' => '请选择政策活动!']]);
+
             //获取该用户该政策下未绑定未激活终端机器
             $list = \App\Merchant::select('id','merchant_terminal','merchant_sn')
-            ->where('user_id','=',$request->user->id)
-            ->where('policy_id','=',$request->policy_id)
-            ->where('active_status','!=',1)
-            ->where('bind_status','!=',1)
+            ->where('user_id',  '=', $request->user->id)
+            ->where('policy_id','=', $request->policy_id)
+            ->where('active_status','!=', 1)
+            ->where('bind_status','!=', 1)
             ->get()
             ->toArray();
 
