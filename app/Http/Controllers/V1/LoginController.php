@@ -54,6 +54,13 @@ class LoginController extends Controller
 
         try{
 
+
+            if($request->password !== $request->password1){
+
+                return response()->json(['error'=>['message' => '请保持密码一致']]);
+
+            }
+
             if($request->code !== '8888'){
                 
                 return response()->json(['error'=>['message' => '验证码错误']]);
