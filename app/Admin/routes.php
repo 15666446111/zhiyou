@@ -59,5 +59,8 @@ Route::group([
     $router->resource('policies', PolicyController::class);
     // 用户政策活动信息
     $router->resource('user-policies', UserPolicyController::class);
+
+
+    //表单申请机器
+    $router->resource('application-forms', ApplicationFormController::class);
 });
-http://wk.changhuoban.com/admin

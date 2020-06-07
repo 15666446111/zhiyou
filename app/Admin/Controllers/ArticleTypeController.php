@@ -36,6 +36,13 @@ class ArticleTypeController extends AdminController
 
         $grid->column('updated_at', __('修改时间'))->date('Y-m-d H:i:s');
 
+        $grid->actions(function ($actions) {
+            if($actions->getKey() <= 3){
+                $actions->disableDelete();
+                $actions->disableEdit();
+            }
+        });
+        
         $grid->batchActions(function ($batch) {
             $batch->disableDelete();
         });

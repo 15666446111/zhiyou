@@ -30,6 +30,18 @@ class ShareTypeController extends AdminController
         $grid->column('name', __('类型'));
         $grid->column('created_at', __('创建时间'));
         $grid->column('updated_at', __('修改时间'));
+        
+
+        $grid->actions(function ($actions) {
+            if($actions->getKey() <= 4){
+                $actions->disableDelete();
+                $actions->disableEdit();
+            }
+        });
+        
+        $grid->batchActions(function ($batch) {
+            $batch->disableDelete();
+        });
 
         return $grid;
     }
