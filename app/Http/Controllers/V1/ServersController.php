@@ -84,8 +84,7 @@ class ServersController
     {
         $users = $this->users;
 
-        $select = \App\Trade::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.active_time','merchants.bind_time','merchants.policy_id')
-        ->join('merchants','merchants.merchant_sn','=','trades.merchant_sn')
+        $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.active_time','merchants.bind_time','merchants.policy_id')
         ->whereIn('merchants.user_id',$users)
         ->get()
         ->toArray();
@@ -109,7 +108,6 @@ class ServersController
         $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.bind_time','merchants.policy_id')
-        ->join('trades','merchants.merchant_sn','=','trades.merchant_sn')
         ->whereIn('merchants.user_id',$users)
         ->where('bind_status',1)
         ->get()
@@ -134,7 +132,6 @@ class ServersController
         $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.bind_status','merchants.active_status','merchants.policy_id')
-        ->join('trades','merchants.merchant_sn','=','trades.merchant_sn')
         ->whereIn('merchants.user_id',$users)
         ->where('bind_status',0)
         ->get()
@@ -159,7 +156,6 @@ class ServersController
         $users = $this->users;
 
         $select = \App\Merchant::select('merchants.merchant_sn','merchants.active_status','merchants.policy_id')
-        ->join('trades','merchants.merchant_sn','=','trades.merchant_sn')
         ->whereIn('merchants.user_id',$users)
         ->where('active_status',1)
         ->get()
