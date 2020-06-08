@@ -150,7 +150,7 @@ class SetUserController extends Controller
     {
         try{ 
 
-            if(!$request->is_default){
+            if(empty($request->is_default || $request->is_default == 0)){
 
                 \App\Bank::where('user_id',$request->user->id)->update([
                     'name'=>$request->name,
@@ -163,7 +163,7 @@ class SetUserController extends Controller
 
             }else{
 
-                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update(['is_default'=>0]);
+                \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
 
                 \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
                     'name'=>$request->name,
