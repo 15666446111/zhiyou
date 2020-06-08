@@ -204,7 +204,7 @@ class SetUserController extends Controller
             $timeEnd1    = strtotime($checkDayStr."21:00".":00");
             
             $curr_time   = time();
-
+            
             //判断是否在这个时间段内提现
             if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
             {
