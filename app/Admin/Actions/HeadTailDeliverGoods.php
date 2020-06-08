@@ -98,7 +98,7 @@ class HeadTailDeliverGoods extends Action
     public function html()
     {
         return <<<HTML
-        <a class="btn btn-sm btn-default head-tail-deliver-goods" style="position:absolute;  right: 250px;"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾发货</a>
+        <a class="btn btn-sm btn-default head-tail-deliver-goods"><i class="fa fa-balance-scale" style="margin-right: 3px;"></i>首尾发货</a>
 HTML;
     }
 

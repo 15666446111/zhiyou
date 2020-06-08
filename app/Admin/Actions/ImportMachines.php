@@ -80,7 +80,7 @@ class ImportMachines extends Action
     public function html()
     {
         return <<<HTML
-        <a class="btn btn-sm btn-default import-machines"><i class="fa fa-upload" style="margin-right: 3px;"></i>导入仓库</a>
+        <a class="btn btn-sm btn-default import-machines" style="position:absolute;  right: 350px;"><i class="fa fa-upload" style="margin-right: 3px;"></i>导入仓库</a>
 HTML;
     }
 

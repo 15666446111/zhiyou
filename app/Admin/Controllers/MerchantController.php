@@ -43,8 +43,26 @@ class MerchantController extends AdminController
         $grid->column('user_phone', __('电话号码'));
         $grid->column('bind_status', __('绑定'))->bool();
         $grid->column('bind_time', __('绑定时间'));
+        $grid->column('active_status', __('激活'))->bool();
+        $grid->column('active_time', __('激活时间'));        
         $grid->column('created_at', __('创建时间'));
         //$grid->column('updated_at', __('Updated at'));
+
+        $grid->filter(function ($filter) {
+            // 去掉默认的id过滤器
+            $filter->disableIdFilter();
+
+            $filter->column(1/3, function ($filter) {
+                $filter->like('merchant_terminal', '终端编号');
+            });
+            $filter->column(1/3, function ($filter) {
+                $filter->like('merchant_name', '商户名称');
+            });
+            $filter->column(1/3, function ($filter) {
+                $filter->equal('bind_status', '商户名称')->select(['0' => '未绑定', '1' => '已绑定']);
+            });
+
+        });
 
         $grid->actions(function ($actions) {
             // 去掉删除 编辑

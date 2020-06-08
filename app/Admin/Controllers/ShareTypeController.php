@@ -60,6 +60,35 @@ class ShareTypeController extends AdminController
         $show->field('created_at', __('创建时间'));
         $show->field('updated_at', __('修改时间'));
 
+        $show->shares('素材列表', function ($shares) {
+
+            $shares->setResource('/admin/shares');
+            
+            $shares->model()->latest();
+            
+            $shares->id('索引')->sortable();
+
+            $shares->title('标题');
+
+            $shares->share_text('分享文案');
+
+            $shares->image('图片')->image('', 100, 30);
+
+            $shares->active('状态')->bool()->sortable();
+
+            $shares->created_at('创建时间')->date('Y-m-d H:i:s');
+
+            $shares->filter(function ($filter) {
+                $filter->like('title', '标题');
+            });
+        });
+
+
+        $show->panel()->tools(function ($tools) {
+            $tools->disableEdit();
+            $tools->disableDelete();
+        });
+
         return $show;
     }
 

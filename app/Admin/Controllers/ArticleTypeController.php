@@ -85,8 +85,14 @@ class ArticleTypeController extends AdminController
             $articles->created_at('创建时间')->date('Y-m-d H:i:s');
 
             $articles->filter(function ($filter) {
-                $filter->like('title');
+                $filter->like('title', '标题');
             });
+
+        });
+
+        $show->panel()->tools(function ($tools) {
+            $tools->disableEdit();
+            $tools->disableDelete();
         });
 
         return $show;
