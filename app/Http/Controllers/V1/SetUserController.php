@@ -42,6 +42,12 @@ class SetUserController extends Controller
     public function insertBank(Request $request)
     {
         try{ 
+
+            if($request->is_default == 1){
+
+                \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
+
+            }
             
             \App\Bank::create([
                 'user_id'=>$request->user->id,
@@ -51,7 +57,7 @@ class SetUserController extends Controller
                 'number'=>$request->number,
                 'open_bank'=>$request->open_bank,
                 'is_del'=>0,
-                'is_default'=>0
+                'is_default'=>$request->is_default
             ]);
 
             return response()->json(['success'=>['message' => '添加成功!', []]]); 
