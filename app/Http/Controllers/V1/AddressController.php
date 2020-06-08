@@ -13,6 +13,10 @@ class AddressController extends Controller
     public function address(Request $request)
     {
         try{ 
+
+            if($request->is_default=='1'){
+                $data=\App\Address::where('user_id',$request->user->id)->update(['is_default'=>0]);
+            }
             
             $data=\App\Address::create([
                 'user_id'=>$request->user->id,
@@ -24,6 +28,7 @@ class AddressController extends Controller
                 'detail'=>$request->detail,
                 'is_default'=>$request->is_default ?? '0',  
             ]); 
+            
             if($data){
 
                 return response()->json(['success'=>['message' => '添加成功!', 'data' => []]]); 
