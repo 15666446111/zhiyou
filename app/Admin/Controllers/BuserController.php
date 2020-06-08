@@ -26,16 +26,22 @@ class BuserController extends AdminController
     {
         $grid = new Grid(new Buser());
 
-        $grid->column('id', __('索引'));
+        $grid->model()->latest();
+
+        $grid->column('id', __('索引'))->sortable();
         $grid->column('nickname', __('昵称'));
         $grid->column('account', __('账号'));
         $grid->column('realname', __('姓名'));
         $grid->column('phone', __('手机号'));
         $grid->column('headimg', __('头像图片'));
         $grid->column('groups.name', __('级别'))->label();
-        $grid->column('wallets.cash_blance', __('分润余额'))->label();
-        $grid->column('wallets.return_blance', __('返现余额'))->label();
-        $grid->column('wallets.blance_active', __('钱包状态'))->bool();
+        $grid->column('wallets.cash_blance', __('分润余额'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('info');
+        $grid->column('wallets.return_blance', __('返现余额'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('warning');
+        $grid->column('wallets.blance_active', __('钱包'))->bool();
         $grid->column('active', __('状态'))->bool();
         $grid->column('last_ip', __('最后登录IP'));
         $grid->column('last_time', __('最后登录时间'));
@@ -91,15 +97,69 @@ class BuserController extends AdminController
         $show->field('headimg', __('用户头像'));
         $show->field('parent', __('上级会员'));
         $show->field('group', __('用户级别'));
-        $show->field('blance', __('用户余额'));
-        $show->field('score', __('用户积分'));
+
         $show->field('active', __('用户状态'));
-        $show->field('blance_active', __('钱包状态'));
-        $show->field('blance_bak', __('冻结说明'));
+
         $show->field('last_ip', __('最后登录地址'));
+
         $show->field('last_time', __('最后登录时间'));
+
         $show->field('created_at', __('创建时间'));
+
         $show->field('updated_at', __('修改时间'));
+
+
+        $show->merchants('机具详情', function ($merchants) {
+
+            $merchants->setResource('/admin/merchants');
+            
+            //$merchants->model()->latest();
+            
+            $merchants->id('索引')->sortable();
+
+            $merchants->column('merchant_terminal', __('终端编号'));
+
+            $merchants->column('brands.brand_name', __('终端品牌'));
+
+            $merchants->column('policys.title', __('政策活动'));
+
+            $merchants->column('merchant_number', __('商户编号'));
+
+            $merchants->column('merchant_name', __('商户名称'));
+
+            $merchants->column('user_phone', __('电话号码'));
+
+            $merchants->column('bind_status', __('绑定'))->bool();
+
+            $merchants->column('bind_time', __('绑定时间'))->sortable();
+
+            $merchants->column('active_status', __('激活'))->bool();
+
+            $merchants->column('active_time', __('激活时间'))->sortable();
+
+            $merchants->created_at('创建时间')->date('Y-m-d H:i:s');
+
+            $merchants->filter(function ($filter) {
+                // 去掉默认的id过滤器
+                $filter->disableIdFilter();
+
+                $filter->column(1/3, function ($filter) {
+                    $filter->like('merchant_terminal', '终端编号');
+                });
+                $filter->column(1/3, function ($filter) {
+                    $filter->like('merchant_name', '商户名称');
+                });
+                $filter->column(1/3, function ($filter) {
+                    $filter->equal('bind_status', '商户名称')->select(['0' => '未绑定', '1' => '已绑定']);
+                });
+
+            });
+        });
+
+
+        $show->panel()->tools(function ($tools) {
+            $tools->disableDelete();
+        });
 
         return $show;
     }
