@@ -36,6 +36,7 @@ class MerchantController extends AdminController
         $grid->column('id', __('索引'));
         $grid->column('busers.nickname', __('归属会员'));
         $grid->column('merchant_terminal', __('终端编号'));
+        $grid->column('merchant_sn', __('终端SN'));
         $grid->column('brands.brand_name', __('终端品牌'));
         $grid->column('policys.title', __('政策活动'));
         $grid->column('merchant_number', __('商户编号'));
@@ -122,7 +123,7 @@ class MerchantController extends AdminController
     {
         $form = new Form(new Merchant());
 
-        $form->text('merchant_terminal', __('终端编号'));
+        $form->text('merchant_sn', __('终端SN'));
 
         $form->select('brand_id', __('所属品牌'))->options(\App\Brand::where('active', '1')->get()->pluck('brand_name', 'id'));
 

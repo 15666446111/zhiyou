@@ -118,8 +118,8 @@ HTML;
         $policy = \App\Policy::where('active', '1')->pluck('title as name','id');
         $this->select('policy', '政策活动')->options($policy)->rules('required', ['required' => '请选择品牌']);
 
-        $this->text('head', '机具首行终端号')->rules('required', ['required' => '首行不能为空']);
+        $this->text('head', '机具首行终端sn')->rules('required', ['required' => '首行不能为空']);
 
-        $this->text('tail', '机具尾行终端号')->rules('required', ['required' => '尾行不能为空']);
+        $this->text('tail', '机具尾行终端sn')->rules('required', ['required' => '尾行不能为空']);
     }
 }

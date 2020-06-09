@@ -22,6 +22,7 @@ class VerifyCsrfToken extends Middleware
         /**
          * @version 解除推送交易数据的csrf验证 汇开店plus推送
          */
-        '/trade'
+        '/trade',
+        '/trade1',
     ];
 }

@@ -49,7 +49,7 @@ class MachineHeadTail extends Action
 
             foreach ($InsertData as $key => $value) {
                 \App\Merchant::create([
-                    'merchant_terminal' =>  $value,
+                    'merchant_sn'       =>  $value,
                     'brand_id'          =>  $request->f_brand,
                 ]);
             }
@@ -86,8 +86,8 @@ HTML;
 
         $this->select('f_brand', '机具品牌')->options($Brand)->rules('required', ['required' => '请选择品牌']);
 
-        $this->text('f_head', '机具首行终端号')->rules('required', ['required' => '首行不能为空']);
+        $this->text('f_head', '机具首行终端sn')->rules('required', ['required' => '首行不能为空']);
 
-        $this->text('f_tail', '机具尾行终端号')->rules('required', ['required' => '尾行不能为空']);
+        $this->text('f_tail', '机具尾行终端sn')->rules('required', ['required' => '尾行不能为空']);
     }
 }
