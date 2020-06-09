@@ -49,7 +49,7 @@ class HeadTailDeliverGood extends Action
 
             foreach ($InsertData as $key => $value) {
                 \App\Merchant::create([
-                    'merchant_terminal' =>  $value,
+                    'merchant_sn'       =>  $value,
                     'brand_id'          =>  $request->f_brand,
                 ]);
             }

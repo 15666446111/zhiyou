@@ -15,6 +15,16 @@ Route::get('/',  'HomeController@index');
 
 Auth::routes();
 
+
+/**
+ * @version [<汇付方交易推送地址>] [<description>]
+ * @return  [交易数据推送处理]   [<description>]
+ * @version [<交易数据处理] [<description>]
+*/
+Route::post('/trade', 'V1\TradeNotifyController@trade'); 
+
+
+
 /**
  * @version [<团队邀请人注册 扫描二维码>] [<description>]
  * @author  [Pudding] <[755969423@qq.com]>

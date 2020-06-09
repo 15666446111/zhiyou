@@ -227,13 +227,6 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getAgentTemail',   'V1\AgentController@getAgentTemail');
     Route::middleware('AuthToken')->get('/getAgentActive',   'V1\AgentController@getAgentActive');
 
-    /**
-     * @version [<汇付方交易推送地址>] [<description>]
-     * @return  [交易数据推送处理]   [<description>]
-     * @version [<交易数据处理] [<description>]
-     */
-    Route::post('/huifuTradeNotify', 'V1\TradeNotifyController@trade'); 
-
 
     /**
      * 添加用户收货地址接口

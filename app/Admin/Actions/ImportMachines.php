@@ -48,8 +48,8 @@ class ImportMachines extends Action
 
                 foreach ($InsertData as $key => $value) {
                     \App\Merchant::create([
-                        'merchant_terminal' =>  $value,
-                        'brand_id'          =>  $brand,
+                        'merchant_sn'        =>  $value,
+                        'brand_id'           =>  $brand,
                     ]);
                 }
 
