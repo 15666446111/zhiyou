@@ -151,7 +151,7 @@ class TransferController extends Controller
     {
         try{
 
-            $data=\App\MachineLog::select('nickname','friend_id','merchant_terminal','is_back','merchants_transfer_log.created_at')
+            $data=\App\MachineLog::select('nickname','friend_id','merchant_sn','is_back','merchants_transfer_log.created_at')
             ->join('busers','busers.id','=','merchants_transfer_log.user_id')
             ->join('merchants','merchants_transfer_log.merchant_id','=','merchants.id')
             ->where('merchants_transfer_log.user_id',$request->user->id)
