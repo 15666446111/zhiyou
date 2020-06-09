@@ -14,7 +14,7 @@ class TransferController extends Controller
     public function getUnBound(Request $request)
     {
 
-        // try{
+        try{
             if(!$request->policy_id)  
                 return response()->json(['error'=>['message' => '请选择政策活动!']]);
 
@@ -30,11 +30,11 @@ class TransferController extends Controller
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$list]]);
         
-        // } catch (\Exception $e) {
+        } catch (\Exception $e) {
             
-        //     return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
-        // }
+        }
 
     }
 
@@ -151,7 +151,7 @@ class TransferController extends Controller
     {
         try{
 
-            $data=\App\MachineLog::select('nickname','friend_id','merchant_terminal','is_back','merchants_transfer_log.created_at')
+            $data=\App\MachineLog::select('nickname','friend_id','merchant_sn','is_back','merchants_transfer_log.created_at')
             ->join('busers','busers.id','=','merchants_transfer_log.user_id')
             ->join('merchants','merchants_transfer_log.merchant_id','=','merchants.id')
             ->where('merchants_transfer_log.user_id',$request->user->id)

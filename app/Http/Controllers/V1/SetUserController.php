@@ -42,6 +42,12 @@ class SetUserController extends Controller
     public function insertBank(Request $request)
     {
         try{ 
+
+            if($request->is_default == 1){
+
+                \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
+
+            }
             
             \App\Bank::create([
                 'user_id'=>$request->user->id,
@@ -51,7 +57,7 @@ class SetUserController extends Controller
                 'number'=>$request->number,
                 'open_bank'=>$request->open_bank,
                 'is_del'=>0,
-                'is_default'=>0
+                'is_default'=>$request->is_default
             ]);
 
             return response()->json(['success'=>['message' => '添加成功!', []]]); 
@@ -113,6 +119,7 @@ class SetUserController extends Controller
             
             $data=\App\Bank::where('user_id',$request->user->id)
                             ->where('is_default','1')
+                            ->where('is_del',0)
                             ->first();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
@@ -150,9 +157,9 @@ class SetUserController extends Controller
     {
         try{ 
 
-            if(!$request->is_default){
+            if(empty($request->is_default) || $request->is_default == 0){
 
-                \App\Bank::where('user_id',$request->user->id)->update([
+                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
                     'name'=>$request->name,
                     'bank_name'=>$request->bank_name, 
                     'bank'=>$request->bank,
@@ -163,7 +170,7 @@ class SetUserController extends Controller
 
             }else{
 
-                \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update(['is_default'=>0]);
+                \App\Bank::where('user_id',$request->user->id)->update(['is_default'=>0]);
 
                 \App\Bank::where('user_id',$request->user->id)->where('id',$request->id)->update([
                     'name'=>$request->name,
@@ -204,7 +211,7 @@ class SetUserController extends Controller
             $timeEnd1    = strtotime($checkDayStr."21:00".":00");
             
             $curr_time   = time();
-
+            
             //判断是否在这个时间段内提现
             if($curr_time >= $timeBegin1 && $curr_time <= $timeEnd1)
             {
