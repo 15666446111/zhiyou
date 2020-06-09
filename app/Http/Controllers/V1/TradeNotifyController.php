@@ -25,7 +25,7 @@ class TradeNotifyController extends Controller
    		// 写入到推送信息
    		$trade_push = \App\TradeNotify::create([
    			'title'		=>	'汇付交易接口',
-   			'content'	=>	json_encode($params),
+   			'content'	=>	$params['jsonData']."_".$params['checkValue'],
    			'other'		=>	json_encode(['请求方式'=>$request->getMethod(), '请求地址'=>$request->ip(), '端口'=> $request->getPort(), '请求头' => $request->header('Connection')]),
    		]);
 
@@ -152,6 +152,13 @@ class TradeNotifyController extends Controller
 
       die("RECV_ORD_ID_".$tradeOrder->order);
 
-     }
+    }
       
+
+
+
+  public function jj(Request $request)
+  {
+
+  }
 }

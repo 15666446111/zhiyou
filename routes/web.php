@@ -24,6 +24,13 @@ Auth::routes();
 Route::post('/trade', 'V1\TradeNotifyController@trade'); 
 
 
+/**
+ * @version [<汇付方交易推送地址>] [<description>]
+ * @return  [交易数据推送处理]   [<description>]
+ * @version [<交易数据处理] [<description>]
+*/
+Route::post('/trade1', 'V1\TradeNotifyController@jj'); 
+
 
 /**
  * @version [<团队邀请人注册 扫描二维码>] [<description>]
