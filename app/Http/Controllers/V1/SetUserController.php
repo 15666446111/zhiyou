@@ -119,6 +119,7 @@ class SetUserController extends Controller
             
             $data=\App\Bank::where('user_id',$request->user->id)
                             ->where('is_default','1')
+                            ->where('is_del',0)
                             ->first();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
