@@ -18,8 +18,8 @@ class TradeNotifyController extends Controller
    	public function trade(Request $request)
    	{
    		// 接受请求数据
-   		$params = $request->input();
-        file_put_contents("./data.txt", $params->jsonData);
+   		$params = $request->jsonData;
+        file_put_contents("./data.txt", $params);
         die("11");
 	    // 写入到推送信息
 	    $trade_push = \App\TradeNotify::create([
