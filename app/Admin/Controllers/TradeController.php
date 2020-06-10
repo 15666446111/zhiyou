@@ -7,6 +7,7 @@ use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+use Encore\Admin\Widgets\Table;
 
 class TradeController extends AdminController
 {
@@ -26,7 +27,9 @@ class TradeController extends AdminController
     {
         $grid = new Grid(new Trade());
 
-        $grid->column('id', __('索引'));
+        $grid->model()->latest();
+
+        $grid->column('id', __('索引'))->sortable();
         $grid->column('order', __('订单编号'))->copyable();
         $grid->column('terminal', __('终端编号'))->copyable();
         $grid->column('merchant_id', __('商户编号'))->copyable();
@@ -35,6 +38,9 @@ class TradeController extends AdminController
         $grid->column('agt_merchant_id', __('渠道商ID'));
         $grid->column('agt_merchant_name', __('渠道商名称'));
 
+
+        $grid->column('card_type', __('卡类型'));
+        $grid->column('trade_type', __('交易类型'));
         $grid->column('trade_time', __('交易时间'));
 
 
@@ -51,14 +57,15 @@ class TradeController extends AdminController
             return number_format($money/100, 2, '.', ',');
         })->label('success');
 
-        $grid->column('trade_status', __('交易状态'))->bool();
+        $grid->column('trade_status', __('交易'))->bool();
 
         $grid->column('is_cash', __('分润'))->bool();
 
-        $grid->column('remark', '备注')->modal('备注信息', function ($model) {
-
-            return new Table(['分润备注'], ['1111']);
+        $grid->column('', '其他')->modal('处理结果', function ($model) {
+            
+            return new Table(['商户编号名称','交易卡号','分润备注'], [[$model->merchant_name,$model->card_number,$model->remark]]);
         });
+
 
         $grid->column('created_at', __('推送时间'));
         
