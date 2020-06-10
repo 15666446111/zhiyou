@@ -73,12 +73,11 @@ class CashMerchantController extends Controller
       			$this->trade_fee = 0 ;
       	}
 
-
       	//  获得结算费率 最低发放到的结算价
       	//  因 交易持有人的级别不同 分润模式不同
       	//  因 交易类型不同 交易卡类型不同 结算低价不同
       	//  故而需要根据政策活动进行设置
-      	$this->policy 	= $trade->merchants->policys;
+      	$this->policy 	= $trade->merchants_sn->policys;
 
 
       	$this->min_fee 	= 0;
@@ -94,7 +93,7 @@ class CashMerchantController extends Controller
 
 
       	// 设置user
-      	$this->user   = $trade->merchants->busers;
+      	$this->user   = $trade->merchants_sn->busers;
    	}
 
 	/**
@@ -241,7 +240,7 @@ class CashMerchantController extends Controller
     	$rate 		= $this->trade_fee - $userRate;
 
     	// 计算结算差价
-    	$rateMoney 	= number_format($this->trade->money * $rate / 10000);
+    	$rateMoney 	= $this->trade->money * $rate / 100;
 
     	// 写入用户分润表 用户钱包表
     	$this->addUserBlance($this->user->id, $rateMoney, 1,'机器持有人获得结算差价:'.number_format($this->trade->money / 100, 2, '.', ',').'*('.($rate / 10000).')结算分润');

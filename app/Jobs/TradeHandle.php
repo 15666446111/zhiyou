@@ -69,17 +69,36 @@ class TradeHandle implements ShouldQueue
          * @version [< 判断当前终端号所对应的机器是否绑定 >] [<description>]
          * 如果这时候机器没有绑定 ， 先去填写商户资料进行绑定机器
          */
-        if(!$this->trade->merchants or empty($this->trade->merchants)){
+        if(!$this->trade->merchants_sn or empty($this->trade->merchants_sn)){
             $this->trade->remark = '仓库中无此终端号!';
             $this->trade->save();
             return false;
         }
 
         /**
+         * @version [<vector>] [< 检查该机器是否有活动政策并发货>]
+         */
+        if(!$this->trade->merchants_sn->user_id or $this->trade->merchants_sn->user_id == "null"){
+            $this->trade->remark = '该机器还未发货!';
+            $this->trade->save();
+            return false;
+        }
+
+        /**
+         * @version [<vector>] [< 检查该机器是否有活动政策并发货>]
+         */
+        if(!$this->trade->merchants_sn->policy_id or $this->trade->merchants_sn->policy_id == "0"){
+            $this->trade->remark = '该机器还未配置活动政策!';
+            $this->trade->save();
+            return false;
+        }
+
+
+        /**
          * [$this->trade->merchants->bind_status description]
          * @var [type]
          */
-        if($this->trade->merchants->bind_status == "0" || $this->trade->merchants->merchant_number == ""){
+        if($this->trade->merchants_sn->bind_status == "0" || $this->trade->merchants_sn->merchant_number == ""){
             // 执行商户绑定
             $bind = new \App\Http\Controllers\BindMerchantController();
 
@@ -99,7 +118,7 @@ class TradeHandle implements ShouldQueue
 
                 $activeResult = $active->active();
 
-                $this->trade->remark = $this->trade->remark."<br/>激活:".$cashResult['message'];
+                $this->trade->remark = $this->trade->remark."<br/>激活:".$activeResult['message'];
 
                 $this->trade->save();
 
