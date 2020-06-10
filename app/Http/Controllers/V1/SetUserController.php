@@ -249,7 +249,10 @@ class SetUserController extends Controller
                     'rate'      => $request->rate,
                     'rate_money'=> $request->money * $request->rate,
                     'blance'    => $request->blance,
-                    'bank'      => $request->bank
+                    'bank'      => $request->bank,
+                    'name'      => $request->name,
+                    'number'    => $request->number,
+                    'open_bank' => $request->open_bank
                 ]);
     
                 return response()->json(['success'=>['message' => '提现申请提交成功!', 'data' => $request->user->wallets]]);
