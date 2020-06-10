@@ -252,7 +252,8 @@ class SetUserController extends Controller
                     'bank'      => $request->bank,
                     'name'      => $request->name,
                     'number'    => $request->number,
-                    'open_bank' => $request->open_bank
+                    'open_bank' => $request->open_bank,
+                    'bank_name' => $request->bank_name
                 ]);
     
                 return response()->json(['success'=>['message' => '提现申请提交成功!', 'data' => $request->user->wallets]]);
