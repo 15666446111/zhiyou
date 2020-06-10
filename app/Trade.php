@@ -22,6 +22,17 @@ class Trade extends Model
 
 
     /**
+     * [merchants 关联商户模型 通过SN关联]
+     * @author Pudding
+     * @DateTime 2020-04-10T16:37:46+0800
+     * @return   [type]                   [description]
+     */
+    public function merchants_sn()
+    {
+        return $this->belongsTo('\App\Merchant', 'merchant_sn', 'merchant_sn');
+    }
+
+    /**
      * [tradess 关联分润模型]
      * @author Pudding
      * @DateTime 2020-04-10T16:35:15+0800

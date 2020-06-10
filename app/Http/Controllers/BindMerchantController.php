@@ -20,14 +20,17 @@ class BindMerchantController extends Controller
 	 */
     public function bind(Trade $trade)
     {
-    	$trade->merchants->merchant_number =  $trade->merchants->merchant_number ??  $trade->merchant_id;
 
-    	$trade->merchants->merchant_name   =  $trade->merchants->merchant_name ?? $trade->merchant_name;
+    	$trade->merchants_sn->merchant_number  =  $trade->merchants_sn->merchant_number ??  $trade->merchant_id;
 
-    	$trade->merchants->bind_time 	   =  $trade->merchants->bind_time ?? Carbon::now()->toDateTimeString();
+    	$trade->merchants_sn->merchant_terminal  =  $trade->merchants_sn->merchant_terminal ??  $trade->terminal;
 
-    	$trade->merchants->bind_status 	   =  1;
+    	$trade->merchants_sn->merchant_name    =  $trade->merchants_sn->merchant_name ?? $trade->merchant_name;
 
-    	$trade->merchants->save();
+    	$trade->merchants_sn->bind_time 	   =  $trade->merchants_sn->bind_time ?? Carbon::now()->toDateTimeString();
+
+    	$trade->merchants_sn->bind_status 	   =  1;
+
+    	$trade->merchants_sn->save();
     }
 }

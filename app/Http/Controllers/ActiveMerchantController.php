@@ -56,9 +56,9 @@ class ActiveMerchantController extends Controller
 
 		$this->trade 			= $trade;
 
-		$this->policy 			= $trade->merchants->policys;
+		$this->policy 			= $trade->merchants_sn->policys;
       	
-      	$this->user   			= $trade->merchants->busers;
+      	$this->user   			= $trade->merchants_sn->busers;
 
       	$this->active_money_max = 0;
 		// 根据当前用户的用户组获得不同的返现配置
@@ -81,17 +81,17 @@ class ActiveMerchantController extends Controller
      */
     public  function active() : array
     {
-    	if($this->trade->merchants->active_status or $this->trade->merchants->active_status != ""){
+    	if($this->trade->merchants_sn->active_status or $this->trade->merchants_sn->active_status != ""){
     		return array('status' => false, 'message' => '该机器已经激活,不再发放激活返现');
     	}
 
     	$pushMoney = 0;
 
-        $this->trade->merchants->active_status = 1;
+        $this->trade->merchants_sn->active_status = 1;
 
-        $this->trade->merchants->active_time = Carbon::now()->toDateTimeString();
+        $this->trade->merchants_sn->active_time = Carbon::now()->toDateTimeString();
 
-        $this->trade->merchants->save();
+        $this->trade->merchants_sn->save();
 
 
     	if($this->user->parent > 0 ){
