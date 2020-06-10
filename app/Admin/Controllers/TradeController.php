@@ -35,6 +35,7 @@ class TradeController extends AdminController
         $grid->column('agt_merchant_id', __('渠道商ID'));
         $grid->column('agt_merchant_name', __('渠道商名称'));
 
+        $grid->column('trade_time', __('交易时间'));
 
 
         $grid->column('money', __('交易金额'))->display(function ($money) {
@@ -51,6 +52,13 @@ class TradeController extends AdminController
         })->label('success');
 
         $grid->column('trade_status', __('交易状态'))->bool();
+
+        $grid->column('is_cash', __('分润'))->bool();
+
+        $grid->column('remark', '备注')->modal('备注信息', function ($model) {
+
+            return new Table(['分润备注'], ['1111']);
+        });
 
         $grid->column('created_at', __('推送时间'));
         
