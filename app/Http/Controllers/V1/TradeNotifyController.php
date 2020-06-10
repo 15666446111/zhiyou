@@ -39,10 +39,14 @@ class TradeNotifyController extends Controller
             ]),
 	    ]);
 
+        $response   = json_decode($jsonData);  
         
-        $list       = json_decode($jsonData->orderDataList);
+        file_put_contents("./res.txt", json_encode($response));
+
+        $list       = json_decode($response->orderDataList);
 
         foreach ($list as $key => $value) {
+            file_put_contents("./1.txt", $value->logNo);
             // 新建交易订单 写入交易表 并且 分发到队列处理
             $tradeOrder = \App\Trade::create([
 
