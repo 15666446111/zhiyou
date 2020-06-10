@@ -115,33 +115,41 @@ class MerchantsController extends Controller
     public function MerchantDetails(Request $request)
     {
 
-        if(!$request->merchant){
-            return response()->json(['error'=>['message' => 'sn号无效']]);
-        }
+        try{ 
 
-        switch ($request->data_type) {
-            case 'month':
-                $StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
-                break;
-            case 'day':
-                $StartTime = Carbon::today()->toDateTimeString();
-                break;
-            case 'count':
-                $StartTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->toDateTimeString();
-                break;
-            default:
-                $StartTime = Carbon::today()->toDateTimeString();
-                break;
-        }
+            if(!$request->merchant){
+                return response()->json(['error'=>['message' => 'sn号无效']]);
+            }
 
-        $EndTime = Carbon::now()->toDateTimeString();
+            switch ($request->data_type) {
+                case 'month':
+                    $StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
+                    break;
+                case 'day':
+                    $StartTime = Carbon::today()->toDateTimeString();
+                    break;
+                case 'count':
+                    $StartTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->toDateTimeString();
+                    break;
+                default:
+                    $StartTime = Carbon::today()->toDateTimeString();
+                    break;
+            }
+
+            $EndTime = Carbon::now()->toDateTimeString();
+
+            $data = \App\Trade::select('card_type','card_number','trade_type','money','trade_time','trade_status')
+            ->where('merchant_sn', $request->merchant)
+            ->whereBetween('created_at', [ $StartTime,  $EndTime])
+            ->get();
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
         
-        $data = \App\Trade::select('card_type','card_number','trade_type','money','trade_time','trade_status')
-        ->where('merchant_sn', $request->merchant)
-        ->whereBetween('created_at', [ $StartTime,  $EndTime])
-        ->get();
+        } catch (\Exception $e) {
+                
+            return response()->json(['error'=>['message' => '系统错误，请联系客服']]);
 
-		return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+        }
 
     }
 
