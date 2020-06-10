@@ -36,7 +36,7 @@ class TradeNotifyController extends Controller
    		// 前去签名验证 验证签名是否符合
 
 
-        $response   = json_decode($aa);
+        $response   = json_decode($params['jsonData']);
 
         $list       = json_decode($response->orderDataList);
 
