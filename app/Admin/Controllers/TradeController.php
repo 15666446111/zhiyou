@@ -27,16 +27,32 @@ class TradeController extends AdminController
         $grid = new Grid(new Trade());
 
         $grid->column('id', __('索引'));
-        $grid->column('order', __('订单编号'));
-        $grid->column('terminal', __('终端编号'));
-        $grid->column('number', __('商户编号'));
-        $grid->column('money', __('交易金额'));
-        $grid->column('rate', __('交易费率'));
-        $grid->column('rate_money', __('手续费'));
-        $grid->column('real_money', __('结算金额'));
-        $grid->column('trade_status', __('交易状态'));
-        $grid->column('created_at', __('创建时间'));
-        //$grid->column('updated_at', __('修改时间'));
+        $grid->column('order', __('订单编号'))->copyable();
+        $grid->column('terminal', __('终端编号'))->copyable();
+        $grid->column('merchant_id', __('商户编号'))->copyable();
+        $grid->column('merchant_sn', __('SN'))->copyable();
+
+        $grid->column('agt_merchant_id', __('渠道商ID'));
+        $grid->column('agt_merchant_name', __('渠道商名称'));
+
+
+
+        $grid->column('money', __('交易金额'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('info');
+
+        //$grid->column('rate', __('交易费率'));
+        $grid->column('rate_money', __('手续费'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('warning');
+
+        $grid->column('real_money', __('结算金额'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('success');
+
+        $grid->column('trade_status', __('交易状态'))->bool();
+
+        $grid->column('created_at', __('推送时间'));
         
         $grid->disableCreateButton();
         $grid->actions(function ($actions) {
