@@ -17,27 +17,35 @@ class TradeNotifyController extends Controller
     */
    	public function trade(Request $request)
    	{
-
-
    		// 接受请求数据
    		$params = $request->input();
-
+        file_put_contents("./data.txt", $params);
+        die("11");
 	    // 写入到推送信息
 	    $trade_push = \App\TradeNotify::create([
 		    'title'		=>	'汇付交易接口',
 		    'content'	=>	$params,
-		    'other'		=>	json_encode(['请求方式'=>$request->getMethod(), '请求地址'=>$request->ip(), '端口'=> $request->getPort(), '请求头' => $request->header('Connection')]),
+		    'other'		=>	json_encode([
+                '请求方式'  => $request->getMethod(), 
+                '请求地址'  => $request->ip(), 
+                '端口'     => $request->getPort(), 
+                '请求头'   => $request->header('Connection')
+            ]),
 	    ]);
+
+        $response   = json_decode($params);
 
    		// 如果没有包含这两个值。则结束掉程序运行
    		// 因为汇付接口传递过来的只有这两个参数 且必填
-   		if(!isset($params['jsonData']) and !isset($params['checkValue'])) return response()->json(['error'=>['message' => '请求出错!']]);
+   		if(!isset($response->jsonData) and !isset($response->checkValue)) 
+            return response()->json(['error'=>['message' => '请求出错!']]);
 
    		// 前去签名验证 验证签名是否符合
         file_put_contents("/aa.txt", json_encode($params['jsonData']));
-        $response   = json_decode($params['jsonData']);
+        
+        $args       = $response->jsonData;
 
-        $list       = json_decode($response->orderDataList);
+        $list       = json_decode($args);
 
         foreach ($list as $key => $value) {
             // 新建交易订单 写入交易表 并且 分发到队列处理
