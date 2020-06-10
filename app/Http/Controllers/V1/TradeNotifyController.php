@@ -34,7 +34,7 @@ class TradeNotifyController extends Controller
    		if(!isset($params['jsonData']) and !isset($params['checkValue'])) return response()->json(['error'=>['message' => '请求出错!']]);
 
    		// 前去签名验证 验证签名是否符合
-        file_put_contents("./aa.txt", json_encode($params['jsonData']));
+        file_put_contents("/aa.txt", json_encode($params['jsonData']));
         $response   = json_decode($params['jsonData']);
 
         $list       = json_decode($response->orderDataList);
