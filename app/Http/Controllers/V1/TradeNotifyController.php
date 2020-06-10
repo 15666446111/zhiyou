@@ -19,7 +19,7 @@ class TradeNotifyController extends Controller
    	{
    		// 接受请求数据
    		$params = $request->input();
-        file_put_contents("./data.txt", $params);
+        file_put_contents("./data.txt", $params->jsonData);
         die("11");
 	    // 写入到推送信息
 	    $trade_push = \App\TradeNotify::create([
