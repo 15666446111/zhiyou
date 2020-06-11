@@ -31,7 +31,7 @@ class TradeController extends AdminController
 
         $grid->column('id', __('索引'))->sortable();
         $grid->column('order', __('订单编号'))->copyable();
-        $grid->column('terminal', __('终端编号'))->copyable();
+        //$grid->column('terminal', __('终端编号'))->copyable();
         $grid->column('merchant_id', __('商户编号'))->copyable();
         $grid->column('merchant_sn', __('SN'))->copyable();
 
@@ -63,7 +63,7 @@ class TradeController extends AdminController
 
         $grid->column('', '其他')->modal('处理结果', function ($model) {
             
-            return new Table(['商户编号名称','交易卡号','分润备注'], [[$model->merchant_name,$model->card_number,$model->remark]]);
+            return new Table(['终端号', '商户编号名称','交易卡号','分润备注'], [[$model->terminal, $model->merchant_name,$model->card_number,$model->remark]]);
         });
 
 
