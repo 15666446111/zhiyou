@@ -94,7 +94,7 @@ class BuserController extends AdminController
         $show->field('account', __('用户账号'));
         $show->field('realname', __('真实姓名'));
         $show->field('phone', __('手机号码'));
-        $show->field('headimg', __('用户头像'))->image('', 100, 30);
+        $show->field('headimg', __('用户头像'));
         $show->field('parent', __('上级会员'));
         $show->field('group', __('用户级别'));
 
