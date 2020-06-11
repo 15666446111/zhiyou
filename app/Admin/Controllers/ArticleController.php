@@ -26,6 +26,10 @@ class ArticleController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Article());
+
+        $grid->model()->latest();
+
+        $grid->column('id', __('索引'))->sortable();
         //
         $grid->column('title', __('标题'));
 
@@ -85,8 +89,6 @@ class ArticleController extends AdminController
                 $tools->disableDelete();
             });
         });
-
-        return $show;
 
         return $show;
     }

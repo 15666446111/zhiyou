@@ -27,15 +27,33 @@ class WithdrawController extends AdminController
         $grid = new Grid(new Withdraw());
 
         $grid->column('id', __('索引'));
-        $grid->column('user_id', __('提现会员'));
-        $grid->column('money', __('提现金额'));
-        $grid->column('real_money', __('到账金额'));
+        $grid->column('users.nickname', __('提现会员'));
+        $grid->column('users.account', __('会员账号'));
+
+        $grid->column('money', __('提现金额'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('info')->filter('range');
+
+        $grid->column('real_money', __('到账金额'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('info')->filter('range');
+
         $grid->column('rate', __('提现费率'));
-        $grid->column('rate_money', __('手续费'));
-        $grid->column('single_rate', __('单笔提现费'));
-        $grid->column('status', __('提现状态'));
+
+        $grid->column('rate_money', __('手续费'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('info')->filter('range');
+
+        $grid->column('single_rate', __('单笔提现费'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('info')->filter('range');
+
+        $grid->column('status', __('提现状态'))->bool();
+
         $grid->column('pay_time', __('审核时间'));
+
         $grid->column('remark', __('提现备注'));
+        
         $grid->column('created_at', __('申请时间'));
         //$grid->column('updated_at', __('Updated at'));
 
@@ -48,6 +66,7 @@ class WithdrawController extends AdminController
         $grid->batchActions(function ($batch) {
             $batch->disableDelete();
         });
+
         return $grid;
     }
 

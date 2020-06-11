@@ -141,7 +141,7 @@ class TradeHandle implements ShouldQueue
 
             $this->trade->remark = $this->trade->remark."<br/>分润:".$cashResult['message'];
 
-            if(!$cashResult['status'] or $cashResult['status'] == false){
+            if($cashResult['status'] && $cashResult['status'] !== false){
                 $this->trade->is_cash = 1;
             }
 

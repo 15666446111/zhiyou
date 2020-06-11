@@ -25,6 +25,7 @@ class ShareController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Share());
+        $grid->model()->latest();
 
         $grid->column('id', __('索引'));
         $grid->column('title', __('分享标题'));
@@ -36,9 +37,20 @@ class ShareController extends AdminController
         $grid->column('code_margin', __('二维码边距'));
         $grid->column('pos_x', __('X轴定位'));
         $grid->column('pos_y', __('Y轴定位'));
-        $grid->column('active', __('活动状态'));
+        $grid->column('active', __('状态'))->bool();
         $grid->column('created_at', __('创建时间'));
         //$grid->column('updated_at', __('Updated at'));
+        //
+        $grid->filter(function($filter){
+            // 去掉默认的id过滤器
+            $filter->disableIdFilter();
+
+            $filter->column(1/4, function ($filter) {
+                $filter->like('title', '标题');
+            });
+            // 在这里添加字段过滤器
+            
+        });
 
         return $grid;
     }
@@ -65,6 +77,15 @@ class ShareController extends AdminController
         $show->field('active', __('活动状态'));
         $show->field('created_at', __('创建时间'));
         $show->field('updated_at', __('修改时间'));
+
+        $show->types('分类信息', function ($type) {
+            $type->name('类型名称');
+            $type->panel()->tools(function ($tools) {
+                $tools->disableEdit();
+                $tools->disableList();
+                $tools->disableDelete();
+            });
+        });
 
         return $show;
     }

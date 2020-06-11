@@ -26,6 +26,8 @@ class ArticleTypeController extends AdminController
     {
         $grid = new Grid(new ArticleType());
 
+        $grid->model()->latest();
+
         $grid->column('id', __('索引'))->sortable();
 
         $grid->column('name', __('类型'));
@@ -35,6 +37,18 @@ class ArticleTypeController extends AdminController
         $grid->column('created_at', __('创建时间'))->date('Y-m-d H:i:s');
 
         $grid->column('updated_at', __('修改时间'))->date('Y-m-d H:i:s');
+
+
+        $grid->filter(function($filters){
+            // 去掉默认的id过滤器
+            $filters->disableIdFilter();
+
+            $filters->column(1/4, function ($filter) {
+                $filter->like('name', '类型');
+            });
+
+            // 在这里添加字段过滤器 
+        });
 
         $grid->actions(function ($actions) {
             if($actions->getKey() <= 3){
@@ -84,8 +98,17 @@ class ArticleTypeController extends AdminController
 
             $articles->created_at('创建时间')->date('Y-m-d H:i:s');
 
-            $articles->filter(function ($filter) {
-                $filter->like('title', '标题');
+            $articles->filter(function($filter){
+                // 去掉默认的id过滤器
+                $filter->disableIdFilter();
+
+                $filter->column(1/4, function ($filter) {
+                    $filter->like('title', '标题');
+                });
+                $filter->column(1/4, function ($filter) {
+                    $filter->equal('active', '状态')->select(['0' => '关闭', '1' => '开启']);
+                });
+                // 在这里添加字段过滤器 
             });
 
         });

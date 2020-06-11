@@ -22,6 +22,7 @@ class AddCashTypeToCashsTable extends Migration
             // 5、激活返现
             // 6、直推激活
             // 7、间推激活
+            // 8、团队激活
             $table->smallInteger('cash_type')->default(1)->comment('分润类型')->after('status');
 
         });

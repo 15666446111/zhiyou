@@ -35,6 +35,7 @@ class UserPolicyController extends AdminController
         $grid->actions(function ($actions) {
             // 去掉删除
             $actions->disableDelete();
+            $actions->disableView();
         });
 
         $grid->batchActions(function ($batch) {
@@ -53,7 +54,6 @@ class UserPolicyController extends AdminController
     {
         $show = new Show(UserPolicy::findOrFail($id));
 
-        $show->field('id', __('Id'));
         $show->field('user_id', __('User id'));
         $show->field('policy_id', __('Policy id'));
         $show->field('sett_price', __('Sett price'));
@@ -75,13 +75,32 @@ class UserPolicyController extends AdminController
     {
         $form = new Form(new UserPolicy());
 
-            $form->table('sett_price', '结算价设置',function ($table) {
-                $table->text('trade_name', '类型名称');
-                $table->text('trade_type', '交易类型');
-                $table->text('trade_bank', '交易卡类型');
-                $table->number('setprice', '结算价(万分位)')->default(0);
-                $table->switch('open', '是否开启')->default(0);
-            });
+        $form->table('sett_price', '结算价设置',function ($table) {
+            $table->text('trade_name', '类型名称');
+            $table->text('trade_type', '交易类型');
+            $table->text('trade_bank', '交易卡类型');
+            $table->number('setprice', '结算价(万分位)')->default(0);
+            $table->switch('open', '是否开启')->default(0);
+
+        });
+
+        $form->tab('普通用户激活返现',function ($table) {
+            $table->embeds('default_active_set', '普通用户激活返现',function ($form) {
+                $form->number('return_money', '最高返现')->default(0)->rules('required')->help('(单位为分)');
+                $form->number('default_money', '默认返现')->default(0)->rules('required')->help('(单位为分)');
+            }); 
+
+            $table->embeds('vip_active_set', '代理用户激活返现',function ($form) {
+                $form->number('return_money', '最高返现')->default(0)->rules('required')->help('(单位为分)');
+                $form->number('default_money', '默认返现')->default(0)->rules('required')->help('(单位为分)');
+            }); 
+        });
+
+        $form->tools(function (Form\Tools $tools) {
+            // 去掉`删除`按钮
+            $tools->disableDelete();
+            $tools->disableView();
+        });
 
         return $form;
     }
