@@ -184,6 +184,19 @@ class CashMerchantController extends Controller
     		}
     	}
 
+
+        // 获得该用户在该政策下的最低结算价。该交易类型下的卡交易类型。
+        $currentRate = $this->getRate($this->user->id, $this->policy->id);
+        // 如果分出去之后 本人还有结算差价 给本人分结算差价
+        if($this->trade_fee - $userRate > $currentRate){
+            $currentRateBe = $this->trade_fee - $userRate - $currentRate;
+            $userRate     += $currentRateBe;
+            $currentRateMoney = $this->trade->money * $currentRateBe / 10000;
+            $rateMoney += $currentRateMoney;
+            $this->addUserBlance($this->user->id, $currentRateMoney, 1,'机器持有人获得结算差价:'.number_format($this->trade->money / 100, 2, '.', ',').'*('.($currentRateBe / 10000).')结算分润');
+        }
+
+
     	if($this->user->parent != 0 ){
 	    	//  交易推荐奖励分完之后  如果该用户有上级 去查找第一个临近的代理
     		// 总计分出去的差价
@@ -206,7 +219,6 @@ class CashMerchantController extends Controller
 
 	    	}
 	    }
-
 
     	return array('status' => true, 'message' => '订单分润完成,共分润:'.($rateMoney / 100).'元!');    	
     }
