@@ -27,17 +27,30 @@ class ProductController extends AdminController
         $grid = new Grid(new Product());
 
         $grid->column('id', __('索引'));
+
         $grid->column('title', __('标题'));
-        $grid->column('image', __('图片'));
+
+        $grid->column('price', __('价格'))->display(function($money){
+            return number_format($money / 100, 2, '.', ',');
+        })->label();
+
+        $grid->column('image', __('图片'))->image('', 60);
+
         $grid->column('active', __('状态'))->switch();
-        $grid->column('type', __('类型'));
-        $grid->column('price', __('价格'))->label();
-        $grid->column('created_at', __('创建时间'));
         
+        $grid->column('brands.brand_name', __('品牌'));
+
+        $grid->column('created_at', __('创建时间'));
+    
         $grid->actions(function ($actions) {
             // 去掉删除
             $actions->disableDelete();
         });
+
+        $grid->batchActions(function ($batch) {
+            $batch->disableDelete();
+        });
+
         return $grid;
     }
 

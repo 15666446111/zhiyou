@@ -160,7 +160,7 @@ class CashMerchantController extends Controller
     	// 首先获得用户的直推交易分润
     	$userRate = $this->policy->default_push;
     	// 计算直推的交易推荐分润
-    	$rateMoney = number_format($this->trade->money * $userRate / 10000);
+    	$rateMoney = $this->trade->money * $userRate / 10000;
     	// 如果该活动设置了普通用户推荐交易分润奖励 则进行直推分润奖励
     	if($userRate > 0){
 	    	// 写入用户分润表 用户钱包表
@@ -170,7 +170,7 @@ class CashMerchantController extends Controller
     	// 获得该政策下间推的推荐配置  如果需要分润
     	if($this->policy->indirect_push > 0){
     		// 获得该会员的临近上级(必须是代理)
-    		$indirectMoney   = number_format($this->trade->money * $this->policy->indirect_push / 10000);
+    		$indirectMoney   = $this->trade->money * $this->policy->indirect_push / 10000;
 
     		// 计算一共分出去多少钱了
     		$rateMoney += $indirectMoney;
@@ -196,7 +196,7 @@ class CashMerchantController extends Controller
 
 	    		foreach ($parentRate as $key => $value) {
 	    
-	    			$cashMoney = number_format($this->trade->money * $value['urate'] / 10000);
+	    			$cashMoney = $this->trade->money * $value['urate'] / 10000;
 
 	    			$rateMoney += $cashMoney;
 
@@ -240,7 +240,7 @@ class CashMerchantController extends Controller
     	$rate 		= $this->trade_fee - $userRate;
 
     	// 计算结算差价
-    	$rateMoney 	= $this->trade->money * $rate / 100;
+    	$rateMoney 	= $this->trade->money * $rate / 10000;
 
     	// 写入用户分润表 用户钱包表
     	$this->addUserBlance($this->user->id, $rateMoney, 1,'机器持有人获得结算差价:'.number_format($this->trade->money / 100, 2, '.', ',').'*('.($rate / 10000).')结算分润');
@@ -255,7 +255,7 @@ class CashMerchantController extends Controller
 
     		foreach ($parents as $key => $value) {
     
-    			$cashMoney = number_format($this->trade->money * $value['urate'] / 10000);
+    			$cashMoney = $this->trade->money * $value['urate'] / 10000;
 
     			$rateMoney += $cashMoney;
 

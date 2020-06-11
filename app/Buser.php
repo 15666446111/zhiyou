@@ -52,6 +52,49 @@ class Buser extends Model
  	}
 
 
+ 	/**
+ 	 * @Author    Pudding
+ 	 * @DateTime  2020-06-10
+ 	 * @copyright [copyright]
+ 	 * @license   [license]
+ 	 * @version   [ 关联分润表]
+ 	 * @return    [type]      [description]
+ 	 */
+ 	public function cashs()
+ 	{
+ 		return $this->hasMany('\App\Cash', 'user_id', 'id');
+ 	}
+
+
+ 	/**
+ 	 * @Author    Pudding
+ 	 * @DateTime  2020-06-10
+ 	 * @copyright [copyright]
+ 	 * @license   [license]
+ 	 * @version   [会员消息]
+ 	 * @return    [type]      [description]
+ 	 */
+ 	public function messages()
+ 	{
+ 		return $this->hasMany('\App\BuserMessage', 'user_id', 'id');
+ 	}
+
+
+ 	/**
+ 	 * @Author    Pudding
+ 	 * @DateTime  2020-06-10
+ 	 * @copyright [copyright]
+ 	 * @license   [license]
+ 	 * @version   [关联用户的结算卡信息]
+ 	 * @return    [type]      [description]
+ 	 */
+ 	public function banks()
+ 	{
+ 		return $this->hasMany('\App\Bank', 'user_id', 'id');
+ 	}
+
+
+
  	/** 获取图片头像 **/
  	public function getHeadimgAttribute($value)
     {

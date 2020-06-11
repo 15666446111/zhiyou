@@ -25,12 +25,23 @@ class ShareTypeController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new ShareType());
+        $grid->model()->latest();
 
         $grid->column('id', __('索引'));
         $grid->column('name', __('类型'));
         $grid->column('created_at', __('创建时间'));
         $grid->column('updated_at', __('修改时间'));
         
+        $grid->filter(function($filters){
+            // 去掉默认的id过滤器
+            $filters->disableIdFilter();
+
+            $filters->column(1/4, function ($filter) {
+                $filter->like('name', '类型');
+            });
+
+            // 在这里添加字段过滤器 
+        });
 
         $grid->actions(function ($actions) {
             if($actions->getKey() <= 4){
@@ -78,9 +89,17 @@ class ShareTypeController extends AdminController
 
             $shares->created_at('创建时间')->date('Y-m-d H:i:s');
 
-            $shares->filter(function ($filter) {
-                $filter->like('title', '标题');
+            $shares->filter(function($filters){
+                // 去掉默认的id过滤器
+                $filters->disableIdFilter();
+
+                $filters->column(1/4, function ($filter) {
+                    $filter->like('title', '标题');
+                });
+
+                // 在这里添加字段过滤器 
             });
+
         });
 
 

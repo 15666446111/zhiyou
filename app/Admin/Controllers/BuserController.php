@@ -144,17 +144,176 @@ class BuserController extends AdminController
                 $filter->disableIdFilter();
 
                 $filter->column(1/3, function ($filter) {
-                    $filter->like('merchant_terminal', '终端编号');
+                    $filter->like('merchant_sn', 'sn');
                 });
+
                 $filter->column(1/3, function ($filter) {
-                    $filter->like('merchant_name', '商户名称');
+                    $filter->like('merchant_id', '商户');
                 });
+
                 $filter->column(1/3, function ($filter) {
                     $filter->equal('bind_status', '商户名称')->select(['0' => '未绑定', '1' => '已绑定']);
                 });
 
             });
+
+            $merchants->disableCreateButton();
+            $merchants->actions(function ($actions) {
+                // 去掉删除 编辑
+                $actions->disableDelete();
+                $actions->disableEdit();
+            });
+            $merchants->batchActions(function ($batch) {
+                $batch->disableDelete();
+            });
+
         });
+
+        // 分润返现
+        $show->cashs('分润返现', function ($cashs) {
+
+            $cashs->setResource('/admin/cashes');
+
+            $cashs->model()->latest();
+            
+            $cashs->id('索引')->sortable();
+            $cashs->column('order', __('分润订单'));
+            $cashs->column('users.nickname', __('分润会员'));
+            $cashs->column('users.account', __('会员账号'));
+            $cashs->column('cash_money', __('分润金额'))->display(function ($money) {
+                return number_format($money / 100, 2, '.', ',');
+            })->label();
+            $cashs->column('cash_type', __('分润类型'))->using([
+                '1' => '直营分润', '2' => '团队分润' , '3' => '直推分润' , '4' => '间推分润' ,  
+                '5' => '激活返现', '6' => '直推激活' , '7' => '间推激活' , '8' => '团队激活'
+            ]);
+            $cashs->column('status', __('分润状态'))->bool();
+            $cashs->column('remark', __('分润备注'));
+            $cashs->column('created_at', __('分润时间'));
+
+            $cashs->filter(function ($filter) {
+                // 去掉默认的id过滤器
+                $filter->disableIdFilter();
+
+                $filter->column(1/3, function ($filter) {
+                    $filter->like('order', '订单');
+                });
+                
+                $filter->column(1/3, function ($filter) {
+                    $filter->equal('status', '状态')->select(['0' => '失败', '1' => '成功']);
+                });
+
+                $filter->column(1/3, function ($filter) {
+                    $filter->equal('status', '类型')->select([
+                        '1' => '直营分润', '2' => '团队分润' , '3' => '直推分润' , '4' => '间推分润' ,  
+                        '5' => '激活返现', '6' => '直推激活' , '7' => '间推激活' , '8' => '团队激活'
+                    ]);
+                });
+
+            });
+
+            $cashs->disableCreateButton();
+            $cashs->actions(function ($actions) {
+                // 去掉删除 编辑
+                $actions->disableDelete();
+                $actions->disableEdit();
+            });
+            $cashs->batchActions(function ($batch) {
+                $batch->disableDelete();
+            });
+        
+        });
+
+        $show->messages('消息通知', function ($messages) {
+
+            $messages->setResource('/admin/buser-messages');
+
+            $messages->model()->latest();
+            
+            $messages->id('索引')->sortable();
+            $messages->column('type', __('类型'));
+            $messages->column('is_read', __('已读'))->bool();
+            $messages->column('title', __('标题'));
+            $messages->column('send_plat', __('发送方'));
+            $messages->column('created_at', __('发送时间'));
+
+            $messages->filter(function ($filter) {
+                // 去掉默认的id过滤器
+                $filter->disableIdFilter();
+
+                $filter->column(1/3, function ($filter) {
+                    $filter->like('title', '标题');
+                });
+                
+                $filter->column(1/3, function ($filter) {
+                    $filter->equal('type', '类型')->select(['0' => '失败', '1' => '成功']);
+                });
+
+            });
+
+            $messages->disableCreateButton();
+            $messages->actions(function ($actions) {
+                // 去掉删除 编辑
+                $actions->disableDelete();
+                $actions->disableEdit();
+            });
+            $messages->batchActions(function ($batch) {
+                $batch->disableDelete();
+            });
+        
+        });
+
+
+        $show->banks('结算卡信息', function ($banks) {
+
+            //$banks->setResource('/admin/buser-messages');
+
+            $banks->model()->latest();
+            
+            $banks->id('索引')->sortable();
+            $banks->column('name', __('持卡人'));
+            $banks->column('bank_name', __('银行'));
+            $banks->column('bank', __('银行卡号'));
+            $banks->column('number', __('身份证号'));
+            $banks->column('open_bank', __('开户行'));
+
+            $banks->column('is_default', __('是否默认'))->bool();
+
+            $banks->column('is_del', __('是否删除'))->bool();
+            
+            $banks->column('created_at', __('创建时间'));
+
+            $banks->filter(function ($filter) {
+                // 去掉默认的id过滤器
+                $filter->disableIdFilter();
+
+                $filter->column(1/3, function ($filter) {
+                    $filter->like('name', '持卡人');
+                });
+
+                $filter->column(1/3, function ($filter) {
+                    $filter->like('number', '身份证号');
+                });
+
+                $filter->column(1/3, function ($filter) {
+                    $filter->like('bank', '银行卡号');
+                });
+
+            });
+
+            $banks->disableCreateButton();
+            $banks->actions(function ($actions) {
+                // 去掉删除 编辑
+                $actions->disableDelete();
+                $actions->disableEdit();
+                $actions->disableView();
+            });
+            $banks->batchActions(function ($batch) {
+                $batch->disableDelete();
+            });
+        
+        });
+
 
 
         $show->panel()->tools(function ($tools) {
@@ -178,7 +337,7 @@ class BuserController extends AdminController
         $form->password('password', __('用户密码'));
         $form->text('realname', __('真实姓名'));
         $form->mobile('phone', __('用户手机'));
-        $form->text('headimg', __('头像图片'));
+        $form->image('headimg', __('头像图片'));
 
         $form->number('parent', __('上级ID'))->default(0);
         
@@ -188,7 +347,13 @@ class BuserController extends AdminController
 
         // MD5 保存密码
         $form->saving(function (Form $form) {
-            $form->password = md5($form->password);
+            if($form->isCreating()){
+                $form->password = md5($form->password);
+            }else{
+                if($form->model()->password != $form->password){
+                    $form->password = md5($form->password);
+                }
+            }
         });
 
         $form->tools(function (Form\Tools $tools) {

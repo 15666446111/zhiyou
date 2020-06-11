@@ -27,9 +27,10 @@ class BrandController extends AdminController
         $grid = new Grid(new Brand());
 
         $grid->column('brand_name', __('品牌名称'));
-        $grid->column('active', __('状态'))->bool();
-        $grid->column('created_at', __('创建时间'));
 
+        $grid->column('active', __('状态'))->bool();
+
+        $grid->column('created_at', __('创建时间'));
         
         $grid->batchActions(function ($batch) {
             $batch->disableDelete();
@@ -54,7 +55,7 @@ class BrandController extends AdminController
         $show->field('updated_at', __('修改时间'));
 
 
-        $show->merchants('机具详情', function ($merchants) {
+        $show->merchants('机具列表', function ($merchants) {
 
             $merchants->setResource('/admin/merchants');
             
@@ -65,6 +66,8 @@ class BrandController extends AdminController
             $merchants->column('busers.nickname', __('归属会员'));
 
             $merchants->column('merchant_terminal', __('终端编号'));
+
+            $merchants->column('merchant_sn', __('终端SN'));
 
             $merchants->column('policys.title', __('政策活动'));
 
@@ -99,6 +102,17 @@ class BrandController extends AdminController
                 });
 
             });
+
+            $merchants->actions(function ($actions) {
+                // 去掉删除 编辑
+                $actions->disableDelete();
+                $actions->disableEdit();
+            });
+
+            $merchants->batchActions(function ($batch) {
+                $batch->disableDelete();
+            });
+
         });
 
 

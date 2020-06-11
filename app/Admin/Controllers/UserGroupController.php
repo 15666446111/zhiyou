@@ -30,16 +30,13 @@ class UserGroupController extends AdminController
         
         $grid->column('level', __('用户组级别'))->label();
 
-        $grid->column('count', __('推荐多少有效用户升级'))->label();
-
-        $grid->column('buy_count', __('采购多少台机器升级'))->label();
-
         $grid->column('created_at', __('创建时间'));
 
         $grid->actions(function ($actions) {
-            // 去掉删除
-            $actions->disableDelete();
-            $actions->disableView();
+            if($actions->getKey() <= 2){
+                $actions->disableDelete();
+                $actions->disableEdit();
+            }
         });
 
         $grid->batchActions(function ($batch) {
@@ -65,14 +62,54 @@ class UserGroupController extends AdminController
 
         $show->field('name', __('用户组名称'));
         $show->field('level', __('用户组级别'));
-        $show->field('count', __('推荐多少有效用户升级'));
+        //$show->field('count', __('推荐多少有效用户升级'));
         $show->field('created_at', __('创建时间'));
         $show->field('updated_at', __('修改时间'));
 
         $show->users('用户信息', function ($users) {
-            $users->nickname('用户昵称');
-            $users->created_at();
-            $users->updated_at();
+
+
+            $users->setResource('/admin/busers');
+            
+            $users->model()->latest();
+
+            $users->column('id', __('索引'))->sortable();
+            $users->column('nickname', __('昵称'));
+            $users->column('account', __('账号'));
+            $users->column('realname', __('姓名'));
+            $users->column('phone', __('手机号'));
+            $users->column('headimg', __('头像图片'))->image('', 60);
+
+            $users->column('wallets.cash_blance', __('分润余额'))->display(function ($money) {
+                return number_format($money/100, 2, '.', ',');
+            })->label('info');
+            $users->column('wallets.return_blance', __('返现余额'))->display(function ($money) {
+                return number_format($money/100, 2, '.', ',');
+            })->label('warning');
+            $users->column('wallets.blance_active', __('钱包'))->bool();
+
+            $users->column('active', __('状态'))->bool();
+
+            $users->column('last_ip', __('最后登录地址'));
+
+            $users->column('last_time', __('最后登录时间'));
+
+            $users->created_at('注册时间');
+
+            $users->disableCreateButton();
+            $users->actions(function ($actions) {
+                // 去掉删除 编辑
+                $actions->disableDelete();
+                $actions->disableEdit();
+            });
+            $users->batchActions(function ($batch) {
+                $batch->disableDelete();
+            });
+        });
+
+        $show->panel()->tools(function ($tools) {
+            $tools->disableDelete();
+            $tools->disableEdit();
         });
 
         return $show;
@@ -91,34 +128,12 @@ class UserGroupController extends AdminController
 
         $form->number('level',  __('用户组级别'))->readonly()->disable()->help('此处不可调整');
 
-        $form->number('count',  __('推荐多少有效用户升级'))->default(0);
-
-        $form->number('buy_count',  __('采购多少台机器升级'))->default(0);
-
-        $form->table('standard', '达标奖励设置',function ($table) {
-            $table->text('title', '达标标题');
-            $table->number('start', '起(天数)')->default(0);
-            $table->number('end', '止(天数)')->default(0);
-            $table->number('trade', '交易金额(单位：分)')->default(0);
-            $table->number('money', '奖励金额（单位：分）')->default(0);
-            $table->switch('open', '开启？');
-        });
-
-        $form->table('standard_count', '累计达标返现奖励设置',function ($table) {
-            $table->text('title', '累计达标标题');
-            $table->number('start', '起(天数)')->default(0);
-            $table->number('end', '止(天数)')->default(0);
-            $table->number('trade', '交易金额(单位：分)')->default(0);
-            $table->number('money', '奖励金额（单位：分）')->default(0);
-            $table->switch('open', '开启？');
-        });
-
-
         $form->tools(function (Form\Tools $tools) {
             // 去掉`删除`按钮
             $tools->disableDelete();
             $tools->disableView();
         });
+
         return $form;
     }
 }
