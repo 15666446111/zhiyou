@@ -159,29 +159,36 @@ class CashMerchantController extends Controller
     {
     	// 首先获得用户的直推交易分润
     	$userRate = $this->policy->default_push;
-    	// 计算直推的交易推荐分润
-    	$rateMoney = $this->trade->money * $userRate / 10000;
+
     	// 如果该活动设置了普通用户推荐交易分润奖励 则进行直推分润奖励
     	if($userRate > 0){
-	    	// 写入用户分润表 用户钱包表
-	    	$this->addUserBlance($this->user->id, $rateMoney, 3,'机器持有人获得直推分润:'.number_format($this->trade->money / 100, 2, '.', ',').'*('.($userRate / 10000).')结算分润');
+            // 计算直推的交易推荐分润
+            $rateMoney = $this->trade->money * $userRate / 10000;
+
+            // 如果用户还有上级的话 
+            if($this->user->parent != 0 ){
+                $this->addUserBlance($this->user->parent, $rateMoney, 3,'下级普通用户持有机器交易,获得直推交易分润:'.number_format($this->trade->money / 100, 2, '.', ',').'*('.($userRate / 10000).')结算分润');
+            }
     	}
 
     	// 获得该政策下间推的推荐配置  如果需要分润
-    	if($this->policy->indirect_push > 0){
-    		// 获得该会员的临近上级(必须是代理)
-    		$indirectMoney   = $this->trade->money * $this->policy->indirect_push / 10000;
+    	if($this->policy->indirect_push > 0 && $this->user->parent != 0){
+            // 获取间接推荐人
+            $parent = \App\Buser::where('id', $this->user->parent)->first();
 
-    		// 计算一共分出去多少钱了
-    		$rateMoney += $indirectMoney;
+            if($parent && !empty($parent) && $parent->parent != "0")
+            {
+                // 获得该会员的临近上级(必须是代理)
+                $indirectMoney   = $this->trade->money * $this->policy->indirect_push / 10000;
 
-    		// 计算一共的推荐费率分多少出去
-    		$userRate  += $this->policy->indirect_push;
+                // 计算一共分出去多少钱了
+                $rateMoney += $indirectMoney;
 
-    		// 如果用户还有上级的话 
-    		if($this->user->parent != 0 ){
-    			$this->addUserBlance($this->user->parent, $indirectMoney, 4,'下级普通用户持有机器交易,获得间推分润:'.number_format($this->trade->money / 100, 2, '.', ',').'*('.($this->policy->indirect_push / 10000).')结算分润');
-    		}
+                // 计算一共的推荐费率分多少出去
+                $userRate  += $this->policy->indirect_push;
+
+                $this->addUserBlance($parent->parent, $indirectMoney, 4,'下级普通用户持有机器交易,获得间推交易分润:'.number_format($this->trade->money / 100, 2, '.', ',').'*('.($this->policy->indirect_push / 10000).')结算分润');
+            }
     	}
 
 
