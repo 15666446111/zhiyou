@@ -33,7 +33,7 @@ class BuserController extends AdminController
         $grid->column('account', __('账号'));
         $grid->column('realname', __('姓名'));
         $grid->column('phone', __('手机号'));
-        $grid->column('headimg', __('头像图片'));
+        $grid->column('headimg', __('头像图片'))->image('', 100, 30);
         $grid->column('groups.name', __('级别'))->label();
         $grid->column('wallets.cash_blance', __('分润余额'))->display(function ($money) {
             return number_format($money/100, 2, '.', ',');
@@ -94,7 +94,7 @@ class BuserController extends AdminController
         $show->field('account', __('用户账号'));
         $show->field('realname', __('真实姓名'));
         $show->field('phone', __('手机号码'));
-        $show->field('headimg', __('用户头像'));
+        $show->field('headimg', __('用户头像'))->image('', 100, 30);
         $show->field('parent', __('上级会员'));
         $show->field('group', __('用户级别'));
 
