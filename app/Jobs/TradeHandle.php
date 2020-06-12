@@ -152,10 +152,32 @@ class TradeHandle implements ShouldQueue
             $this->trade->save();
         }
 
+
         /**
          * @version [< 达标返现 或者累积达标返现 >] [<description>]
          */
-        
+        // 如果达标状态为连续达标中 正常情况下 去执行达标返现政策
+        if($this->trade->merchants_sn->standard_statis != "-1")
+        {
+             try{
+                $standard = new \App\Http\Controllers\StandardMerchantController($this->trade);
+
+                $standardResult = $standard->standard();
+
+                $this->trade->remark = $this->trade->remark."<br/>分润:".$cashResult['message'];
+
+                if($cashResult['status'] && $cashResult['status'] !== false){
+                    $this->trade->is_cash = 1;
+                }
+
+                $this->trade->save();
+
+            } catch (\Exception $e) {
+                $this->trade->remark = $this->trade->remark."<br/>分润:".json_encode($e->getMessage());
+                $this->trade->save();
+            }
+        }
+
 
         /**
          * @version [< 累积达标返现>] [<description>]

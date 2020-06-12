@@ -45,10 +45,22 @@ class Policy extends Model
 	 */
     public function getDefaultStandardSetAttribute($extra)
     {
-        return array_values(json_decode($extra, true) ?: []);
+    	$attr = json_decode($extra, true);
+    	foreach ($attr as $key => $value) {
+    		$attr[$key]['standard_trade'] = $value['standard_trade'] / 100;
+    		$attr[$key]['standard_price'] = $value['standard_price'] / 100;
+    		$attr[$key]['standard_parent_price'] = $value['standard_parent_price'] / 100;
+    	}
+
+        return array_values($attr ?: []);
     }
     public function setDefaultStandardSetAttribute($extra)
     {
+    	foreach ($extra as $key => $value) {
+    		$extra[$key]['standard_trade'] = $value['standard_trade'] * 100;
+    		$extra[$key]['standard_price'] = $value['standard_price'] * 100;
+    		$extra[$key]['standard_parent_price'] = $value['standard_parent_price'] * 100;
+    	}
         $this->attributes['default_standard_set'] = json_encode(array_values($extra));
     }
 
