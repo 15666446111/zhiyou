@@ -40,9 +40,16 @@ class AdminOpenLogController extends AdminController
             // 去掉编辑
             $actions->disableEdit();
 
-            // 去掉查看
-            $actions->disableView();
+            // 去掉删除
+            $actions->disableDelete();
         });
+
+        $grid->disableCreateButton();
+
+        $grid->batchActions(function ($batch) {
+            $batch->disableDelete();
+        });
+        
 
         return $grid;
     }
@@ -57,14 +64,21 @@ class AdminOpenLogController extends AdminController
     {
         $show = new Show(AdminOpenLog::findOrFail($id));
 
-        $show->field('id', __('Id'));
-        $show->field('user_id', __('User id'));
-        $show->field('path', __('Path'));
-        $show->field('method', __('Method'));
-        $show->field('ip', __('Ip'));
-        $show->field('input', __('Input'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+        $show->field('id', __('索引'));
+        $show->field('admin_users.username', __('管理员'));
+        $show->field('path', __('路径'))->label('info');
+        $show->field('method', __('请求方式'))->label();
+        $show->field('ip', __('Ip地址'))->label('primary');
+        $show->field('input', __('操作'))->style('wide:50px');
+        $show->field('created_at', __('操作时间'));
+
+        $show->panel()->tools(function ($tools) {
+
+            $tools->disableDelete();
+
+            $tools->disableEdit();
+            
+        });
 
         return $show;
     }

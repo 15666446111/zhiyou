@@ -13,9 +13,6 @@ class AdminOpenLog extends Model
     // 黑名单
     protected $guarded = [];
 
-    protected $casts = [
-        'input' => 'json',
-    ];
 
     public function admin_users()
 	{
