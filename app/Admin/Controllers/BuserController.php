@@ -7,6 +7,7 @@ use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Show;
+use Illuminate\Database\Eloquent\Collection;
 
 class BuserController extends AdminController
 {
@@ -26,6 +27,17 @@ class BuserController extends AdminController
     {
         $grid = new Grid(new Buser());
 
+        $grid->model()->collection(function (Collection $collection) {
+
+            // 给每一列加字段，类似上面display回调的作用
+            foreach($collection as $item) {
+                $item->sum_money = $item->wallets->cash_blance + $item->wallets->return_blance;
+            }
+
+            // 最后一定要返回集合对象
+            return $collection;
+        });
+
         $grid->model()->latest();
 
         $grid->column('id', __('索引'))->sortable();
@@ -33,7 +45,7 @@ class BuserController extends AdminController
         $grid->column('account', __('账号'));
         $grid->column('realname', __('姓名'));
         $grid->column('phone', __('手机号'));
-        $grid->column('headimg', __('头像图片'))->image('', 100, 30);
+        $grid->column('headimg', __('头像图片'))->image('', 40);
         $grid->column('groups.name', __('级别'))->label();
         $grid->column('wallets.cash_blance', __('分润余额'))->display(function ($money) {
             return number_format($money/100, 2, '.', ',');
@@ -41,6 +53,10 @@ class BuserController extends AdminController
         $grid->column('wallets.return_blance', __('返现余额'))->display(function ($money) {
             return number_format($money/100, 2, '.', ',');
         })->label('warning');
+        $grid->column('sum_money', __('总余额'))->display(function ($money) {
+            return number_format($money/100, 2, '.', ',');
+        })->label('success');
+
         $grid->column('wallets.blance_active', __('钱包'))->bool();
         $grid->column('active', __('状态'))->bool();
         $grid->column('last_ip', __('最后登录IP'));
