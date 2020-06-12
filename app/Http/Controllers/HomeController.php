@@ -25,16 +25,16 @@ class HomeController extends Controller
     public function index()
     {
 
-        dd("request");
+        
 
         $trade = \App\Trade::orderBy('id', 'desc')->first();
 
         /**
          * @version [< 给当前交易进行分润发放 >]
          */
-        $cash = new \App\Http\Controllers\ActiveMerchantController($trade);
+        $cash = new \App\Http\Controllers\StandardMerchantController($trade);
 
-        $result = $cash->active();
+        $result = $cash->standard();
 
         dd($result);
         
