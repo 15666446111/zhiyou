@@ -20,7 +20,6 @@ class TransferController extends Controller
 
             //获取该用户该政策下未绑定未激活终端机器
             $list = \App\Merchant::select('id','merchant_terminal','merchant_sn')
-
             ->where('user_id',  '=', $request->user->id)
             ->where('policy_id','=', $request->policy_id)
             ->where('active_status','!=', 1)
@@ -37,7 +36,7 @@ class TransferController extends Controller
         }
 
     }
-
+    
 
     /**
      * 划拨
