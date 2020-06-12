@@ -28,14 +28,13 @@ class AdminOpenLogController extends AdminController
 
         $grid->model()->latest();
 
-        $grid->column('id', __('id'));
+        $grid->column('id', __('索引'));
         $grid->column('admin_users.username', __('管理员'));
         $grid->column('path', __('路径'))->label('info');
         $grid->column('method', __('请求方式'))->label();
         $grid->column('ip', __('Ip地址'))->label('primary');
-        $grid->column('input', __('Input'));
-        $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
+        $grid->column('input', __('操作'))->style('wide:50px');
+        $grid->column('created_at', __('操作时间'));
 
         $grid->actions(function ($actions) {
             // 去掉编辑

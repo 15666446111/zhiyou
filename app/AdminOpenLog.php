@@ -13,6 +13,10 @@ class AdminOpenLog extends Model
     // 黑名单
     protected $guarded = [];
 
+    protected $casts = [
+        'input' => 'json',
+    ];
+
     public function admin_users()
 	{
 		return $this->belongsTo('\App\AdminUser', 'user_id', 'id');
