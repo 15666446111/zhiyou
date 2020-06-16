@@ -66,7 +66,7 @@ class UserPolicy extends Model
             $extra[$key]['standard_parent_price'] = $value['standard_parent_price'] * 100;
             $i = isset($value['index']) ? $value['index'] + 1 : $i + 1;
         }
-        $this->attributes['default_standard_set'] = json_encode(array_values($extra));
+        $this->attributes['standard'] = json_encode(array_values($extra));
     }
 
 

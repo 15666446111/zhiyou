@@ -66,7 +66,7 @@ class PlugController extends AdminController
     {
         $form = new Form(new Plug());
 
-        $form->file('image_file', __('上传图片'));
+        $form->file('image_file', __('上传图片'))->required();
 
         $form->url('link', __('链接地址'));
 

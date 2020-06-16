@@ -71,8 +71,8 @@ class MerchantController extends AdminController
             $actions->disableDelete();
             $actions->disableEdit();
 
-            // 发货按钮
-            $actions->add(new DeliverGoods);
+            // 如果机器未发货 显示发货按钮
+            if($actions->row['user_id'] == 0) $actions->add(new DeliverGoods);
         });
         $grid->batchActions(function ($batch) {
             $batch->disableDelete();
@@ -179,6 +179,7 @@ class MerchantController extends AdminController
             $trade->column('', '其他')->modal('处理结果', function ($model) {
                 
                 return new Table(['商户编号名称','交易卡号','分润备注'], [[$model->merchant_name,$model->card_number,$model->remark]]);
+            
             });
 
             $trade->column('created_at', __('推送时间'));

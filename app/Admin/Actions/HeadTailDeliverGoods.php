@@ -74,12 +74,15 @@ class HeadTailDeliverGoods extends Action
                 $vip_active_set = $policy['vip_active_set'];
                 $vip_active_set['return_money'] = $vip_active_set['default_money'];
 
+                $standard = $policy->default_standard_set;
+
                 \App\UserPolicy::create([
                     'user_id'       =>  $request->user,
                     'policy_id'     =>  $request->policy,
                     'sett_price'    =>  $policy->sett_price,
                     'default_active_set'    => $default_active_set,
                     'vip_active_set'        => $vip_active_set,
+                    'standard'      =>  $standard
                 ]);
             }
 

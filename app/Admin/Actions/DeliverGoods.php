@@ -46,12 +46,16 @@ class DeliverGoods extends RowAction
                 $vip_active_set = $policy['vip_active_set'];
                 $vip_active_set['return_money'] = $vip_active_set['default_money'];
 
+                // 达标信息
+                $standard = $policy->default_standard_set;
+                //dd($standard);
             	\App\UserPolicy::create([
-            		'user_id'		=>	$request->user,
-            		'policy_id'		=>	$request->policy,
-            		'sett_price'	=>	$policy->sett_price,
-                    'default_active_set'    => $default_active_set,
-                    'vip_active_set'        => $vip_active_set,
+            		'user_id'		        =>	$request->user,
+            		'policy_id'		        =>	$request->policy,
+            		'sett_price'	        =>	$policy->sett_price,
+                    'default_active_set'    =>  $default_active_set,
+                    'vip_active_set'        =>  $vip_active_set,
+                    'standard'              =>  $standard,
             	]);
             }
 
