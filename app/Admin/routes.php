@@ -63,4 +63,7 @@ Route::group([
 
     //表单申请机器
     $router->resource('application-forms', ApplicationFormController::class);
+
+    //操作日志
+    $router->resource('admin-open-logs', AdminOpenLogController::class);
 });
