@@ -15,7 +15,7 @@
 @section('content')
 
 <header class="demos-header">
-    <h1 class="demos-title">Application machine</h1>
+    <h1 class="demos-title">申请机器</h1>
 </header>
 
 <form action="" method="post" name="register" id="register_form">
@@ -53,7 +53,7 @@
 <label for="weuiAgree" class="weui-agree" style="display: hidden">
       <input id="weuiAgree" type="checkbox" checked="checked" class="weui-agree__checkbox">
       <span class="weui-agree__text">
-        阅读并同意<a href="javascript:void(0);">《相关条款》</a>
+        阅读并同意<a href="javascript:void(0);">{{ config('app.name', 'Laravel') }}《相关条款》</a>
       </span>
 </label>
 

@@ -77,6 +77,7 @@ class StandardMerchantController extends Controller
 		if(!$this->merchant->active_time && !$this->merchant->bind_time){
 			return array('status' => false, 'message' => '找不到机器的激活时间/绑定时间,无法计算达标');
 		}
+
 		$this->startTime= Carbon::parse($this->merchant->active_time ?? $this->merchant->bind_time);
 
 		// 如果交易时间小于起始时间 ， 不进行达标计算
@@ -169,12 +170,13 @@ class StandardMerchantController extends Controller
 		// 在累积达标状态内
 		if($this->merchant->standard_statis_lj !="-1")
 		{
+
 			foreach ($arrs_lj as $key => $value) {
+
 				// 如果 当前累积达标条件已经达到 检查上一次累积达标是否达到 与本次达标奖励是否发放
 				if($this->SumTradeIf($value['standard_start'], $value['standard_end'], $value['standard_trade'] * 100)){
 					// 如果当前的达标交易已经发放了
 					$haveStandard = \App\MerchantStandard::where('sn', $this->merchant->merchant_sn)->where('policy', $this->policy->id)->where('index', $value['index'])->first();
-
 					// 发放累积交易达标奖励
 					if(!$haveStandard or !empty($haveStandard)){
 						// 进行发放
@@ -383,7 +385,15 @@ class StandardMerchantController extends Controller
      * @version   [写入达标发放信息情况]
      */
     public function addStandardInfo($standard)
-    {
+    {	
+    	$standard['standard_trade'] = $standard['standard_trade'] * 100;
+
+    	$standard['standard_agent_price'] = $standard['standard_agent_price'] * 100;
+
+    	$standard['standard_price'] = $standard['standard_price'] * 100;
+
+    	$standard['standard_parent_price'] = $standard['standard_parent_price'] * 100;
+
     	return \App\MerchantStandard::create([
     		'sn'		=>	$this->merchant->merchant_sn,
     		'policy'	=>	$this->policy->id,
@@ -405,10 +415,12 @@ class StandardMerchantController extends Controller
     public function SumTradeIf($start, $end, $count)
     {
 
+    	$this->startTime= Carbon::parse($this->merchant->active_time ?? $this->merchant->bind_time);
+
     	$startTime = $this->startTime->addDays($start)->toDateTimeString();
     	
     	$endTime   = $this->startTime->addDays($end)->toDateTimeString();
-
+    	
     	// 查询出这时间段内的交易 该终端的
     	$trade = \App\Trade::where('merchant_sn', $this->merchant->merchant_sn)->whereBetween('trade_time', [$startTime, $endTime])->where('trade_status', '1')->distinct('order')->sum('money');
 
