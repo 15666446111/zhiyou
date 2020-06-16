@@ -198,7 +198,7 @@ class StandardMerchantController extends Controller
 			}
 		}
 		
-		return array('status' => true, 'msg' => '达标奖励发放完成, 本次发放:'.number_format($money / 100, 2, '.', ',')."元奖励!");
+		return array('status' => true, 'message' => '达标奖励发放完成, 本次发放:'.number_format($money / 100, 2, '.', ',')."元奖励!");
     }
 
 
