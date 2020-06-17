@@ -168,8 +168,7 @@ class StandardMerchantController extends Controller
 
 
 		// 在累积达标状态内
-		if($this->merchant->standard_statis_lj !="-1")
-		{
+		if($this->merchant->standard_statis_lj !="-1"){
 
 			foreach ($arrs_lj as $key => $value) {
 
@@ -178,7 +177,7 @@ class StandardMerchantController extends Controller
 					// 如果当前的达标交易已经发放了
 					$haveStandard = \App\MerchantStandard::where('sn', $this->merchant->merchant_sn)->where('policy', $this->policy->id)->where('index', $value['index'])->first();
 					// 发放累积交易达标奖励
-					if(!$haveStandard or !empty($haveStandard)){
+					if($haveStandard->isEmpty()){
 						// 进行发放
 						// 进行发放达标奖励....
 				    	// 根据所属会员的用户组不同 
@@ -198,7 +197,7 @@ class StandardMerchantController extends Controller
 			}
 		}
 		
-		return array('status' => true, 'msg' => '达标奖励发放完成, 本次发放:'.number_format($money / 100, 2, '.', ',')."元奖励!");
+		return array('status' => true, 'message' => '达标奖励发放完成, 本次发放:'.number_format($money / 100, 2, '.', ',')."元奖励!");
     }
 
 
