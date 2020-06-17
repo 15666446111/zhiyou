@@ -53,6 +53,10 @@
         "psr-4": {
             "App\\": "app/"
         },
+        "classmaps": [  
+            "database",  
+            "app/libs/alipay" 
+        ],  
         "classmap": [
             "database/seeds",
             "database/factories"
