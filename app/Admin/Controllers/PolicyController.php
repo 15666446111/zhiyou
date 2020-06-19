@@ -160,8 +160,8 @@ class PolicyController extends AdminController
 
             $form->switch('active', __('活动状态'))->default(1)->help('关闭活动状态时,配送无法选择此活动,已配送机器分润等不受影响');
 
-            $form->number('default_push', __('会员直推'))->default(2)->help('当机器持有人为普通用户的时候,该用户获得的交易分润推荐比例');
-            $form->number('indirect_push', __('会员间推'))->default(1)->help('当机器持有人为普通用户的时候,该用户上级临近的代理获得的交易分润推荐比例');
+            $form->number('default_push', __('用户直推'))->default(2)->help('当机器持有人为普通用户的时候,该用户获得的交易分润推荐比例');
+            $form->number('indirect_push', __('用户间推'))->default(1)->help('当机器持有人为普通用户的时候,该用户上级临近的代理获得的交易分润推荐比例');
 
             $form->table('sett_price', '结算价设置',function ($table) {
                 $table->text('trade_name', '类型名称');
@@ -175,7 +175,7 @@ class PolicyController extends AdminController
         })->tab('激活返现设置', function ($form) {
 
             $form->number('default_active', __('直推激活'))->default(2)->help('机器激活,上级获得的直推奖励.(单位为分)');
-            $form->number('indirect_active', __('会员间推'))->default(1)->help('机器激活,上上级获得的间推奖励.(单位为分)');
+            $form->number('indirect_active', __('间推激活'))->default(1)->help('机器激活,上上级获得的间推奖励.(单位为分)');
 
             $form->fieldset('用户激活返现', function (Form $form) {
                 $form->embeds('default_active_set', '用户激活',function ($form) {

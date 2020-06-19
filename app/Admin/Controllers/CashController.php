@@ -47,6 +47,37 @@ class CashController extends AdminController
         $grid->batchActions(function ($batch) {
             $batch->disableDelete();
         });
+
+        $grid->filter(function($filter){
+            // 去掉默认的id过滤器
+            $filter->disableIdFilter();
+
+            $filter->column(1/3, function ($filter) {
+                $filter->like('order', '订单');
+                $filter->equal('status', '状态')->select(['0' => '失败', '1' => '成功']);
+            });
+
+            // 交易类型
+            $filter->column(1/3, function ($filter) {
+                $filter->equal('cash_type', '分润类型')->select([
+                    '1'      => '直营分润', 
+                    '2'      => '团队分润',
+                    '3'      => '直推分润',
+                    '4'      => '间推分润',
+                    '5'      => '激活返现',
+                    '6'      => '直推激活',
+                    '7'      => '间推激活',
+                    '8'      => '团队激活',
+                    '9'      => '达标直营',
+                    '10'     => '团队达标'
+                ]);
+            });
+            // 在这里添加字段过滤器
+            $filter->column(1/3, function ($filter) {
+                $filter->between('created_at', '分润时间')->datetime();
+            });
+            
+        });
         return $grid;
     }
 
