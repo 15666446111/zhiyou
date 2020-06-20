@@ -247,7 +247,9 @@ class SetUserController extends Controller
                     'user_id'   => $request->user->id,
                     'money'     => $request->money,
                     'rate'      => $request->rate,
+                    'real_money'=> $request->money - $request->money * $request->rate - $request->rate_m,
                     'rate_money'=> $request->money * $request->rate,
+                    'single_rate'=>$request->rate_m,
                     'blance'    => $request->blance,
                     'bank'      => $request->bank,
                     'name'      => $request->name,
@@ -280,9 +282,22 @@ class SetUserController extends Controller
     {
 
         try{ 
-            // dd(config('draw.rate'));
-            //获取提现税点
-            $data['point']=config('draw.rate');
+            // 判断是分润钱包还是返现钱包 * 获取提现税点
+            if($request->type == '1'){
+                //税点
+                $data['point']=config('draw.rate');
+                //单笔提现费
+                $data['rate_m']=config('draw.rate_m');
+                //免审核额度
+                $data['no_check']=config('draw.no_check');
+
+            }else
+                $data['point']=config('draw.return_blance');
+
+                $data['rate_m']=config('draw.return_money');
+
+                $data['no_check']=config('draw.no_check');
+            
             //最小提现金额
             $data['min_money']=200;
             //提现范围时间
