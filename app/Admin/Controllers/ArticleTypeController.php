@@ -50,6 +50,8 @@ class ArticleTypeController extends AdminController
             // 在这里添加字段过滤器 
         });
 
+        $grid->disableCreateButton();
+
         $grid->actions(function ($actions) {
             if($actions->getKey() <= 3){
                 $actions->disableDelete();

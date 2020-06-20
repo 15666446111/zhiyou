@@ -29,7 +29,6 @@ class TradeController extends AdminController
 
         $grid->model()->latest();
 
-        $grid->column('id', __('索引'))->sortable();
         $grid->column('order', __('订单编号'))->copyable();
         //$grid->column('terminal', __('终端编号'))->copyable();
         $grid->column('merchant_id', __('商户编号'))->copyable();
@@ -95,8 +94,43 @@ class TradeController extends AdminController
             $filter->column(1/4, function ($filter) {
                 $filter->equal('trade_status', '状态')->select(['0' => '失败', '1' => '成功']);
             });
+
+            // 交易类型
+            $filter->column(1/3, function ($filter) {
+                $filter->equal('trade_type', '交易类型')->select([
+                    'CLOUDPAY'      => '云闪付', 
+                    'SMALLFREEPAY'  => '小额双免',
+                    'VIPPAY'        => '激活交易',
+                    'CARDPAYRVS'    => '消费冲正',
+                    'CARDPAY'       => '刷卡消费',
+                    'CARDCANCEL'    => '消费撤销',
+                    'QUICKPAY'      => '快捷支付',
+                    'WXQRPAY'       => '微信扫码',
+                    'ALIQRPAY'      => '支付宝扫码',
+                    'UNIONQRPAY'    => '银联扫码',
+                    'CARDAUTH'      => '预授权',
+                    'CARDCANCELAUTH'=> '预授权撤销',
+                    'CARDAUTHED'    => '预授权完成',
+                    'CARDCANCELAUTHED' => '预授权完成撤销',
+                ]);
+            });
             // 在这里添加字段过滤器
+            $filter->column(1/3, function ($filter) {
+                $filter->between('trade_time', '交易时间')->datetime();
+            });
             
+            $filter->column(1/3, function ($filter) {
+
+                $arrs = array();
+
+                $p = \App\Trade::select(['agt_merchant_name'])->distinct('agt_merchant_name')->pluck('agt_merchant_name')->toArray();
+                
+                foreach ($p as $key => $value) {
+                   $arrs[$value] = $value;
+                }
+
+                $filter->equal('agt_merchant_name', '渠道商')->select($arrs);
+            });
         });
 
 

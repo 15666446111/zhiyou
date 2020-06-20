@@ -43,6 +43,8 @@ class ShareTypeController extends AdminController
             // 在这里添加字段过滤器 
         });
 
+        $grid->disableCreateButton();
+
         $grid->actions(function ($actions) {
             if($actions->getKey() <= 4){
                 $actions->disableDelete();
