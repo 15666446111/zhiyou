@@ -215,6 +215,8 @@ class PolicyController extends AdminController
 
         });
 
+ 
+
         $form->tools(function (Form\Tools $tools) {
             // 去掉`删除`按钮
             $tools->disableDelete();
