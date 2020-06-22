@@ -83,7 +83,7 @@ class CashMerchantController extends Controller
       	$this->min_fee 	= 0;
       	// 循环设置的结算价
       	foreach ($this->policy->sett_price as $key => $value) {
-      		if($value['trade_type'] == $trade->trade_type && $value['trade_bank'] == $trade->card_type &&  $value['open']){
+      		if($value['trade_type'] == $trade->trade_type && $value['trade_bank'] == $trade->card_type ){
       			$this->min_fee = $value['setprice'];
       		}		
       	}
