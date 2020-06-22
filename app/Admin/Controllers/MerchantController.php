@@ -63,9 +63,12 @@ class MerchantController extends AdminController
                 $filter->like('merchant_name', '商户名称');
             });
             $filter->column(1/3, function ($filter) {
-                $filter->equal('bind_status', '商户名称')->select(['0' => '未绑定', '1' => '已绑定']);
+                $filter->equal('bind_status', '绑定状态')->select(['0' => '未绑定', '1' => '已绑定']);
             });
 
+            $filter->column(1/3, function ($filter) {
+                $filter->like('merchant_sn', '终端SN');
+            });
         });
 
         $grid->actions(function ($actions) {
