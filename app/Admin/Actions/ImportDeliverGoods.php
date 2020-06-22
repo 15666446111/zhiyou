@@ -44,13 +44,13 @@ class ImportDeliverGoods extends Action
                     if ( $key > 0 && isset($row[$headings['s_n']]) ) $data[] = $row[$headings['s_n']];
                 }
 
-                $eplice = \App\Merchant::whereIn('merchant_terminal', $data)->pluck('merchant_terminal')->toArray();
+                $eplice = \App\Merchant::whereIn('merchant_sn', $data)->pluck('merchant_sn')->toArray();
                 // 交集
                 $epliceRows = array_intersect($data, $eplice);
                 // 差集
                 $InsertData = array_diff($data, $eplice);
 
-                \App\Merchant::whereIn('merchant_terminal', $epliceRows)->where('user_id', '0')->update([
+                \App\Merchant::whereIn('merchant_sn', $epliceRows)->where('user_id', '0')->update([
                     'user_id'   => $request->user,
                     'policy_id' => $request->policy,
                 ]);

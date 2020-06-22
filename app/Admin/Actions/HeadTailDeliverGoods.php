@@ -47,7 +47,7 @@ class HeadTailDeliverGoods extends Action
             }
 
 
-            \App\Merchant::whereIn('merchant_terminal', $data)->where('bind_status', '0')->where('user_id', '0')->update([
+            \App\Merchant::whereIn('merchant_sn', $data)->where('bind_status', '0')->where('user_id', '0')->update([
                 'user_id'   =>  $request->user,
                 'policy_id' =>  $request->policy
             ]);
