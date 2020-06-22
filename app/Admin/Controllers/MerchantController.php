@@ -34,6 +34,8 @@ class MerchantController extends AdminController
     {
         $grid = new Grid(new Merchant());
 
+        $grid->model()->latest();
+
         $grid->column('id', __('索引'));
         $grid->column('busers.nickname', __('归属会员'));
         $grid->column('merchant_terminal', __('终端编号'));

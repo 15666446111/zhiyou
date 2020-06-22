@@ -61,8 +61,6 @@ class Policy extends Model
         $i = 1;
     	foreach ($extra as $key => $value) {
             $extra[$key]['index'] = $value['index'] ?? $i;
-
-
     		$extra[$key]['standard_trade'] = isset($value['standard_trade']) ?  $value['standard_trade'] * 100 : 0;
             $extra[$key]['standard_agent_price'] = isset($value['standard_agent_price']) ? $value['standard_agent_price'] * 100 : 0;
     		$extra[$key]['standard_price'] = isset($value['standard_price']) ? $value['standard_price'] * 100 : 0;
