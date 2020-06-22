@@ -50,7 +50,7 @@ class ImportDeliverGoods extends Action
                 // 差集
                 $InsertData = array_diff($data, $eplice);
 
-                \App\Merchant::whereIn('merchant_sn', $epliceRows)->where('user_id', '0')->update([
+                \App\Merchant::whereIn('merchant_sn', $epliceRows)->whereNull('user_id')->update([
                     'user_id'   => $request->user,
                     'policy_id' => $request->policy,
                 ]);
