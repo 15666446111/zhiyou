@@ -350,7 +350,7 @@ class CashMerchantController extends Controller
 
     	if(!$userPolicy or empty($userPolicy)){
     		foreach ($this->policy->sett_price as $key => $value) {
-				if($value['trade_type'] == $this->trade->trade_type && $value['trade_bank'] == $this->trade->card_type && $value['open']){
+				if($value['trade_type'] == $this->trade->trade_type && $value['trade_bank'] == $this->trade->card_type){
       				$userRate = $value['defaultPrice'];
       			}	
     		}
@@ -363,7 +363,7 @@ class CashMerchantController extends Controller
     	 * @var [type]
     	 */
       	foreach ($userPolicy->sett_price as $key => $value) {
-      		if($value['trade_type'] == $this->trade->trade_type && $value['trade_bank'] == $this->trade->card_type &&  $value['open']){
+      		if($value['trade_type'] == $this->trade->trade_type && $value['trade_bank'] == $this->trade->card_type){
       			$userRate = $value['setprice'];
       		}		
       	}
