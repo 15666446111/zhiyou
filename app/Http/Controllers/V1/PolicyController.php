@@ -43,6 +43,7 @@ class PolicyController extends Controller
      */
     public function getPolicyInfo(Request $request)
     {
+
         if(!$request->uid) return response()->json(['error'=>['message' => '参数不全!']]);
 
         if(!$request->pid) return response()->json(['error'=>['message' => '参数不全!']]);
@@ -63,51 +64,123 @@ class PolicyController extends Controller
         // 组合返回数据
         $arrs = [];
 
-        $arrs['trade_price']['title'] = '结算价参数设置';
+        if($User->parent != $request->user->id) return response()->json(['error'=>['message' => '用户非直接下级!']]);
 
-        $arrs['active_price']['title'] = '激活参数设置';
+        if($request->user->group == 2 && $User->group == 2){
 
-        if($userPolicy && !empty($userPolicy)){
-            // 设置结算价
-            foreach ($userPolicy->sett_price as $key => $value) {
-                $arrs['trade_price']['list'][] = [
-                    'name' => $value['trade_name'],
-                    'rate' => $value['setprice'],
-                    'max'  => $this->getSetPriceMax($policy, $value['trade_type'], $value['trade_bank']),
-                    'min'  => $this->getSetPriceMin($request->user, $policy, $value['trade_type'], $value['trade_bank']),
-                ];
+            $arrs['trade_price']['title'] = '结算价参数设置';
+
+            $arrs['active_price']['title'] = '激活参数设置';
+
+            $arrs['standard_price']['title'] = '达标参数设置';
+
+            if($userPolicy && !empty($userPolicy)){
+                // 设置结算价
+                foreach ($userPolicy->sett_price as $key => $value) {
+                    $arrs['trade_price']['list'][] = [
+                        'name' => $value['trade_name'],
+                        'rate' => $value['setprice'],
+                        'max'  => $this->getSetPriceMax($policy, $value['trade_type'], $value['trade_bank']),
+                        'min'  => $this->getSetPriceMin($request->user, $policy, $value['trade_type'], $value['trade_bank']),
+                    ];
+                }
+                // 设置激活返现
+                if($User->group == 1 )
+                    $arrs['active_price']['money'] = $userPolicy->default_active_set['return_money'];
+                if($User->group == 2 )
+                    $arrs['active_price']['money'] = $userPolicy->vip_active_set['return_money'];
+
+                $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
+                $arrs['active_price']['min'] = 0;
+
+                // 读取达标返现
+                foreach ($userPolicy->standard as $key => $value) {
+                    $arrs['standard_price']['list'][] = [
+                        'index'         => $value['index'],
+                        'standard_type' => $value['standard_type'],
+                        'standard_start'=> $value['standard_start'],
+                        'standard_end'  => $value['standard_end'],
+                        'standard_trade'=> $value['standard_trade'] * 100,
+                        'standard_agent_price' => $value['standard_agent_price'] * 100,
+                        'max'           => $this->getStandardPriceMax( $policy, $request->user, $value['index'] ),
+                        'min'           => 0,
+                    ];
+                }
+            }else{
+                // 设置结算价
+                foreach ($policy->sett_price as $key => $value) {
+                    $arrs['trade_price']['list'][] = [
+                        'name' => $value['trade_name'],
+                        'rate' => $value['defaultPrice'],
+                        'max'  => $this->getSetPriceMax($policy, $value['trade_type'], $value['trade_bank']),
+                        'min'  => $this->getSetPriceMin($request->user, $policy, $value['trade_type'], $value['trade_bank']),   
+                    ];
+                }
+
+                // 设置激活返现参数
+                if($User->group == 1 )
+                    $arrs['active_price']['return_money'] = $policy->default_active_set['default_money'];
+                if($User->group == 2 )
+                    $arrs['active_price']['return_money'] = $policy->vip_active_set['default_money'];
+
+                $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
+                $arrs['active_price']['min'] = 0;
+
+                foreach ($policy->standard as $key => $value) {
+                    $arrs['standard_price']['list'][] = [
+                        'index'         => $value['index'],
+                        'standard_type' => $value['standard_type'],
+                        'standard_start'=> $value['standard_start'],
+                        'standard_end'  => $value['standard_end'],
+                        'standard_trade'=> $value['standard_trade'] * 100,
+                        'standard_agent_price' => $value['standard_agent_price'] * 100,
+                        'max'           => $this->getStandardPriceMax($policy, $request->user, $value['index'] ),
+                        'min'           => 0,
+                    ];
+                }
             }
-            // 设置激活返现
-            if($User->group == 1 )
-                $arrs['active_price']['money'] = $userPolicy->default_active_set['return_money'];
-            if($User->group == 2 )
-                $arrs['active_price']['money'] = $userPolicy->vip_active_set['return_money'];
-
-            $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
-            $arrs['active_price']['min'] = 0;
-        }else{
-            // 设置结算价
-            foreach ($policy->sett_price as $key => $value) {
-                $arrs['trade_price']['list'][] = [
-                    'name' => $value['trade_name'],
-                    'rate' => $value['defaultPrice'],
-                    'max'  => $this->getSetPriceMax($policy, $value['trade_type'], $value['trade_bank']),
-                    'min'  => $this->getSetPriceMin($request->user, $policy, $value['trade_type'], $value['trade_bank']),   
-                ];
-            }
-
-            // 设置激活返现参数
-            if($User->group == 1 )
-                $arrs['active_price']['return_money'] = $policy->default_active_set['default_money'];
-            if($User->group == 2 )
-                $arrs['active_price']['return_money'] = $policy->vip_active_set['default_money'];
-
-            $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
-            $arrs['active_price']['min'] = 0;
         }
 
         return response()->json(['success'=>['message' => '获取成功!', 'data' => $arrs]]);
 
+    }
+
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-24
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [version]
+     * @param     [type] $[policy] [<系统默认政策信息>]
+     * @param     [type] $[user]   [< 当前登陆用户>]
+     * @param     [type] $[index]  [< 当前的详细达标>]
+     * @return    [type]      [description]
+     */
+    public function getStandardPriceMax($policy, $user, $index)
+    {
+        $max = 0;
+
+        // 获取当前用户的政策信息
+        $currentPolicy = \App\UserPolicy::where('user_id', $user->id)->where('policy_id', $policy->id)->first();
+
+        if(!$currentPolicy or empty($currentPolicy)){
+
+            foreach ($policy->standard as $key => $value) {
+                if($value['index'] == $index) $max = $value['standard_agent_price'];
+            }
+
+        }else{
+
+            foreach ($currentPolicy->standard as $key => $value) {
+                if($value['index'] == $index) $max = $value['standard_agent_price'];
+            }
+
+        }
+
+
+        return $max * 100;
     }
 
 

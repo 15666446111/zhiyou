@@ -26,16 +26,16 @@ class HomeController extends Controller
     {
 
         
-        $trade = \App\Trade::orderBy('id', 'desc')->first();
+        $trade = \App\Trade::orderBy('order', 'N20200624123376887')->first();
 
         /**
          * @version [< 给当前交易进行分润发放 >]
          */
-        //$cash = new \App\Http\Controllers\StandardMerchantController($trade);
+        $cash = new \App\Http\Controllers\CashMerchantController($trade);
 
-        //$result = $cash->standard();
+        $result = $cash->cash();
 
-        //dd($result);
+        dd($result);
         
         return view('home');
     }

@@ -160,10 +160,12 @@ class CashMerchantController extends Controller
     	// 首先获得用户的直推交易分润
     	$userRate = $this->policy->default_push;
 
+        $rateMoney = 0;
+
     	// 如果该活动设置了普通用户推荐交易分润奖励 则进行直推分润奖励
     	if($userRate > 0){
             // 计算直推的交易推荐分润
-            $rateMoney = $this->trade->money * $userRate / 10000;
+            $rateMoney += $this->trade->money * $userRate / 10000;
 
             // 如果用户还有上级的话 
             if($this->user->parent != 0 ){
