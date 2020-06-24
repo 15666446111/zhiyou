@@ -26,7 +26,7 @@ class HomeController extends Controller
     {
 
         
-        $trade = \App\Trade::orderBy('order', 'N20200624123376887')->first();
+        $trade = \App\Trade::where('order', 'N20200624123376887')->first();
 
         /**
          * @version [< 给当前交易进行分润发放 >]
