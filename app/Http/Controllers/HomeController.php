@@ -31,11 +31,11 @@ class HomeController extends Controller
         /**
          * @version [< 给当前交易进行分润发放 >]
          */
-        $cash = new \App\Http\Controllers\CashMerchantController($trade);
+        //$cash = new \App\Http\Controllers\CashMerchantController($trade);
 
-        $result = $cash->cash();
+        //$result = $cash->cash();
 
-        dd($result);
+        //dd($result);
         
         return view('home');
     }
