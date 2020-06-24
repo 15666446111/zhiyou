@@ -19,8 +19,8 @@ class TeamController extends Controller
     {
     	try{
             // 获取直接下级信息
-            $list = \App\Buser::/*where('parent', $request->user->id)
-                        ->*/select(['id', 'headimg', 'nickname', 'account','created_at'])->orderBy('created_at', 'desc')->get();
+            $list = \App\Buser::where('parent', $request->user->id)
+                        ->select(['id', 'headimg', 'nickname', 'account','created_at'])->orderBy('created_at', 'desc')->get();
 
 
             // 获取总下级人数
