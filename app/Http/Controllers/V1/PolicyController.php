@@ -126,7 +126,7 @@ class PolicyController extends Controller
                 $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
                 $arrs['active_price']['min'] = 0;
 
-                foreach ($policy->standard as $key => $value) {
+                foreach ($policy->default_standard_set as $key => $value) {
                     $arrs['standard_price']['list'][] = [
                         'index'         => $value['index'],
                         'standard_type' => $value['standard_type'],
@@ -167,7 +167,7 @@ class PolicyController extends Controller
 
         if(!$currentPolicy or empty($currentPolicy)){
 
-            foreach ($policy->standard as $key => $value) {
+            foreach ($policy->default_standard_set as $key => $value) {
                 if($value['index'] == $index) $max = $value['standard_agent_price'];
             }
 
