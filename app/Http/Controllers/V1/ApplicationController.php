@@ -22,7 +22,7 @@ class ApplicationController extends Controller
     	try{
             // 获取展示的轮播图
             $list = \App\ApplicationForm::where('user_id', $request->user->id)
-            			->orWhere('agent_id', $request->user->id)->orderBy('id', 'desc')->first();
+            			->orWhere('agent_id', $request->user->id)->orderBy('id', 'desc')->get();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data' => $list]]);
 
