@@ -51,7 +51,7 @@ class ApplicationController extends Controller
 
             if(!$request->sn) return response()->json(['error'=>['message' => '缺少必要参数:机器SN!']]);
 
-            $order = \App\ApplicationForm::where('id')->first();
+            $order = \App\ApplicationForm::where('id', $request->order_id)->first();
 
             if(!$order or empty($order)) return response()->json(['error'=>['message' => '申请订单不存在!']]);
 
