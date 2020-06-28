@@ -86,9 +86,9 @@ class PolicyController extends Controller
                 }
                 // 设置激活返现
                 if($User->group == 1 )
-                    $arrs['active_price']['money'] = $userPolicy->default_active_set['return_money'];
+                    $arrs['active_price']['return_money'] = $userPolicy->default_active_set['return_money'];
                 if($User->group == 2 )
-                    $arrs['active_price']['money'] = $userPolicy->vip_active_set['return_money'];
+                    $arrs['active_price']['return_money'] = $userPolicy->vip_active_set['return_money'];
 
                 $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
                 $arrs['active_price']['min'] = 0;
