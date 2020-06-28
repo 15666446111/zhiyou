@@ -106,7 +106,7 @@ class ArticleController extends AdminController
 
         $form->switch('active', __('状态'))->default(1);
 
-        $form->image('images', __('图片'));
+        $form->image('images', __('图片'))->uniqueName();
 
         $form->select('type_id', __('类型'))->options(ArticleType::where('active', '1')->get()->pluck('name', 'id'));
 

@@ -100,7 +100,7 @@ class ShareController extends AdminController
         $form = new Form(new Share());
 
         $form->text('title', __('分享标题'));
-        $form->image('image', __('分享素材'));
+        $form->image('image', __('分享素材'))->uniqueName();
         $form->select('type', __('分享类型'))->options(\App\ShareType::get()->pluck('name', 'id'));
         $form->text('share_text', __('分享文案'));
         $form->number('code_width', __('二维码宽度'))->default(100);
