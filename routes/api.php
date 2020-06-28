@@ -215,6 +215,12 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getApplyFirend', 'V1\ApplicationController@list');
 
+    /**
+     * @version [<APP 获取机具活动详情>] [<description>]
+     * @return  [用户发在朋友圈的推荐二维码 被朋友扫码申请后的信息]   [<description>]
+     * @version [< ] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/setApplyFirend', 'V1\ApplicationController@set');
 
     /**
      * @version [<APP 获取朋友圈申请的机器列表 商户推荐列表>] [<description>]
