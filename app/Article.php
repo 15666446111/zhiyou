@@ -17,4 +17,11 @@ class Article extends Model
     {
     	return $this->belongsTo('App\ArticleType', 'type_id', 'id');
     }
+
+
+    /* 返回带全部地址的图片*/
+    public function getImagesAttribute($value)
+    {
+        return env("APP_URL")."/storage/".$value;
+    }
 }
