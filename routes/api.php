@@ -210,11 +210,18 @@ Route::prefix('V1')->group(function () {
 
     /**
      * @version [<APP 获取机具活动详情>] [<description>]
+     * @return  [用户发在朋友圈的推荐二维码 被朋友扫码申请后的信息]   [<description>]
+     * @version [< ] [<description>]
+     */
+    Route::middleware('AuthToken')->get('/getApplyFirend', 'V1\ApplicationController@list');
+
+
+    /**
+     * @version [<APP 获取朋友圈申请的机器列表 商户推荐列表>] [<description>]
      * @return  [机具的达标返现与交易情况]   [<description>]
      * @version [<机具的达标返现情况] [<description>]
      */
     Route::middleware('AuthToken')->get('/getTerminalActiveDetail', 'V1\TerminalController@getActiveDetail');
-
 
 
     /**

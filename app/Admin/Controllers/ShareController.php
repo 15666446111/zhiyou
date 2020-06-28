@@ -25,22 +25,34 @@ class ShareController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Share());
+
         $grid->model()->latest();
 
         $grid->column('id', __('索引'));
+
         $grid->column('title', __('分享标题'));
+
         $grid->column('image', __('分享素材'));
+
         $grid->column('types.name', __('分享类型'))->label();
+
         $grid->column('share_text', __('分享文案'));
+
         $grid->column('code_width', __('二维码宽度'));
+
         $grid->column('code_height', __('二维码高度'));
+
         $grid->column('code_margin', __('二维码边距'));
+
         $grid->column('pos_x', __('X轴定位'));
+
         $grid->column('pos_y', __('Y轴定位'));
+
         $grid->column('active', __('状态'))->bool();
+
         $grid->column('created_at', __('创建时间'));
         //$grid->column('updated_at', __('Updated at'));
-        //
+
         $grid->filter(function($filter){
             // 去掉默认的id过滤器
             $filter->disableIdFilter();
