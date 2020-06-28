@@ -55,16 +55,16 @@ class ApplicationController extends Controller
 
             if(!$order or empty($order)) return response()->json(['error'=>['message' => '申请订单不存在!']]);
 
-            if($order->agent_id != $request->user->id) return response()->json(['error'=>['message' => '非法授权!']]);
-
-            if($order->is_handle != 0 ) return response()->json(['error'=>['message' => '该申请已处理!']]);
-
             // 获取该SN信息
             $temail = \App\Merchant::where('user_id', $request->sn)->where('bind_status', 0)->where('active_status', 0)->first();
 
             if(!$temail or empty( $temail ))
                  return response()->json(['error'=>['message' => '该终端不存在或已绑定/激活!']]);
 
+
+            if($order->agent_id != $request->user->id) return response()->json(['error'=>['message' => '非法授权!']]);
+
+            if($order->is_handle != 0 ) return response()->json(['error'=>['message' => '该申请已处理!']]);
 
             $order->is_handle = 1;
             $order->handle_time = Carbon::now()->toDateTimeString();

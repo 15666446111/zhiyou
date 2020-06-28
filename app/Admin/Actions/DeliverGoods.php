@@ -52,7 +52,7 @@ class DeliverGoods extends RowAction
             	\App\UserPolicy::create([
             		'user_id'		        =>	$request->user,
             		'policy_id'		        =>	$request->policy,
-            		'sett_price'	        =>	$policy->sett_price,
+            		'sett_price'	        =>	$sett_price,
                     'default_active_set'    =>  $default_active_set,
                     'vip_active_set'        =>  $vip_active_set,
                     'standard'              =>  $standard,

@@ -146,6 +146,184 @@ class PolicyController extends Controller
     }
 
 
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-28
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 设置下级的某个政策活动的信息]
+     * @param     Request     $request [description]
+     */
+    public function setPolicyInfo(Request $request)
+    {
+
+
+            if(!$request->uid) return response()->json(['error'=>['message' => '参数不全!']]);
+
+            if(!$request->pid) return response()->json(['error'=>['message' => '参数不全!']]);
+
+            $policyInfo = \App\Policy::where('id', $request->pid)->first();
+
+            if(!$policyInfo or empty($policyInfo)) return response()->json(['error'=>['message' => '活动政策不存在!']]);
+
+            /**
+             * @version [<vector>] [< 获取下级用户信息。判断是否为直接下级代理>]
+             */
+            $son = \App\Buser::where('id', $request->uid)->first();
+
+            if(!$son or empty($son)) return response()->json(['error'=>['message' => '用户不存在!']]);
+
+            if($request->user->group != 2) return response()->json(['error'=>['message' => '您无权设置该选项!']]);
+
+            if($son->parent != $request->user->id) return response()->json(['error'=>['message' => '该用户您无权设置!']]);
+
+            if($son->group != 2) return response()->json(['error'=>['message' => '该用户不是代理!']]);
+
+            /**
+             * @version [<vector>] [< 检查完毕后 开始进行policy 设置 >]
+             */
+            #1 ： 首先获取该用户的该政策信息。如果没有 先增加一条默认的政策信息
+            $sonPolicy = \App\UserPolicy::where('user_id', $son->id)->where('policy_id', $request->pid)->first();
+            
+            if(!$sonPolicy or empty($sonPolicy) or $sonPolicy == null){
+
+                $sett_price = $policyInfo->sett_price;
+                
+                foreach ($sett_price as $key => $value) {
+                    $sett_price[$key]['setprice'] = $value['defaultPrice'];
+                }
+
+                $default_active_set = $policyInfo->default_active_set;
+                $default_active_set['return_money'] = $default_active_set['default_money'];
+
+                $vip_active_set = $policyInfo->vip_active_set;
+                $vip_active_set['return_money'] = $vip_active_set['default_money'];
+
+                $standard = $policyInfo->default_standard_set;
+
+                $sonPolicy = \App\UserPolicy::create([
+                    'user_id'               =>  $request->uid,
+                    'policy_id'             =>  $request->pid,
+                    'sett_price'            =>  $sett_price,
+
+                    'default_active_set'    => $default_active_set,
+                    'vip_active_set'        => $vip_active_set,
+
+                    'standard'              =>  $standard
+                ]);
+            }
+
+
+            /**
+             * @version [<vector>] [< 设置交易结算价 >]
+             */
+            if(isset($request->tradePrice)){
+                #1 读取当前交易的结算价
+                $sett_price = $sonPolicy->sett_price;
+
+                foreach ($sett_price as $key => $value) {
+
+                    $max = $this->getSetPriceMax($policyInfo, $value['trade_type'], $value['trade_bank']);
+                    $min = $this->getSetPriceMin($request->user, $policyInfo, $value['trade_type'], $value['trade_bank']);
+                    
+                    $rate = $this->getSetPriceParams($request->tradePrice, $value['trade_name']);
+                    # 说明设置过了
+                    if($rate != 0 && $rate != $value['setprice']){
+                        if($rate >= $min && $rate <= $max ){
+                            $sett_price[$key]['setprice'] = $rate;
+                        }else return response()->json(['error'=>['message' => $value['trade_name'].'参数不再合理区间内!']]);
+                    }
+                }
+
+                $sonPolicy->sett_price      = $sett_price;
+            }
+
+            /**
+             * @version [<vector>] [< 设置激活返现 >]
+             */
+            if(isset($request->activePrice)){
+                #1 读取当前 Vip 结算价
+                $vipActive      = $sonPolicy->vip_active_set;
+                #2 获取可设置的范围
+                $vipActiveMax   =  $this->getActivePriceMax($request->user, $policyInfo);
+                $vipActiveMin   =  0;
+                #3 传递过来设置的值 需为这两个值的区间
+                if($request->activePrice * 100 >= $vipActiveMin && $request->activePrice * 100 <= $vipActiveMax ){
+                    $vipActive['return_money']      = $request->activePrice * 100;
+                    $sonPolicy->vip_active_set      = $vipActive;
+                }else return response()->json(['error'=>['message' => '激活返现不再合理区间内!']]);
+            }
+
+            /**
+             * @version [<vector>] [< 设置激活达标奖励 >]
+             */
+            if(isset($request->standardPrice)){
+                #1 读取当前达标的信息
+                $standard = $sonPolicy->standard;
+                #2 循环设置
+                foreach ($standard as $key => $value) {
+                    $max = $this->getStandardPriceMax( $policyInfo, $request->user, $value['index'] );
+                    $min = 0;
+                    $price = $this->getStandardParams($request->standardPrice, $value['index']);
+
+                    if($price != -1 ){
+                        if($price * 100  >= $min && $price * 100 <= $max){
+                            $standard[$key]['standard_agent_price'] = $price;
+                        }else return response()->json(['error'=>['message' => '累积达标参数不再合理区间内!']]);
+
+                    }
+                }
+
+                $sonPolicy->standard      = $standard;
+            }
+
+            $sonPolicy->save();
+            
+            return response()->json(['success'=>['message' => '设置成功!', 'data' => $sonPolicy]]);
+    }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-28
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 设置结算价专用 返回]
+     * @param     [type]      $params [description]
+     * @param     [type]      $name   [description]
+     * @return    [type]              [description]
+     */
+    public function getSetPriceParams($params, $name)
+    {
+        $rate = 0;
+
+        foreach ($params as $key => $value) {
+            if($value['name'] == $name) $rate = $value['rate'];
+        }
+
+        return $rate * 100;
+    }
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-28
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [设置达标专用]
+     * @param     [type]      $params [description]
+     * @param     [type]      $index  [description]
+     * @return    [type]              [description]
+     */
+    public function getStandardParams($params, $index)
+    {
+        $price = -1;
+
+        foreach ($params as $key => $value) {
+            if($value['index'] == $index) $price = $value['standard_agent_price'];
+        }
+
+        return $price;
+    }
 
     /**
      * @Author    Pudding
@@ -244,10 +422,6 @@ class PolicyController extends Controller
         return $userRate;
     }
 
-
-
-
-
     /**
      * @Author    Pudding
      * @DateTime  2020-06-03
@@ -286,11 +460,5 @@ class PolicyController extends Controller
         return $userRate;
 
     }
-
-
-
-
-
-
 
 }
