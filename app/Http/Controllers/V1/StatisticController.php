@@ -110,7 +110,7 @@ class StatisticController
     {
         $Arr = $rule == 'team' ? $this->team :  array($this->Users->id);
 
-        return \App\Trade::where('trade_status', '>=', '1')->whereBetween('created_at', [ $this->StartTime,  $this->EndTime])
+        return \App\Trade::where('trade_status', '>=', '1')->whereBetween('trade_time', [ $this->StartTime,  $this->EndTime])
                 ->whereHas('merchants', function($q) use ($Arr){
                     $q->whereIn('user_id', $Arr);
                 })->sum('money');
