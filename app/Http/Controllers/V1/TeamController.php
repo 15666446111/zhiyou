@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -55,14 +56,14 @@ class TeamController extends Controller
     public function data(Request $request)
     {
         try{
-
+            DB::connection()->enableQueryLog();
             /**
              * @version [<vector>] [<获得团队日数据 , 日交易数据 >]
              */
             $model      = new StatisticController($request->user, 'day');
             // 日交易数据
             $DayTrade = number_format(($model->getTradeSum() / 100), 2, ".", "," );
-            
+           
             // 日激活数据
             $DayActive= $model->getNewActiveMerchant();
             // 日商户个数
@@ -100,18 +101,23 @@ class TeamController extends Controller
             $CountModel = new StatisticController($request->user, 'all');
             // 月交易数据
             $CountTrade = number_format(($CountModel->getTradeSum() / 100), 2, ".", "," );
+
+
             // 日激活数据
             $CountActive= $model->getNewActiveMerchant();
             // 日商户个数
             $CountMerchant = $CountModel->getNewAddMerchant();
             // 日收益数据
             $CountIncome= number_format( 0, 2, ".", "," );
+
+
             // 日伙伴个数
             $CountTeam  = $CountModel->getNewAddTeamCount();
+
             // 日台均交易
             $CountAvgTrade = number_format( 0, 2, ".", "," );
 
-
+            //dump(DB::getQueryLog());
             return response()->json(['success'=>
                     [
                         'message' => '获取成功!', 
