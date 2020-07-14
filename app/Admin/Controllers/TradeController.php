@@ -103,6 +103,7 @@ class TradeController extends AdminController
                     'VIPPAY'        => '激活交易',
                     'CARDPAYRVS'    => '消费冲正',
                     'CARDPAY'       => '刷卡消费',
+                    'ENJOY'         => '优享',
                     'CARDCANCEL'    => '消费撤销',
                     'QUICKPAY'      => '快捷支付',
                     'WXQRPAY'       => '微信扫码',
