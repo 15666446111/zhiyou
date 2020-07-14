@@ -27,7 +27,9 @@ class WithdrawController extends AdminController
         $grid = new Grid(new Withdraw());
 
         $grid->column('id', __('索引'));
+
         $grid->column('users.nickname', __('提现会员'));
+        
         $grid->column('users.account', __('会员账号'));
 
         $grid->column('money', __('提现金额'))->display(function ($money) {

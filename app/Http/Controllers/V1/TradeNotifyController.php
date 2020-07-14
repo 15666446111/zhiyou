@@ -44,7 +44,11 @@ class TradeNotifyController extends Controller
         $list       = json_decode($response->orderDataList);
 
         foreach ($list as $key => $value) {
-            
+                
+            if($value->txnCd == "CARDPAY" && $value->memberCou == "4"){
+                $value->txnCd = "ENJOY";
+            }
+
             // 新建交易订单 写入交易表 并且 分发到队列处理
             $tradeOrder = \App\Trade::create([
 
