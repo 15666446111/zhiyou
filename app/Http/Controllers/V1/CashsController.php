@@ -61,7 +61,7 @@ class CashsController extends Controller
                 $dt = Carbon::parse($value->date);
 
                 //dd(\App\Cash::where('user_id', $request->user->id)->whereDay('created_at', $value->date)->orderBy('created_at', 'desc')->get());
-                $listdata = \App\Cash::where('user_id', $request->user->id);
+                $listdata = \App\Cash::where('user_id', $request->user->id)->whereDate('created_at', $value->date);
 
                 if($type == 'cash'){
                     $listdata->whereIn('cash_type', ['1', '2', '3', '4']);
