@@ -31,8 +31,16 @@ class CashsController extends Controller
             $countMonth = \App\Cash::where('user_id',$request->user->id)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('cash_money');
             $data['revenueMonth'] = number_format($countMonth / 100, 2, '.', ',');
 
+            // 默认查询一周
+            if(!$request->date){
+
+                $request->begin = Carbon::today()->subDays(7)->toDateTimeString();
+
+                $request->end   = Carbon::now()->toDateTimeString();
+            }
+
             //
-            $list = \App\Cash::where('user_id', $request->user->id);
+            $list = \App\Cash::where('user_id', $request->user->id)->whereBetween('created_at', [$request->begin, $request->end]);
 
             // 收益类型
             if($type == 'cash'){
