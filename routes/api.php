@@ -180,6 +180,10 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getNoBindMerchant', 'V1\MerchantController@getNoBindList');
 
 
+    /**
+     * @version [<vector>] [< 分红奖励页面 >]
+     */
+    Route::middleware('AuthToken')->get('/bonusPage', 'V1\BonusController@page');
 
 
     /**

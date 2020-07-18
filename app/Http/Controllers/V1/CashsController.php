@@ -37,6 +37,13 @@ class CashsController extends Controller
                 $request->begin = Carbon::today()->subDays(7)->toDateTimeString();
 
                 $request->end   = Carbon::now()->toDateTimeString();
+            }else{
+
+                $date = Carbon::createFromFormat('Y-m', $request->date);
+
+                $request->begin = $date->firstOfMonth()->toDateTimeString();
+
+                $request->end   = $date->lastOfMonth()->toDateTimeString();
             }
 
             //
