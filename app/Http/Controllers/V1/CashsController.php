@@ -20,20 +20,20 @@ class CashsController extends Controller
             $type = $request->type ?? 'all';
 
             //总收益
-            $data['revenueAll'] = \App\Cash::where('user_id',$request->user->id)->sum('cash_money');
+            $countMoney = \App\Cash::where('user_id',$request->user->id)->sum('cash_money');
+            $data['revenueAll'] = number_format($countMoney / 100, 2, '.', ',');
 
             //今日收益
-            $data['revenueDay'] = \App\Cash::where('user_id',$request->user->id)->whereDate('created_at', Carbon::today())->sum('cash_money');
+            $countToday = \App\Cash::where('user_id',$request->user->id)->whereDate('created_at', Carbon::today())->sum('cash_money');
+            $data['revenueDay'] = number_format($countToday / 100, 2, '.', ',');
             
             //本月收益
-            $data['revenueMonth'] = \App\Cash::where('user_id',$request->user->id)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('cash_money');
+            $countMonth = \App\Cash::where('user_id',$request->user->id)->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->sum('cash_money');
+            $data['revenueMonth'] = number_format($countMonth / 100, 2, '.', ',');
 
-            // 查询用户账号余额
-            $data['balance'] = $request->user->wallets->cash_blance + $request->user->wallets->return_blance;
+            //
+            $list = \App\Cash::where('user_id', $request->user->id);
 
-
-            // 
-            $list = \App\cash::where('user_id', $request->user->id);
             // 收益类型
             if($type == 'cash'){
                 $list->whereIn('cash_type', ['1', '2', '3', '4']);
@@ -53,15 +53,15 @@ class CashsController extends Controller
                             DB::raw('SUM(cash_money) as money')
                         )
                     );
-            
+
             $weekarray=array("日","一","二","三","四","五","六");
 
             foreach ($list as $key => $value) {
 
                 $dt = Carbon::parse($value->date);
 
-                //dd(\App\Cash::where('user_id', $request->user->id)->whereDay('created_at', $value->date)->orderBy('created_at', 'desc')->get());
-                $listdata = \App\Cash::where('user_id', $request->user->id)->whereDate('created_at', $value->date);
+                // 循环每一天的数据查询
+                $listdata = \App\Cash::where('user_id', $request->user->id)->with('trades')->whereDate('created_at', $value->date);
 
                 if($type == 'cash'){
                     $listdata->whereIn('cash_type', ['1', '2', '3', '4']);
@@ -74,23 +74,24 @@ class CashsController extends Controller
                 if($type == 'other'){
                     $listdata->whereIn('cash_type', ['10', '11']);
                 }   
-                
+
                 $listdata = $listdata->orderBy('created_at', 'desc')->get();
                 
                 $arrs = [];
+
                 foreach ($listdata as $k => $v) {
                     $arrs[] = [
                         'type'  => $v->cash_type, 
-                        'money' => $v->cash_money, 
+                        'money' => number_format($v->cash_money / 100, 2, '.', ','), 
                         'sn'    => $v->trades->merchant_sn, 
-                        'orderMoney' => $v->trades->money,
+                        'orderMoney' => number_format($v->trades->money / 100, 2, '.', ','),
                         'date'  => $v->created_at->toDateTimeString(),
                     ];
                 }
                 
                 $data['cash'][] = array(
                     'title' => $dt->year."年".$dt->month."月".$dt->day."日", 
-                    'money' => $value->money, 
+                    'money' => number_format($value->money / 100 , 2, '.', ','), 
                     'week'  => "星期".$weekarray[$dt->dayOfWeek],
                     'list'  => $arrs,
                 );
