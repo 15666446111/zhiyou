@@ -252,39 +252,39 @@ Route::prefix('V1')->group(function () {
 
 
     /**
-     * 添加用户收货地址接口
+     * @version [<vector>] [< 添加用户收货地址接口 >]
      */
     Route::middleware('AuthToken')->post('/addressAdd', 'V1\AddressController@address');
 
 
     /**
-     * 查询用户收货地址接口
+     * @version [<vector>] [< 查询用户收货地址接口 >]
      */
     Route::middleware('AuthToken')->get('/getAddress', 'V1\AddressController@getAAddress');
 
 
      /**
-     * 删除用户收货地址接口
+     * @version [<vector>] [< 删除用户收货地址接口 >]
      */
     Route::middleware('AuthToken')->get('/deAddress', 'V1\AddressController@deleteAddress');
  
 
     /**
-     * 修改用户收货地址接口
+     * @version [<vector>] [< 修改用户收货地址接口 >]
      */
     Route::middleware('AuthToken')->get('/upAddress', 'V1\AddressController@updateAddress');
 
 
 
     /**
-     * 查询单个收货地址接口
+     * @version [<vector>] [< 查询单个收货地址接口 >]
      */
     Route::middleware('AuthToken')->get('/getFirstAddress', 'V1\AddressController@firstAddress');    
 
 
     
     /**
-     * 查询默认收货地址接口
+     * @version [<vector>] [< 查询默认收货地址接口 >]
      */
     Route::middleware('AuthToken')->get('/getDefaultAddress', 'V1\AddressController@defaultAddress');    
 
@@ -424,21 +424,32 @@ Route::prefix('V1')->group(function () {
 
     
     /**
-     * 划拨回拨记录
+     * @version [<vector>] [< 划拨回拨记录 >]
      */
     Route::middleware('AuthToken')->get('/getTransferLog', 'V1\TransferController@transferLog');
 
 
     /**
-     * 查询商户交易明细
+     * @version [<vector>] [< 查询商户交易明细 >]
      */
     Route::middleware('AuthToken')->get('/getMerchantDetails', 'V1\MerchantsController@MerchantDetails');
 
 
     /**
-     * 忘记密码接口
+     * @version 忘记密码接口
      */
     Route::post('/forgetPwd', 'V1\LoginController@forget');
+
+
+
+
+
+
+
+    /**
+     * @version [<vector>] [< 团队-> 业务详情 -> 详细数据]
+     */
+    Route::middleware('AuthToken')->get('/getTeamTradeDetail', 'V1\DetailController@TradeDetail');  // 团队-业务详情-交易量
 
 });
 
