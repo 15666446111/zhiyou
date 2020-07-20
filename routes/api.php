@@ -241,19 +241,6 @@ Route::prefix('V1')->group(function () {
 
 
     /**
-     * @version [<APP 获取某代理的商户分布情况 >] [<description>]
-     * @return  [代理的商户分布情况]   [<description>]
-     * @version [<获取某代理的商户分布情况] [<description>]
-     */
-    Route::middleware('AuthToken')->get('/getAgentMerchant', 'V1\AgentController@getAgentDetail');
-    Route::middleware('AuthToken')->get('/getAgentTeam',     'V1\AgentController@getAgentTeamDetail');
-    Route::middleware('AuthToken')->get('/getAgentTemail',   'V1\AgentController@getAgentTemail');
-
-
-    
-
-
-    /**
      * @version [<vector>] [< 添加用户收货地址接口 >]
      */
     Route::middleware('AuthToken')->post('/addressAdd', 'V1\AddressController@address');
@@ -453,6 +440,10 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getTeamTradeDetail', 'V1\DetailController@TradeDetail');  // 团队-业务详情-交易量
     Route::middleware('AuthToken')->get('/getAgentActive',     'V1\DetailController@AgentActive');  // 团队-业务详情-激活数据
+    Route::middleware('AuthToken')->get('/getAgentTemail',     'V1\DetailController@AgentDetail');  // 团队-业务详情-机器总数
+
+    Route::middleware('AuthToken')->get('/getAgentTeam',       'V1\DetailController@TeamDetail');   // 团队-业务详情-团队数据
+    Route::middleware('AuthToken')->get('/getAgentMerchant',   'V1\DetailController@MercDetail');  // 团队-业务详情-商户数据
 });
 
 

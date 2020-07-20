@@ -260,13 +260,213 @@ class DetailController extends Controller
 	    	}
 
 	    	return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
-	    	
+
     	} catch (\Exception $e) {
 
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
         }
     }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-06
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 团队 - 业务详情 - 机具总数 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function AgentDetail(Request $request)
+    {
+    	try{
+
+	    	$this->type = (!$request->type or $request->type =='self') ? 'self' : 'agent';
+
+	    	// 如果查询的类型为agent 代表要查询直接下级的信息 所以agent_id 不能为空
+	    	if($this->type == 'agent'){
+	    		if(!$request->agent_id){
+	    			return response()->json(['error'=>['message' => '缺少代理信息!']]);
+	    		}
+	    	}
+
+	    	$data = array();
+
+	    	if($this->type == 'self'){
+	    		$selfData = \App\Brand::withCount(['merchants' => function($query) use ($request){
+	    			$query->where('user_id', $request->user->id);
+	    		}])->where('active', 1)->get();
+
+	    		foreach ($selfData as $key => $value) {
+	    			$data['self'][] = array('title' => $value->brand_name, 'count' => $value->merchants_count);
+	    		}
+	    		
+				// 获取所有代理的
+				$agent = $this->getAgent($request->user->id);
+				$agentData = \App\Brand::withCount(['merchants' => function($query) use ($agent){
+	    			$query->whereIn('user_id', $agent);
+	    		}])->get();
+
+				foreach ($agentData as $key => $value) {
+					$data['agent'][]	=  array('title' => $value->brand_name, 'count' => $value->merchants_count);
+				}
+	    	}
+
+	    	if($this->type == 'agent'){
+				// 获取所有代理的
+				$agent = $this->getAgent($request->agent_id);
+				$agentData = \App\Brand::withCount(['merchants' => function($query) use ($agent){
+	    			$query->whereIn('user_id', $agent);
+	    		}])->get();
+
+				foreach ($agentData as $key => $value) {
+					$data['agent'][]	=  array('title' => $value->brand_name, 'count' => $value->merchants_count);
+				}
+	    	}
+
+	    	return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+    	} catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+    }
+
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-06
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 团队 - 业务详情 - 团队总数 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function TeamDetail(Request $request)
+    {
+    	try{
+
+	    	$this->type = (!$request->type or $request->type =='self') ? 'self' : 'agent';
+
+	    	// 如果查询的类型为agent 代表要查询直接下级的信息 所以agent_id 不能为空
+	    	if($this->type == 'agent'){
+	    		if(!$request->agent_id){
+	    			return response()->json(['error'=>['message' => '缺少代理信息!']]);
+	    		}
+	    	}
+
+	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
+
+	    	if(!$request->date){
+
+	    		$this->begin = $this->dateType == 'day' ? Carbon::today()->toDateTimeString() : Carbon::now()->firstOfMonth()->toDateTimeString();
+
+	    		$this->end = $this->dateType == 'day' ? Carbon::tomorrow()->toDateTimeString() : Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	}else{
+
+	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+
+	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	}
+
+	    	$data = array();
+
+	    	if($this->type == 'self'){
+	    		$sons =  \App\Buser::where('parent', $request->user->id)->where('created_at', '>=', $this->begin)->where('created_at', '<=', $this->end)->pluck('id')->toArray();
+
+	    		$data['self'][] = array( 'title' => '直推伙伴', 'count' => count($sons) );
+
+	    		$data['self'][] = array(
+	    			'title'		  => '间推伙伴',
+	    			'count' => \App\BuserParent::where('parents', 'like', "%\_".$request->user->id."\_%")->whereNotIn('user_id', $sons)->where('created_at', '>=', $this->begin)->where('created_at', '<=', $this->end)->count(),
+	    		);
+	    	}
+
+	    	if($this->type == 'agent'){
+
+	    		$agentInfo = \App\Buser::where('id', $request->agent_id)->first();
+
+	    		if(!$agentInfo or empty($agentInfo) or $agentInfo->parent != $request->user->id){
+	    			return response()->json(['error'=>['message' => '无此代理信息!']]);
+	    		}
+
+	    		$sons =  \App\Buser::where('parent', $request->agent_id)->where('created_at', '>=', $this->begin)->where('created_at', '<=', $this->end)->pluck('id')->toArray();
+
+	    		$data['agent'][] = array( 'title' => '直推伙伴', 'first_count' => count($sons));
+
+	    		$data['agent'][] = array(
+	    			'title'	=> '间推伙伴',
+	    			'count' => \App\BuserParent::where('parents', 'like', "%\_".$request->agent_id."\_%")->whereNotIn('user_id', $sons)->where('created_at', '>=', $this->begin)->where('created_at', '<=', $this->end)->count(),
+	    		);
+	    	}
+
+        	return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+
+    	} catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+    }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-06-06
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [  团队 - 业务详情 - 商户总数 ] ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function MercDetail(Request $request)
+    {
+
+	    	$this->type = (!$request->type or $request->type =='self') ? 'self' : 'agent';
+
+	    	// 如果查询的类型为agent 代表要查询直接下级的信息 所以agent_id 不能为空
+	    	if($this->type == 'agent'){
+	    		if(!$request->agent_id){
+	    			return response()->json(['error'=>['message' => '缺少代理信息!']]);
+	    		}
+	    	}
+
+	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
+
+	    	if(!$request->date){
+
+	    		$this->begin = $this->dateType == 'day' ? Carbon::today()->toDateTimeString() : Carbon::now()->firstOfMonth()->toDateTimeString();
+
+	    		$this->end = $this->dateType == 'day' ? Carbon::tomorrow()->toDateTimeString() : Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	}else{
+
+	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+
+	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	}
+
+	    	$data = array();
+
+	    	
+
+        if(!$request->uid) return response()->json(['error'=>['message' => '无效参数']]);
+
+        $arrs = array();
+
+        // 获取代理
+        $team = \App\BuserParent::where('parents', 'like', '%\_'.$request->uid.'\_%')->pluck('user_id')->toArray();
+
+        $arrs['agent']  = \App\Merchant::whereIn('user_id', $team)->count();
+
+        // 获取个人商户情况
+        $arrs['me'] = \App\Merchant::where('user_id', $request->uid)->count();
+
+        return response()->json(['success'=>['message' => '获取成功!', 'data'=>$arrs]]);
+
+    }
+
 
     /**
      * @Author    Pudding
