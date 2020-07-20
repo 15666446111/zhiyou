@@ -30,6 +30,20 @@ class DetailController extends Controller
 	 */
 	protected $end;
 
+
+	/**
+	 * [$dateType 日期类型]
+	 * @var [type]
+	 */
+	protected $dateType;
+
+
+	/**
+	 * [$date 查询的时间。格式为 2020-07]
+	 * @var [type]
+	 */
+	protected $date;
+
     /**
      * @Author    Pudding
      * @DateTime  2020-07-20
@@ -51,13 +65,36 @@ class DetailController extends Controller
     		}
     	}
 
-    	if(!$request->begin){
-    		$this->begin = Carbon::today()->toDateTimeString();
+    	if(!$request->dateType or $request->dateType == 'day'){
+    		$this->dateType = 'day';
+    	}else{
+    		$this->dateType = 'month';
     	}
 
-    	if(!$request->end){
-    		$this->end   = Carbon::tomorrow()->toDateTimeString();
+    	if(!$request->date){
+
+    		if($this->dateType == 'day'){
+    			$this->begin = Carbon::today()->toDateTimeString();
+    		}
+    		if($this->dateType == 'month'){
+    			$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
+    		}
+
+    		if($this->dateType == 'day'){
+    			$this->end   = Carbon::tomorrow()->toDateTimeString();
+    		}
+    		if($this->dateType == 'month'){
+    			$this->end 	 = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+    		}
+
+    	}else{
+
+    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+
+    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
     	}
+
+    	//dd($this->begin);
 
     	$data = array();
 
