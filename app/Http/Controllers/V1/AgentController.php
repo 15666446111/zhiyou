@@ -91,35 +91,6 @@ class AgentController extends Controller
     }
 
 
-    /**
-     * @Author    Pudding
-     * @DateTime  2020-06-06
-     * @copyright [copyright]
-     * @license   [license]
-     * @version   [获取团队及代理的激活]
-     * @param     Request     $request [description]
-     * @return    [type]               [description]
-     */
-    public function getAgentActive(Request $request)
-    {
-    	if(!$request->uid) return response()->json(['error'=>['message' => '无效参数']]);
 
-    	$arrs = array();
-
-    	// 获取所有正常列表
-    	$policy = \App\Policy::get();
-
-    	$team = \App\BuserParent::where('parents', 'like', '%\_'.$request->uid.'\_%')->pluck('user_id')->toArray();
-
-    	//
-    	foreach ($policy as $key => $value) 
-    	{
-    		$me  	= \App\Merchant::where('user_id', $request->uid)->where('policy_id', $value->id)->where('active_status', 1)->count();
-    		$team 	= \App\Merchant::whereIn('user_id', $team)->where('policy_id', $value->id)->where('active_status', 1)->count();
-    		$arrs[] = array('title' => $value->title, 'me' => $me, 'agent' => $team);
-    	}
-
-    	return response()->json(['success'=>['message' => '获取成功!', 'data'=>$arrs]]);
-    }
 
 }

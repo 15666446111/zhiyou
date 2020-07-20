@@ -248,7 +248,9 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getAgentMerchant', 'V1\AgentController@getAgentDetail');
     Route::middleware('AuthToken')->get('/getAgentTeam',     'V1\AgentController@getAgentTeamDetail');
     Route::middleware('AuthToken')->get('/getAgentTemail',   'V1\AgentController@getAgentTemail');
-    Route::middleware('AuthToken')->get('/getAgentActive',   'V1\AgentController@getAgentActive');
+
+
+    
 
 
     /**
@@ -450,7 +452,7 @@ Route::prefix('V1')->group(function () {
      * @version [<vector>] [< 团队-> 业务详情 -> 详细数据]
      */
     Route::middleware('AuthToken')->get('/getTeamTradeDetail', 'V1\DetailController@TradeDetail');  // 团队-业务详情-交易量
-
+    Route::middleware('AuthToken')->get('/getAgentActive',     'V1\DetailController@AgentActive');  // 团队-业务详情-激活数据
 });
 
 
