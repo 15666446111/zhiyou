@@ -306,7 +306,7 @@ class DetailController extends Controller
 				$agent = $this->getAgent($request->user->id);
 				$agentData = \App\Brand::withCount(['merchants' => function($query) use ($agent){
 	    			$query->whereIn('user_id', $agent);
-	    		}])->get();
+	    		}])->where('active', 1)->get();
 
 				foreach ($agentData as $key => $value) {
 					$data['agent'][]	=  array('title' => $value->brand_name, 'count' => $value->merchants_count);
@@ -318,7 +318,7 @@ class DetailController extends Controller
 				$agent = $this->getAgent($request->agent_id);
 				$agentData = \App\Brand::withCount(['merchants' => function($query) use ($agent){
 	    			$query->whereIn('user_id', $agent);
-	    		}])->get();
+	    		}])->where('active', 1)->get();
 
 				foreach ($agentData as $key => $value) {
 					$data['agent'][]	=  array('title' => $value->brand_name, 'count' => $value->merchants_count);
@@ -424,6 +424,21 @@ class DetailController extends Controller
     public function MercDetail(Request $request)
     {
 
+    }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-20
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 团队 - 业务详情 - 台均总数 ]
+     * @param     Request     $request [description]
+     */
+    public function AvgDetail(Request $request)
+    {
+    	try{
+
 	    	$this->type = (!$request->type or $request->type =='self') ? 'self' : 'agent';
 
 	    	// 如果查询的类型为agent 代表要查询直接下级的信息 所以agent_id 不能为空
@@ -433,13 +448,14 @@ class DetailController extends Controller
 	    		}
 	    	}
 
-	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
+	    	$this->dateType = (!$request->dateType or $request->dateType == 'month') ? 'month' : 'month';
 
 	    	if(!$request->date){
 
-	    		$this->begin = $this->dateType == 'day' ? Carbon::today()->toDateTimeString() : Carbon::now()->firstOfMonth()->toDateTimeString();
+	    		$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
 
-	    		$this->end = $this->dateType == 'day' ? Carbon::tomorrow()->toDateTimeString() : Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		$this->end   = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+
 	    	}else{
 
 	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
@@ -449,21 +465,97 @@ class DetailController extends Controller
 
 	    	$data = array();
 
-	    	
+	    	if($this->type == 'self'){
+	    		//DB::connection()->enableQueryLog();
+	    		// 获取交易量
+	    		$selfData = \App\Policy::withCount([
+	    			'merchants' => function($query) use ($request){
+	    				$query->where('user_id', $request->user->id);
+	    			}
+	    		])->get();
+	    		
+	    		foreach ($selfData as $key => $value) {
+	    			// 获取交易总量
+	    			$TradeCount = \App\Trade::whereHas('merchants_sn', function($query) use ($request, $value){
+	    				$query->where('user_id', $request->user->id)
+	    					->where('policy_id', $value->id)
+	    					->where('trade_status', 1)
+	    					->where('card_type', '!=', '借记卡')
+	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end);
+	    			})->sum('money');
 
-        if(!$request->uid) return response()->json(['error'=>['message' => '无效参数']]);
 
-        $arrs = array();
+	    			if($TradeCount === 0 or $value->merchants_count === 0){
+	    				$avg = 0;
+	    			}else{
+	    				$avg = number_format( $TradeCount / $value->merchants_count / 100 , 2, '.', ',');
+	    			}
+	    			$data['self'][] = array('title' => $value->title, 'avg' => $avg);
+	    		}
 
-        // 获取代理
-        $team = \App\BuserParent::where('parents', 'like', '%\_'.$request->uid.'\_%')->pluck('user_id')->toArray();
+				// 获取所有代理的
+				$agent = $this->getAgent($request->user->id);
+				$agentData = \App\Policy::withCount([
+	    			'merchants' => function($query) use ($agent){
+	    				$query->whereIn('user_id', $agent);
+	    			}
+	    		])->get();
 
-        $arrs['agent']  = \App\Merchant::whereIn('user_id', $team)->count();
+				foreach ($agentData as $key => $value) {
+					// 获取交易总量
+	    			$TradeCount = \App\Trade::whereHas('merchants_sn', function($query) use ($agent, $value){
+	    				$query->whereIn('user_id', $agent)
+	    					->where('policy_id', $value->id)
+	    					->where('trade_status', 1)
+	    					->where('card_type', '!=', '借记卡')
+	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end);
+	    			})->sum('money');
 
-        // 获取个人商户情况
-        $arrs['me'] = \App\Merchant::where('user_id', $request->uid)->count();
+	    			if($TradeCount === 0 or $value->merchants_count === 0){
+	    				$avg = 0;
+	    			}else{
+	    				$avg = number_format($TradeCount / $value->merchants_count / 100 , 2, '.', ',');
+	    			}
+					$data['agent'][]	=  array('title' => $value->title, 'avg' => $avg);
+				}
+	    	}
 
-        return response()->json(['success'=>['message' => '获取成功!', 'data'=>$arrs]]);
+
+	    	if($this->type == 'agent'){
+				// 获取所有代理的
+				$agent = $this->getAgent($request->agent_id);
+
+				$agentData = \App\Policy::withCount([
+	    			'merchants' => function($query) use ($agent){
+	    				$query->whereIn('user_id', $agent);
+	    			}
+	    		])->get();
+
+				foreach ($agentData as $key => $value) {
+					// 获取交易总量
+	    			$TradeCount = \App\Trade::whereHas('merchants_sn', function($query) use ($agent, $value){
+	    				$query->whereIn('user_id', $agent)
+	    					->where('policy_id', $value->id)
+	    					->where('trade_status', 1)
+	    					->where('card_type', '!=', '借记卡')
+	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end);
+	    			})->sum('money');
+
+	    			if($TradeCount === 0 or $value->merchants_count === 0){
+	    				$avg = 0;
+	    			}else{
+	    				$avg = number_format($TradeCount / $value->merchants_count / 100 , 2, '.', ',');
+	    			}
+					$data['agent'][]	=  array('title' => $value->title, 'avg' => $avg);
+				}
+	    	}
+
+	    	return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+
+    	} catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+        }
 
     }
 

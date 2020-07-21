@@ -443,7 +443,8 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getAgentTemail',     'V1\DetailController@AgentDetail');  // 团队-业务详情-机器总数
 
     Route::middleware('AuthToken')->get('/getAgentTeam',       'V1\DetailController@TeamDetail');   // 团队-业务详情-团队数据
-    Route::middleware('AuthToken')->get('/getAgentMerchant',   'V1\DetailController@MercDetail');  // 团队-业务详情-商户数据
+    //Route::middleware('AuthToken')->get('/getAgentMerchant',   'V1\DetailController@MercDetail');  // 团队-业务详情-商户数据
+    Route::middleware('AuthToken')->get('/getAvgTemail',       'V1\DetailController@AvgDetail');    // 团队-业务详情-台均数据
 });
 
 
