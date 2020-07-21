@@ -428,7 +428,7 @@ Route::prefix('V1')->group(function () {
      * @version [<vector>] [< 团队-> 业务详情 -> 详细数据]
      */
     Route::middleware('AuthToken')->get('/team_data',          'V1\TeamController@data');           // 团队栏目主页
-    Route::middleware('AuthToken')->post('/getTradeDetail',    'V1\TradeController@getDetail');        // 团队-
+    Route::middleware('AuthToken')->post('/getTradeDetail',    'V1\TradeController@getDetail');     // 团队-业务详情
 
     Route::middleware('AuthToken')->get('/getTeamTradeDetail', 'V1\DetailController@TradeDetail');  // 团队-业务详情-交易量
     Route::middleware('AuthToken')->get('/getAgentActive',     'V1\DetailController@AgentActive');  // 团队-业务详情-激活数据

@@ -21,7 +21,7 @@ class TradeController extends Controller
 	 */
     public function getDetail(Request $request)
     {
-			
+    	try{
 			/**
 			 * [$user 获取查询的用户]
 			 * @var [type]
@@ -30,7 +30,7 @@ class TradeController extends Controller
 
     		$user = \App\Buser::where('id', $user)->first();
 
-    		if(!$user or empty($user)){
+    		if(!$user or empty($user) ){
     			return response()->json(['error'=>['message' => '无此用户!', 'data'=>[]]]);
     		}
 
@@ -47,8 +47,12 @@ class TradeController extends Controller
 			$data   = $server->getInfo();
 
 			return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]); 
-		
+			
+        } catch (\Exception $e) {
 
-    	
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+		
     }
 }
