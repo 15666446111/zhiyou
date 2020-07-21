@@ -226,6 +226,7 @@ class SetUserController extends Controller
                 if($request->blance =='1'){
                     
                     if($request->user->wallets->cash_blance < $request->money ){
+                        
                         return response()->json(['error'=>['message' => '当前钱包余额不足']]);
                     }
 
