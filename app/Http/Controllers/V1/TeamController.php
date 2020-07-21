@@ -62,20 +62,16 @@ class TeamController extends Controller
              */
             $model      = new StatisticController($request->user, 'day');
             // 日交易数据
-            $DayTrade = number_format(($model->getTradeSum() / 100), 2, ".", "," );
+            $DayTrade   = number_format(($model->getTradeSum() / 100), 2, ".", "," );
            
             // 日激活数据
-            $DayActive= $model->getNewActiveMerchant();
+            $DayActive  = $model->getNewActiveMerchant();
             // 日商户个数
-            $DayMerchant = $model->getNewAddMerchant();
+            $DayMerchant= $model->getNewAddMerchant();
             // 日收益数据
-            $DayIncome= number_format( 0, 2, ".", "," );
+            $DayIncome  = number_format($model->getIncome() / 100, 2, ".", "," );
             // 日伙伴个数
-            $DayTeam  = $model->getNewAddTeamCount();
-            // 日台均交易
-            $DayAvgTrade = number_format( 0, 2, ".", "," );
-            // 获取今天日期
-
+            $DayTeam    = $model->getNewAddTeamCount();
 
             /**
              * @version [<vector>] [<获得团队月数据 , 月交易数据 >]
@@ -88,34 +84,24 @@ class TeamController extends Controller
             // 日商户个数
             $MonthMerchant = $MonthModel->getNewAddMerchant();
             // 日收益数据
-            $MonthIncome= number_format( 0, 2, ".", "," );
+            $MonthIncome= number_format($MonthModel->getIncome() / 100, 2, ".", "," );
             // 日伙伴个数
             $MonthTeam  = $MonthModel->getNewAddTeamCount();
-            // 日台均交易
-            $MonthAvgTrade = number_format( 0, 2, ".", "," );
-
 
             /**
              * @version [<vector>] [<获得团队总数据 , 总交易数据 >]
              */
             $CountModel = new StatisticController($request->user, 'all');
-            // 月交易数据
+            // 总交易数据
             $CountTrade = number_format(($CountModel->getTradeSum() / 100), 2, ".", "," );
-
-
-            // 日激活数据
+            // 总激活数据
             $CountActive= $model->getNewActiveMerchant();
-            // 日商户个数
+            // 总商户个数
             $CountMerchant = $CountModel->getNewAddMerchant();
-            // 日收益数据
-            $CountIncome= number_format( 0, 2, ".", "," );
-
-
-            // 日伙伴个数
+            // 总收益数据
+            $CountIncome= number_format($CountModel->getIncome() / 100, 2, ".", "," );
+            // 总伙伴个数
             $CountTeam  = $CountModel->getNewAddTeamCount();
-
-            // 日台均交易
-            $CountAvgTrade = number_format( 0, 2, ".", "," );
 
             //dump(DB::getQueryLog());
             return response()->json(['success'=>
@@ -129,7 +115,6 @@ class TeamController extends Controller
                                 'merchant'  =>  $DayMerchant,
                                 'income'    =>  $DayIncome,
                                 'team'      =>  $DayTeam,
-                                'avg_trade' =>  $DayAvgTrade,
                                 'date'      =>  Carbon::now()->day,
                             ],
 
@@ -139,7 +124,6 @@ class TeamController extends Controller
                                 'merchant'  =>  $MonthMerchant,
                                 'income'    =>  $MonthIncome,
                                 'team'      =>  $MonthTeam,
-                                'avg_trade' =>  $MonthAvgTrade,
                                 'date'      =>  Carbon::now()->month,
                             ],
 
@@ -149,7 +133,6 @@ class TeamController extends Controller
                                 'merchant'  =>  $CountMerchant,
                                 'income'    =>  $CountIncome,
                                 'team'      =>  $CountTeam,
-                                'avg_trade' =>  $CountAvgTrade,
                                 'date'      =>  '全部',
                             ]
                         ]
