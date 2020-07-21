@@ -151,7 +151,7 @@ class DetailController extends Controller
 	    		}
 
 	    		$agent = $this->getAgent($request->agent_id);
-
+	    		$agent[] = $request->agent_id;
 	    		$agentData = \App\Trade::whereHas('merchants_sn', function($query) use ($agent){
 	    		    			$query->whereIn('user_id', $agent);
 	    		    		})
@@ -248,7 +248,7 @@ class DetailController extends Controller
 	    		}
 
 	    		$agent = $this->getAgent($request->agent_id);
-
+	    		$agent[] = $request->agent_id;
 	    		// 获取所有代理的
 	    		$agent = $this->getAgent($request->user->id);
 	    		$agentData = \App\Policy::withCount(['merchants' => function($query) use ($agent) {
@@ -316,6 +316,7 @@ class DetailController extends Controller
 	    	if($this->type == 'agent'){
 				// 获取所有代理的
 				$agent = $this->getAgent($request->agent_id);
+				$agent[] = $request->agent_id;
 				$agentData = \App\Brand::withCount(['merchants' => function($query) use ($agent){
 	    			$query->whereIn('user_id', $agent);
 	    		}])->where('active', 1)->get();
@@ -396,6 +397,7 @@ class DetailController extends Controller
 	    	if ($this->type  == 'agent') {
 
 	    		$agent = $this->getAgent($request->agent_id);
+	    		$agent[] = $request->agent_id;
 	    		$agentCash = \App\Cash::whereIn('user_id', $agent)->whereBetween('created_at', [$this->begin, $this->end]);
 	    		$agentCashData	 = $agentCash->whereIn('cash_type', ['1', '2', '3', '4'])->sum('cash_money');
 	    		$agentActiveData = $agentCash->whereIn('cash_type', ['5', '6', '7', '8'])->sum('cash_money');
@@ -607,7 +609,7 @@ class DetailController extends Controller
 	    	if($this->type == 'agent'){
 				// 获取所有代理的
 				$agent = $this->getAgent($request->agent_id);
-
+				$agent[] = $request->agent_id;
 				$agentData = \App\Policy::withCount([
 	    			'merchants' => function($query) use ($agent){
 	    				$query->whereIn('user_id', $agent);
