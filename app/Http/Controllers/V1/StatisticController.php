@@ -95,7 +95,7 @@ class StatisticController
      */
     public function getNewAddMerchant()
     {
-        return \App\Merchant::where('bind_status', '1')->whereBetween('created_at', [ $this->StartTime,  $this->EndTime])
+        return \App\Merchant::where('bind_status', '1')->whereBetween('bind_time', [ $this->StartTime,  $this->EndTime])
                 ->whereIn('user_id', $this->team)->count();     
     }
 
