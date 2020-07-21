@@ -26,10 +26,23 @@ class CashController extends AdminController
     {
         $grid = new Grid(new Cash());
 
+        $grid->model()->latest();
+        
         $grid->column('id', __('索引'));
         $grid->column('order', __('分润订单'));
         $grid->column('users.nickname', __('分润会员'));
         $grid->column('users.account', __('会员账号'));
+
+        $grid->column('trades.merchant_sn', __('终端SN'));
+
+        $grid->column('trades.merchant_id', __('商户编号'));
+
+        $grid->column('trades.merchant_name', __('商户名称'));
+
+        $grid->column('trades.money', __('交易金额'))->display(function ($money) {
+            return number_format($money / 100, 2, '.', ',');
+        })->label();
+
         $grid->column('cash_money', __('分润金额'))->display(function ($money) {
             return number_format($money / 100, 2, '.', ',');
         })->label();

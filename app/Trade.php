@@ -42,4 +42,17 @@ class Trade extends Model
     {
         return $this->hasMany('\App\Cash', 'order', 'order');
     }
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-18
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 关联达标记录表 ]
+     * @return    [type]      [description]
+     */
+    public function standed()
+    {
+        return $this->hasMany('\App\MerchantStandard', 'sn', 'merchant_sn');
+    }
 }
