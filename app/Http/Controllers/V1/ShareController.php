@@ -64,7 +64,7 @@ class ShareController extends Controller
             //$BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
             $qrcode    =  imagecreatefrompng($CodeFile);
 
-            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, 112, 112, imagesx($qrcode), imagesy($qrcode));
+            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, imagesx($qrcode), imagesy($qrcode), imagesx($qrcode), imagesy($qrcode));
 
             // 海报生成位置
             $PicPath   = public_path('/share/'.$request->user->id.'/team_share/');
@@ -142,7 +142,7 @@ class ShareController extends Controller
 
             $qrcode    =  imagecreatefrompng($CodeFile);
 
-            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, 112, 112, imagesx($qrcode), imagesy($qrcode));
+            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, imagesx($qrcode), imagesy($qrcode), imagesx($qrcode), imagesy($qrcode));
 
             // 海报生成位置
             $PicPath   = public_path('/share/'.$request->user->id.'/user_share/');
@@ -215,7 +215,7 @@ class ShareController extends Controller
             //$BackGroud =  imagecreatefromjpeg(storage_path('app/public/'.$list->image));
             $qrcode    =  imagecreatefrompng($CodeFile);
 
-            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, 112, 112, imagesx($qrcode), imagesy($qrcode));
+            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, imagesx($qrcode), imagesy($qrcode), imagesx($qrcode), imagesy($qrcode));
 
             // 海报生成位置
             $PicPath   = public_path('/share/'.$request->user->id.'/merchant_share/');
@@ -290,7 +290,7 @@ class ShareController extends Controller
 
             $qrcode    =  imagecreatefrompng($CodeFile);
 
-            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, 112, 112, imagesx($qrcode), imagesy($qrcode));
+            imagecopyresampled($BackGroud, $qrcode, $list->pos_x, $list->pos_y, 0, 0, imagesx($qrcode), imagesy($qrcode), imagesx($qrcode), imagesy($qrcode));
 
             // 海报生成位置
             $PicPath   = public_path('/share/'.$request->user->id.'/temail_share/');
