@@ -32,6 +32,7 @@ Route::prefix('V1')->group(function () {
      */
     Route::post('/login',       'V1\LoginController@login');              // 用户登陆
     Route::post('/forgetPwd',   'V1\LoginController@forget');             // 忘记密码
+    Route::post('/getCode',     'V1\LoginController@code');               // 发送验证码
 
 
     /**

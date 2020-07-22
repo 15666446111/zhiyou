@@ -26,14 +26,20 @@ class SmsController extends AdminController
     {
         $grid = new Grid(new Sms());
 
-        $grid->column('id', __('Id'));
-        $grid->column('phone', __('Phone'));
-        $grid->column('code', __('Code'));
-        $grid->column('is_use', __('Is use'));
-        $grid->column('send_time', __('Send time'));
-        $grid->column('out_time', __('Out time'));
-        $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
+        $grid->column('id', __('索引'));
+        $grid->column('phone', __('发送手机'))->help('发送验证码的手机号');
+        $grid->column('code', __('验证码'))->help('接收到的验证码');
+        $grid->column('is_use', __('是否使用'))->switch()->help('验证码是否使用');
+        $grid->column('send_time', __('发送时间'))->help('发送验证码的时间');
+        $grid->column('out_time', __('失效时间'))->help('验证码最迟失效时间');
+        $grid->column('created_at', __('创建时间'))->help('信息创建时间');
+        $grid->column('updated_at', __('使用时间'))->help('验证码使用或失效时间');
+
+        $grid->disableCreateButton();
+        // 全部关闭
+        $grid->disableActions();
+        
+        $grid->disableCreateButton();
 
         return $grid;
     }
