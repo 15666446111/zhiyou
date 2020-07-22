@@ -99,6 +99,13 @@ class RegisterController extends Controller
 
             if(empty($result)) return back()->withErrors(['参数无效!'])->withInput();
 
+            /**
+             * @version [<vector>] [< 验证验证码是否正确 >]
+             */
+            if(!$this->verifyCode($request->register_phone, $request->register_code)){
+                 return back()->withErrors(['验证码不正确或已过期!'])->withInput();
+            }
+
             if($request->register_password !== $request->register_confirm_password)
                 return back()->withErrors(['两次密码不一致!'])->withInput();
 
@@ -144,6 +151,13 @@ class RegisterController extends Controller
             $result = Hashids::decode($request->route('code'));
 
             if(empty($result)) return back()->withErrors(['参数无效!'])->withInput();
+
+            /**
+             * @version [<vector>] [< 验证验证码是否正确 >]
+             */
+            if(!$this->verifyCode($request->register_phone, $request->register_code)){
+                 return back()->withErrors(['验证码不正确或已过期!'])->withInput();
+            }
 
             if($request->register_password !== $request->register_confirm_password)
                 return back()->withErrors(['两次密码不一致!'])->withInput();
@@ -222,6 +236,73 @@ class RegisterController extends Controller
 
             return back()->withErrors(['申请失败,系统错误!'])->withInput(); 
 
+        }
+    }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-08
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [注册发送验证码]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function code(Request $request)
+    {
+        try{
+
+            if(!$request->phone) return json_encode(array('code'=> -999, 'message' => '手机号不存在!'));
+
+            // 发送验证码
+            $appliction = new \App\Services\Sms\SendSmsController;
+
+            $res = $appliction->send($request->phone, rand(1000,9999));
+
+            return $res;
+            
+        } catch (\Exception $e) {
+
+             return json_encode(array('code'=> -999, 'message' => '发送失败!'));
+
+        }
+    }
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-09
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 验证验证码是否正确 ]
+     * @param     [type]      $phone [description]
+     * @param     [type]      $code  [description]
+     * @return    [type]             [description]
+     */
+    public function verifyCode($phone, $code)
+    {
+        try{
+            // 获取到该用户的最后一条可用的验证码
+            $codeMsg = \App\Sms::where('phone', $phone)
+                                    ->where('is_use', 0)
+                                    ->where('out_time', '>=', Carbon::now()->toDateTimeString())
+                                    ->orderBy('id', 'desc')->first();
+
+            if(empty($codeMsg) or !$codeMsg){
+                \App\Sms::where('phone', $phone)->update(['is_use' => 1]);
+                return false;
+            }
+
+            if($codeMsg->code != $code){
+                return false;
+            }
+
+            \App\Sms::where('phone', $phone)->update(['is_use' => 1]);
+
+            return true;
+            
+        } catch (\Exception $e) {
+            return false;
         }
     }
 }

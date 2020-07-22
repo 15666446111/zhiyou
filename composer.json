@@ -26,6 +26,7 @@
         "maatwebsite/excel": "^3.1",
         "predis/predis": "^1.1",
         "simplesoftwareio/simple-qrcode": "1.3.*",
+        "tencentcloud/tencentcloud-sdk-php": "^3.0",
         "vinkla/hashids": "6.0.*",
         "wuwx/laravel-admin-timestamp-between": "^1.0"
     },

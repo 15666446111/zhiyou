@@ -75,3 +75,7 @@ Route::get('/extendTemail/{code}', 'RegisterController@extendTemail');
  * @version [<提交表单>] [<description>]
  */
 Route::post('/extendTemail/{code}', 'RegisterController@extendTemailIn');
+
+
+// 注册发送验证码
+Route::post('/getCode', 	'RegisterController@code');

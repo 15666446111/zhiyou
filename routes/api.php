@@ -26,69 +26,40 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
  */
 Route::prefix('V1')->group(function () {
 
-	/**
-	 * @version [<用户登录接口>] [<description>]
-	 * @return  [<返回用户认证的hash令牌>]
-	 * @version [<在所有请求之前请求>] [<所有接口都需使用此接口返回的令牌>]
-	 */
-    Route::post('/login', 'V1\LoginController@login');
-
     /**
-     * @version [<获取轮播图接口>] [<description>]
-     * @return  [<返回显示中的轮播图>]
-     * @version [<首页轮播图>] 
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
+     * @version [<vector>] [< 用户登陆 >]
      */
-	Route::middleware('AuthToken')->get('/plug', 'V1\PlugController@index');
-
-    /**
-     * @version [<获取系统公告>] [<description>]
-     * @return  [<返回系统公告列表>]
-     * @version [<首页轮播图下方的系统公告>] 
-     */
-    Route::middleware('AuthToken')->get('/notice', 'V1\ArticleController@Notice');
-
-    /**
-     * @version [<获取常见问题>] [<description>]
-     * @return  [<返回常见问题列表>]
-     * @version [<产品使用的常见问题>] 
-     */
-    Route::middleware('AuthToken')->get('/problem', 'V1\ArticleController@problem');
-
-    /**
-     * @version [<获取微信分享文案>] [<description>]
-     * @return  [<返回微信分享文案列表>]
-     * @version [<微信分享文案列表>] 
-     */
-    Route::middleware('AuthToken')->get('/wx_share_list', 'V1\ArticleController@wxShare');
+    Route::post('/login',       'V1\LoginController@login');              // 用户登陆
+    Route::post('/forgetPwd',   'V1\LoginController@forget');             // 忘记密码
 
 
     /**
-     * @version [<团队扩展分享二维码>] [<description>]
-     * @return  [带二维码的分享海报]   [<description>]
-     * @version [<分享二维码] [<description>]
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
+     * @version [<vector>] [< 首页信息 >]
      */
-    Route::middleware('AuthToken')->get('/team_share', 'V1\ShareController@team');
+    Route::middleware('AuthToken')->get('/plug', 'V1\PlugController@index');        // 首页 - 轮播图
+    Route::middleware('AuthToken')->get('/index_info', 'V1\IndexController@info');  // 首页 - 信息统计
+
 
     /**
-     * @version [<团队扩展分享推广用户二维码>] [<description>]
-     * @return  [带二维码的推广用户分享海报]   [<description>]
-     * @version [<分享二维码] [<description>]
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
+     * @version [<vector>] [< 首页 - 分享海报 >]
      */
-    Route::middleware('AuthToken')->get('/user_share', 'V1\ShareController@extendUser');
+    Route::middleware('AuthToken')->get('/team_share',      'V1\ShareController@team');              //  首页 - 扩展代理
+    Route::middleware('AuthToken')->get('/user_share',      'V1\ShareController@extendUser');        //  首页 - 扩展用户
+    Route::middleware('AuthToken')->get('/merchant_share',  'V1\ShareController@merchant');          //  首页 - 商户注册
+    Route::middleware('AuthToken')->get('/temail_share',    'V1\ShareController@extendTemail');      //  我的 - 机器推荐(朋友圈)
 
     /**
-     * @version [<团队扩展分享二维码>] [<description>]
-     * @return  [带二维码的分享海报]   [<description>]
-     * @version [<分享二维码] [<description>]
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
+     * @version [<vector>] [< 首页 - 文章类型 >]
      */
-    Route::middleware('AuthToken')->get('/merchant_share', 'V1\ShareController@merchant');
+    Route::middleware('AuthToken')->get('/notice',          'V1\ArticleController@Notice');         // 首页 - 系统公告
+    Route::middleware('AuthToken')->get('/problem',         'V1\ArticleController@problem');        // 首页 - 常见问题
+    Route::middleware('AuthToken')->get('/wx_share_list',   'V1\ArticleController@wxShare');        // 我的 - 微信分享文案
 
-    /**
-     * @version [<商户推荐海报>] [<description>]
-     * @return  [生产商户推荐海报， 扫码填写表单]   [<description>]
-     * @version [<分享二维码] [<description>]
-     */
-    Route::middleware('AuthToken')->get('/temail_share', 'V1\ShareController@extendTemail');
+
 
 
     /**
@@ -97,17 +68,6 @@ Route::prefix('V1')->group(function () {
      * @version [<伙伴管理] [<description>]
      */
     Route::middleware('AuthToken')->get('/my_team', 'V1\TeamController@index');
-
-    /**
-     * @version [<APP 首页 统计信息>] [<description>]
-     * @return  [返回 首页中间模块统计信息]   [<description>]
-     * @version [<统计信息] [<description>]
-     */
-    Route::middleware('AuthToken')->get('/index_info', 'V1\IndexController@info');
-
-
-
-
 
 
     /**
@@ -205,9 +165,6 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->post('/setPolicyInfo', 'V1\PolicyController@setPolicyInfo');
 
 
-
-
-
     /**
      * @version [<APP 获取机具活动详情>] [<description>]
      * @return  [用户发在朋友圈的推荐二维码 被朋友扫码申请后的信息]   [<description>]
@@ -222,106 +179,24 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/setApplyFirend', 'V1\ApplicationController@set');
 
-
-
-    /**
-     * @version [<vector>] [< 添加用户收货地址接口 >]
-     */
-    Route::middleware('AuthToken')->post('/addressAdd', 'V1\AddressController@address');
-
-
-    /**
-     * @version [<vector>] [< 查询用户收货地址接口 >]
-     */
-    Route::middleware('AuthToken')->get('/getAddress', 'V1\AddressController@getAAddress');
-
-
-     /**
-     * @version [<vector>] [< 删除用户收货地址接口 >]
-     */
-    Route::middleware('AuthToken')->get('/deAddress', 'V1\AddressController@deleteAddress');
- 
-
-    /**
-     * @version [<vector>] [< 修改用户收货地址接口 >]
-     */
-    Route::middleware('AuthToken')->get('/upAddress', 'V1\AddressController@updateAddress');
-
-
-
-    /**
-     * @version [<vector>] [< 查询单个收货地址接口 >]
-     */
-    Route::middleware('AuthToken')->get('/getFirstAddress', 'V1\AddressController@firstAddress');    
-
-
-    
-    /**
-     * @version [<vector>] [< 查询默认收货地址接口 >]
-     */
-    Route::middleware('AuthToken')->get('/getDefaultAddress', 'V1\AddressController@defaultAddress');    
-
-
+   
 
     /**
      * 收益页面接口
      */
     Route::middleware('AuthToken')->get('/cashs', 'V1\CashsController@cashsIndex');
 
-    
     /**
      * 首页商户登记绑定接口
      */
     Route::middleware('AuthToken')->get('/register', 'V1\MerchantsController@registers');
 
-    
-
-
-
-
-
-
     /**
      * 修改个人登录密码接口
      */
     Route::middleware('AuthToken')->get('/setUserPwd', 'V1\SetUserController@updatePwd');
+ 
 
-
-    
-    /**
-     * 添加银行卡结算信息接口
-     */
-    Route::middleware('AuthToken')->post('/createBank', 'V1\SetUserController@insertBank');
-    
-
-    /**
-     * 查询银行卡结算信息接口
-     */
-    Route::middleware('AuthToken')->get('/getBankInfo', 'V1\SetUserController@selectBank');
-
-
-    /**
-     * 查询默认银行卡信息接口
-     */
-    Route::middleware('AuthToken')->get('/getBankDefault', 'V1\SetUserController@bankDefault');
-
-
-    /**
-     * 查询单个银行卡信息接口
-     */
-    Route::middleware('AuthToken')->get('/getBankFirst', 'V1\SetUserController@bankFirst');
-
-    
-    /**
-     * 删除银行卡结算信息接口
-     */
-    Route::middleware('AuthToken')->get('/deBank', 'V1\SetUserController@unsetBank');
-
-
-    /**
-     * 修改银行卡结算信息接口
-     */
-    Route::middleware('AuthToken')->get('/upBank', 'V1\SetUserController@updateBank');
 
 
     /**
@@ -389,16 +264,36 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->post('/addBackTransfer', 'V1\TransferController@backTransfer');
 
-    
     /**
      * @version [<vector>] [< 划拨回拨记录 >]
      */
     Route::middleware('AuthToken')->get('/getTransferLog', 'V1\TransferController@transferLog');
 
+
+
+
     /**
-     * @version 忘记密码接口
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
+     * @version [<vector>] [< 我的 - 收货地址 >]
      */
-    Route::post('/forgetPwd', 'V1\LoginController@forget');
+    Route::middleware('AuthToken')->post('/addressAdd',         'V1\AddressController@address');            // 我的 - 添加收货地址信息
+    Route::middleware('AuthToken')->get('/getAddress',          'V1\AddressController@getAAddress');        // 我的 - 获取收货地址列表
+    Route::middleware('AuthToken')->get('/deAddress',           'V1\AddressController@deleteAddress');      // 我的 - 删除用户收货地址
+    Route::middleware('AuthToken')->get('/upAddress',           'V1\AddressController@updateAddress');      // 我的 - 修改用户收货地址
+    Route::middleware('AuthToken')->get('/getFirstAddress',     'V1\AddressController@firstAddress');       // 我的 - 查询单个收货地址   
+    Route::middleware('AuthToken')->get('/getDefaultAddress',   'V1\AddressController@defaultAddress');     // 我的 - 查询默认收货地址
+
+
+    /**
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
+     * @version [<vector>] [< 我的 - 结算卡信息管理  >]
+     */
+    Route::middleware('AuthToken')->post('/createBank',     'V1\SetUserController@insertBank');         // 我的 - 添加银行卡结算信息
+    Route::middleware('AuthToken')->get('/getBankInfo',     'V1\SetUserController@selectBank');         // 我的 - 获取银行卡列表信息
+    Route::middleware('AuthToken')->get('/getBankDefault',  'V1\SetUserController@bankDefault');        // 我的 - 查询默认银行卡信息
+    Route::middleware('AuthToken')->get('/getBankFirst',    'V1\SetUserController@bankFirst');          // 我的 - 查询单个银行卡信息
+    Route::middleware('AuthToken')->get('/deBank',          'V1\SetUserController@unsetBank');          // 我的 - 删除银行卡结算信息
+    Route::middleware('AuthToken')->get('/upBank',          'V1\SetUserController@updateBank');         // 我的 - 修改银行卡结算信息
 
 
     /**
