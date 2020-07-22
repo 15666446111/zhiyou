@@ -479,7 +479,7 @@ class DetailController extends Controller
 
 	    		$sons =  \App\Buser::where('parent', $request->agent_id)->where('created_at', '>=', $this->begin)->where('created_at', '<=', $this->end)->pluck('id')->toArray();
 
-	    		$data['agent'][] = array( 'title' => '直推伙伴', 'first_count' => count($sons));
+	    		$data['agent'][] = array( 'title' => '直推伙伴', 'count' => count($sons));
 
 	    		$data['agent'][] = array(
 	    			'title'	=> '间推伙伴',
