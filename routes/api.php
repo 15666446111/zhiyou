@@ -281,16 +281,10 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/register', 'V1\MerchantsController@registers');
 
     
-    /**
-     * 商户列表接口
-     */
-    Route::middleware('AuthToken')->get('/getMerchantsList', 'V1\MerchantsController@merchantsList');
 
 
-     /**
-     * 个人商户详情接口
-     */
-    Route::middleware('AuthToken')->get('/getMerchantInfo', 'V1\MerchantsController@merchantInfo');
+
+
 
 
     /**
@@ -407,19 +401,19 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getTransferLog', 'V1\TransferController@transferLog');
 
-
-    /**
-     * @version [<vector>] [< 查询商户交易明细 >]
-     */
-    Route::middleware('AuthToken')->get('/getMerchantDetails', 'V1\MerchantsController@MerchantDetails');
-
-
     /**
      * @version 忘记密码接口
      */
     Route::post('/forgetPwd', 'V1\LoginController@forget');
 
 
+    /**
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
+     * @version [<vector>] [< 首页 - 商户管理  >]
+     */
+    Route::middleware('AuthToken')->get('/getMerchantsList',   'V1\MerchantsController@merchantsList');         // 商户管理 - 商户列表
+    Route::middleware('AuthToken')->get('/getMerchantsInfo',   'V1\MerchantsController@merchantInfo');          // 商户管理 - 商户详情
+    Route::middleware('AuthToken')->get('/getMerchantsDetails','V1\MerchantsController@MerchantDetails');      // 商户管理 - 商户详情 - 交易明细
 
     
 

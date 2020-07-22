@@ -55,6 +55,7 @@ class Merchant extends Model
         return $this->hasMany('\App\Trade', 'terminal', 'merchant_terminal');
     }
 
+
     /**
      * [merchants 关联交易模型 通过SN关联]
      * @author Pudding
