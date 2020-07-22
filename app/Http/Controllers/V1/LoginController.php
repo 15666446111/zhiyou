@@ -86,18 +86,21 @@ class LoginController extends Controller
     {
         try{
 
-            if(!$request->phone) return json_encode(array('code'=> -999, 'message' => '手机号不存在!'));
-
+            if(!$request->phone) return response()->json(['error'=>['message' => '手机号不存在!']]);
             // 发送验证码
             $appliction = new \App\Services\Sms\SendSmsController;
 
             $res = $appliction->send($request->phone, rand(1000,9999));
 
-            return $res;
+            if($res['code'] = 10000){
+                return response()->json(['success'=>['message' => '发送成功!']]);
+            }else{
+                return response()->json(['error'=>['message' => $res['message']]]);
+            }
             
         } catch (\Exception $e) {
 
-             return json_encode(array('code'=> -999, 'message' => '发送失败!'));
+            return response()->json(['error'=>['message' => '发送失败!']]);
 
         }
     }
