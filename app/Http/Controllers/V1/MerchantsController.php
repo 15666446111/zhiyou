@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\V1;
-
+use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -153,7 +153,7 @@ class MerchantsController extends Controller
 
             $EndTime = Carbon::now()->toDateTimeString();
 
-            $data = \App\Trade::select('card_type','card_number','trade_type', 'money', 'trade_time', 'trade_status', 'merchant_sn', 'merchant_id')
+            $data = \App\Trade::select('card_type','card_number','trade_type', DB::raw('format(money / 100, 2) as money'), 'trade_time', 'trade_status', 'merchant_sn', 'merchant_id')
                     ->where('merchant_sn', $request->merchant)->whereBetween('trade_time', [ $StartTime,  $EndTime])->get();
 
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
