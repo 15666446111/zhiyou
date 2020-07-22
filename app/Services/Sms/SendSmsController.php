@@ -85,7 +85,7 @@ class SendSmsController extends Controller
 		    /* 模板 ID: 必须填写已审核通过的模板 ID。可登录 [短信控制台] 查看模板 ID */
 		    $req->TemplateID = config('app.TxTemplateId');
 		    /* 模板参数: 若无模板参数，则设置为空*/
-		    $req->TemplateParamSet = array($code.",请尽快使用,五分钟内有效");
+		    $req->TemplateParamSet = array($code);
 
 		    // 通过 client 对象调用 SendSms 方法发起请求。注意请求方法名与请求对象是对应的
 		    $resp = $client->SendSms($req);
