@@ -106,12 +106,7 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/index_info', 'V1\IndexController@info');
 
 
-    /**
-     * @version [<APP 团队数据>] [<description>]
-     * @return  [团队栏位 团队首页统计数据 日 月 总]   [<description>]
-     * @version [<团队首页统计数据] [<description>]
-     */
-    Route::middleware('AuthToken')->get('/team_data', 'V1\TeamController@data');
+
 
 
 
@@ -210,12 +205,7 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->post('/setPolicyInfo', 'V1\PolicyController@setPolicyInfo');
 
 
-    /**
-     * @version [<APP 获取政策活动列表>] [<description>]
-     * @return  [获取平台所有的政策活动]   [<description>]
-     * @version [<获取政策后的] [<description>]
-     */
-    Route::middleware('AuthToken')->post('/getTradeDetail', 'V1\TradeController@getDetail');
+
 
 
     /**
@@ -431,17 +421,19 @@ Route::prefix('V1')->group(function () {
 
 
 
-
-
-
+    
 
     /**
+     * @author  [ Gong Ke] [< 755969423@qq.com >]
      * @version [<vector>] [< 团队-> 业务详情 -> 详细数据]
      */
+    Route::middleware('AuthToken')->get('/team_data',          'V1\TeamController@data');           // 团队栏目主页
+    Route::middleware('AuthToken')->post('/getTradeDetail',    'V1\TradeController@getDetail');     // 团队-业务详情
+
     Route::middleware('AuthToken')->get('/getTeamTradeDetail', 'V1\DetailController@TradeDetail');  // 团队-业务详情-交易量
     Route::middleware('AuthToken')->get('/getAgentActive',     'V1\DetailController@AgentActive');  // 团队-业务详情-激活数据
     Route::middleware('AuthToken')->get('/getAgentTemail',     'V1\DetailController@AgentDetail');  // 团队-业务详情-机器总数
-
+    Route::middleware('AuthToken')->get('/getCashDetail',      'V1\DetailController@CashDetail');
     Route::middleware('AuthToken')->get('/getAgentTeam',       'V1\DetailController@TeamDetail');   // 团队-业务详情-团队数据
     //Route::middleware('AuthToken')->get('/getAgentMerchant',   'V1\DetailController@MercDetail');  // 团队-业务详情-商户数据
     Route::middleware('AuthToken')->get('/getAvgTemail',       'V1\DetailController@AvgDetail');    // 团队-业务详情-台均数据

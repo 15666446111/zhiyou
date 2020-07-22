@@ -151,7 +151,7 @@ class DetailController extends Controller
 	    		}
 
 	    		$agent = $this->getAgent($request->agent_id);
-
+	    		$agent[] = $request->agent_id;
 	    		$agentData = \App\Trade::whereHas('merchants_sn', function($query) use ($agent){
 	    		    			$query->whereIn('user_id', $agent);
 	    		    		})
@@ -248,7 +248,7 @@ class DetailController extends Controller
 	    		}
 
 	    		$agent = $this->getAgent($request->agent_id);
-
+	    		$agent[] = $request->agent_id;
 	    		// 获取所有代理的
 	    		$agent = $this->getAgent($request->user->id);
 	    		$agentData = \App\Policy::withCount(['merchants' => function($query) use ($agent) {
@@ -316,6 +316,7 @@ class DetailController extends Controller
 	    	if($this->type == 'agent'){
 				// 获取所有代理的
 				$agent = $this->getAgent($request->agent_id);
+				$agent[] = $request->agent_id;
 				$agentData = \App\Brand::withCount(['merchants' => function($query) use ($agent){
 	    			$query->whereIn('user_id', $agent);
 	    		}])->where('active', 1)->get();
@@ -326,6 +327,90 @@ class DetailController extends Controller
 	    	}
 
 	    	return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+    	} catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+    }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-21
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 团队 - 业务详情 - 提现数据 ]
+     * @param     Request     $request [description]
+     */
+    public function CashDetail(Request $request)
+    {
+    	try{
+
+	    	$this->type = (!$request->type or $request->type =='self') ? 'self' : 'agent';
+
+	    	// 如果查询的类型为agent 代表要查询直接下级的信息 所以agent_id 不能为空
+	    	if($this->type == 'agent'){
+	    		if(!$request->agent_id){
+	    			return response()->json(['error'=>['message' => '缺少代理信息!']]);
+	    		}
+	    	}
+
+	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
+
+	    	if(!$request->date){
+
+	    		$this->begin = $this->dateType == 'day' ? Carbon::today()->toDateTimeString() : Carbon::now()->firstOfMonth()->toDateTimeString();
+
+	    		$this->end = $this->dateType == 'day' ? Carbon::tomorrow()->toDateTimeString() : Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	}else{
+
+	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+
+	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	}
+
+	    	$data = array();
+
+
+	    	if( $this->type  == 'self' ){
+	    		$cash = \App\Cash::where('user_id', $request->user->id)->where('created_at', '>=', $this->begin)->where('created_at', '<=', $this->end);
+	    		$selfCashData   = $cash->whereIn('cash_type', ['1', '2', '3', '4'])->sum('cash_money');
+	    		$selfActiveData = $cash->whereIn('cash_type', ['5', '6', '7', '8'])->sum('cash_money');
+	    		$selfStandDate  = $cash->whereIn('cash_type', ['9', '10'])->sum('cash_money');
+
+	    		$data['self'][] = array( 'title'=>'结算分润', 'count' =>number_format($selfCashData / 100, 2, '.', ','));
+	    		$data['self'][] = array( 'title'=>'激活返现', 'count' =>number_format($selfActiveData / 100, 2, '.', ','));
+	    		$data['self'][] = array( 'title'=>'达标奖励', 'count' =>number_format($selfStandDate / 100, 2, '.', ','));
+	    	
+	    		$agent = $this->getAgent($request->user->id);
+	    		$agentCash = \App\Cash::whereIn('user_id', $agent)->whereBetween('created_at', [$this->begin, $this->end]);
+	    		$agentCashData	 = $agentCash->whereIn('cash_type', ['1', '2', '3', '4'])->sum('cash_money');
+	    		$agentActiveData = $agentCash->whereIn('cash_type', ['5', '6', '7', '8'])->sum('cash_money');
+	    		$agentStandDate  = $agentCash->whereIn('cash_type', ['9', '10'])->sum('cash_money');
+
+	    		$data['agent'][] = array( 'title'=>'结算分润', 'count' =>number_format($agentCashData / 100, 2, '.', ','));
+	    		$data['agent'][] = array( 'title'=>'激活返现', 'count' =>number_format($agentActiveData / 100, 2, '.', ','));
+	    		$data['agent'][] = array( 'title'=>'达标奖励', 'count' =>number_format($agentStandDate / 100, 2, '.', ','));
+	    	}
+
+	    	if ($this->type  == 'agent') {
+
+	    		$agent = $this->getAgent($request->agent_id);
+	    		$agent[] = $request->agent_id;
+	    		$agentCash = \App\Cash::whereIn('user_id', $agent)->whereBetween('created_at', [$this->begin, $this->end]);
+	    		$agentCashData	 = $agentCash->whereIn('cash_type', ['1', '2', '3', '4'])->sum('cash_money');
+	    		$agentActiveData = $agentCash->whereIn('cash_type', ['5', '6', '7', '8'])->sum('cash_money');
+	    		$agentStandDate  = $agentCash->whereIn('cash_type', ['9', '10'])->sum('cash_money');
+
+	    		$data['agent'][] = array( 'title'=>'结算分润', 'count' =>number_format($agentCashData / 100, 2, '.', ','));
+	    		$data['agent'][] = array( 'title'=>'激活返现', 'count' =>number_format($agentActiveData / 100, 2, '.', ','));
+	    		$data['agent'][] = array( 'title'=>'达标奖励', 'count' =>number_format($agentStandDate / 100, 2, '.', ','));
+	    	
+	    	}
+
+	    	return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+
     	} catch (\Exception $e) {
 
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
@@ -394,7 +479,7 @@ class DetailController extends Controller
 
 	    		$sons =  \App\Buser::where('parent', $request->agent_id)->where('created_at', '>=', $this->begin)->where('created_at', '<=', $this->end)->pluck('id')->toArray();
 
-	    		$data['agent'][] = array( 'title' => '直推伙伴', 'first_count' => count($sons));
+	    		$data['agent'][] = array( 'title' => '直推伙伴', 'count' => count($sons));
 
 	    		$data['agent'][] = array(
 	    			'title'	=> '间推伙伴',
@@ -524,7 +609,7 @@ class DetailController extends Controller
 	    	if($this->type == 'agent'){
 				// 获取所有代理的
 				$agent = $this->getAgent($request->agent_id);
-
+				$agent[] = $request->agent_id;
 				$agentData = \App\Policy::withCount([
 	    			'merchants' => function($query) use ($agent){
 	    				$query->whereIn('user_id', $agent);

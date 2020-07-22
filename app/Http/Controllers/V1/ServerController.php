@@ -136,6 +136,8 @@ class ServerController extends Controller
 
      	$arrs['activeCount']  = $this->getActiveCount();
 
+        $arrs['temails']      = $this->getTemails();
+
 		$arrs['income']		  = number_format($this->getIncome() / 100, 2, '.', ',');
 		
 		$arrs['friends']      = $this->getFriends();
@@ -176,6 +178,20 @@ class ServerController extends Controller
 
     /**
      * @Author    Pudding
+     * @DateTime  2020-07-21
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 获取机具总数]
+     * @return    [type]      [description]
+     */
+    public function getTemails()
+    {
+        return \App\Merchant::whereIn('user_id',$this->team)->count();
+    }
+
+
+    /**
+     * @Author    Pudding
      * @DateTime  2020-06-05
      * @copyright [copyright]
      * @license   [license]
@@ -185,7 +201,6 @@ class ServerController extends Controller
     public function getActiveCount()
     {
     	//DB::connection()->enableQueryLog();#开启执行日志
-
     	return \App\Merchant::whereIn('user_id', $this->team)->whereBetween('active_time', [ $this->StartTime,  $this->EndTime])->count();
 	}
 
@@ -195,7 +210,7 @@ class ServerController extends Controller
 	 */
 	public function getFriends()
 	{
-		return \App\BuserParent::where('parents', 'like', '%\_'.$this->user->id.'\_%')->count();
+		return \App\BuserParent::where('parents', 'like', '%\_'.$this->user->id.'\_%')->whereBetween('created_at', [ $this->StartTime,  $this->EndTime])->count();
 	}
 
 
@@ -204,8 +219,10 @@ class ServerController extends Controller
 	 */
 	public function getMerchants()
 	{
-		return \App\Merchant::whereIn('user_id',$this->team)->count();
+		return \App\Merchant::whereIn('user_id',$this->team)->where('bind_status', 1)->whereBetween('bind_time', [ $this->StartTime,  $this->EndTime])->count();
 	}
+
+
 
     /**
      * @Author    Pudding
@@ -238,10 +255,10 @@ class ServerController extends Controller
 
         switch ($this->dateType) {
             case 'month':
-                $date = Carbon::now()->year."年".Carbon::now()->month."月";
+                $date = Carbon::now()->year."-".Carbon::now()->month;
                 break;
             case 'day':
-                $date = Carbon::now()->year."年".Carbon::now()->month."月".Carbon::now()->day."日";
+                $date = Carbon::now()->year."-".Carbon::now()->month.'-'.Carbon::now()->day;
                 break;    
             default:
                 $date = $this->StartTime;
