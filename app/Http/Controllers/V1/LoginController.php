@@ -57,7 +57,7 @@ class LoginController extends Controller
                 return response()->json(['error'=>['message' => '请保持密码一致']]);
             }
 
-            if(!$this->verifyCode($request->phone, $request->code)){
+            if(!$this->verifyCode($request->account, $request->code)){
                 return response()->json(['error'=>['message' => '验证码不正确或已过期']]);
             }
 
@@ -119,10 +119,8 @@ class LoginController extends Controller
     {
         try{
             // 获取到该用户的最后一条可用的验证码
-            $codeMsg = \App\Sms::where('phone', $phone)
-                                    ->where('is_use', 0)
-                                    ->where('out_time', '>=', Carbon::now()->toDateTimeString())
-                                    ->orderBy('id', 'desc')->first();
+            $codeMsg = \App\Sms::where('phone', $phone)->where('is_use', 0)->where('out_time', '>=', Carbon::now()->toDateTimeString())
+                        ->orderBy('id', 'desc')->first();
 
             if(empty($codeMsg) or !$codeMsg){
                 \App\Sms::where('phone', $phone)->update(['is_use' => 1]);
