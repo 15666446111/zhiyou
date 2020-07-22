@@ -222,12 +222,6 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/setApplyFirend', 'V1\ApplicationController@set');
 
-    /**
-     * @version [<APP 获取朋友圈申请的机器列表 商户推荐列表>] [<description>]
-     * @return  [机具的达标返现与交易情况]   [<description>]
-     * @version [<机具的达标返现情况] [<description>]
-     */
-    Route::middleware('AuthToken')->get('/getTerminalActiveDetail', 'V1\TerminalController@getActiveDetail');
 
 
     /**
@@ -413,8 +407,8 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/getMerchantsList',   'V1\MerchantsController@merchantsList');         // 商户管理 - 商户列表
     Route::middleware('AuthToken')->get('/getMerchantsInfo',   'V1\MerchantsController@merchantInfo');          // 商户管理 - 商户详情
-    Route::middleware('AuthToken')->get('/getMerchantsDetails','V1\MerchantsController@MerchantDetails');      // 商户管理 - 商户详情 - 交易明细
-
+    Route::middleware('AuthToken')->get('/getMerchantsPolicy', 'V1\MerchantsController@merchantPolicy');        // 商户管理 - 商户详情 - 活动信息
+    Route::middleware('AuthToken')->get('/getMerchantsDetails','V1\MerchantsController@MerchantDetails');       // 商户管理 - 商户详情 - 交易明细
     
 
     /**
@@ -423,7 +417,6 @@ Route::prefix('V1')->group(function () {
      */
     Route::middleware('AuthToken')->get('/team_data',          'V1\TeamController@data');           // 团队栏目主页
     Route::middleware('AuthToken')->post('/getTradeDetail',    'V1\TradeController@getDetail');     // 团队-业务详情
-
     Route::middleware('AuthToken')->get('/getTeamTradeDetail', 'V1\DetailController@TradeDetail');  // 团队-业务详情-交易量
     Route::middleware('AuthToken')->get('/getAgentActive',     'V1\DetailController@AgentActive');  // 团队-业务详情-激活数据
     Route::middleware('AuthToken')->get('/getAgentTemail',     'V1\DetailController@AgentDetail');  // 团队-业务详情-机器总数

@@ -15,20 +15,15 @@ class MerchantsController extends Controller
     public function registers(Request $request)
     {
         try{ 
-             
             \App\Merchant::where('user_id',$request->user->id)->where('merchant_sn',$request->merchant_sn)->update([
                 'merchant_name'     => $request->merchant_name,
                 'user_phone'        => $request->merchant_phone,
                 'bind_status'       => 1,
                 'bind_time'         => Carbon::now()->toDateTimeString(),
             ]);
-            
             return response()->json(['success'=>['message' => '登记成功!', []]]); 
-
     	} catch (\Exception $e) {
-            
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
-
         }
     }
 
@@ -58,7 +53,7 @@ class MerchantsController extends Controller
                     'merchant_number'   =>  $value->merchant_number,
                     'merchant_terminal' =>  $value->merchant_terminal,
                     'merchant_sn'       =>  $value->merchant_sn,
-                    'money'             =>  $value->tradess_sn->sum('money'),
+                    'money'             =>  number_format($value->tradess_sn->sum('money') / 100 ,2 ,'.', ','),
                     'created_at'        =>  $value->created_at,
                     'bind_time'         =>  $value->bind_time,
                     'active_time'       =>  $value->active_time,
@@ -76,7 +71,7 @@ class MerchantsController extends Controller
                     'merchant_number'   =>  $value->merchant_number,
                     'merchant_terminal' =>  $value->merchant_terminal,
                     'merchant_sn'       =>  $value->merchant_sn,
-                    'money'             =>  $value->tradess_sn->sum('money'),
+                    'money'             =>  number_format($value->tradess_sn->sum('money') / 100 ,2 ,'.', ','),
                     'created_at'        =>  $value->created_at,
                     'bind_time'         =>  $value->bind_time,
                     'active_time'       =>  $value->active_time,
@@ -126,6 +121,32 @@ class MerchantsController extends Controller
      * @DateTime  2020-07-22
      * @copyright [copyright]
      * @license   [license]
+     * @version   [ 首页 - 商户管理 - 商户详情 - 活动信息 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function merchantPolicy(Request $request)
+    {
+        if( !$request->terminal ) return response()->json(['error'=>['message' => '缺少机器终端']]);
+
+        $ActiveInfo = array();
+
+        // 获得该机器总交易额
+        $countTradeMoney =  \App\Trade::where('merchant_sn', $request->terminal )->where('card_type', '!=', '借记卡')->where('trade_status', 1)
+                            ->whereIn('trade_type', ['SMALLFREEPAY', 'CARDPAY', 'ENJOY'])->sum('money');
+        $ActiveInfo['countTradeMoney'] =number_format($countTradeMoney / 100, 2, '.', ',');
+        $ActiveInfo['tips'] = "达标统计的是云闪付、小额双免、优享、普通 贷记卡交易之和，非总交易额";
+        
+
+        return response()->json(['success'=>['message' => '获取成功', 'data' =>$ActiveInfo ]]);
+    }
+
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-22
+     * @copyright [copyright]
+     * @license   [license]
      * @version   [ 首页 - 商户管理 - 商户详情 - 交易数据 ]
      * @param     Request     $request [description]
      */
@@ -164,7 +185,5 @@ class MerchantsController extends Controller
 
         }
     }
-
-
 
 }
