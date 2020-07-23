@@ -41,7 +41,9 @@ class TradeController extends Controller
 
 			$dataType   = $request->data_type ?? 'day';
 
-			$server = new \App\Http\Controllers\V1\ServerController($dataType, $current, $user);
+			$date       = $request->date ?? 'cur';
+
+			$server = new \App\Http\Controllers\V1\ServerController($dataType, $current, $user, $date);
 
 			$data   = $server->getInfo();
 

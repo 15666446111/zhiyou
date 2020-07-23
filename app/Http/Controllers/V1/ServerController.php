@@ -51,6 +51,7 @@ class ServerController extends Controller
 	protected $team;
 
 
+    protected $date;
 
 	/**
 	 * @Author    Pudding
@@ -62,27 +63,40 @@ class ServerController extends Controller
 	 * @param     [type]      $date     [description]
 	 * @param     [type]      $current  [description]
 	 */
-    public function __construct($dateType, $current, $user)
+    public function __construct($dateType, $current, $user, $date)
     {
 
     	$this->dateType = $dateType;
 
+
+        $this->date     = $date;
+
         switch ($this->dateType) {
             case 'month':
-                $this->StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
+                if($date == 'cur'){
+                    $this->StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
+                }else{
+                    $this->StartTime = Carbon::createFromFormat('Y-m', $date)->startOfMonth()->toDateTimeString();
+                }
                 break;
             case 'day':
                 $this->StartTime = Carbon::today()->toDateTimeString();
                 break;
             case 'all':
-                $this->StartTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->toDateTimeString();
+                $this->StartTime = Carbon::createFromFormat('Y-m-d', '1970-01-01')->toDateTimeString();
                 break;
             default:
                 $this->StartTime = $time;
                 break;
         }
 
-        $this->EndTime = Carbon::now()->toDateTimeString();
+        if($this->dateType == 'month' && $date != 'cur'){
+            $this->EndTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->addMonth(1)->startOfMonth()->toDateTimeString();
+        }else{
+            $this->EndTime = Carbon::now()->toDateTimeString();
+        }
+
+        
 
     	$this->Type     = $current;
 
@@ -131,7 +145,6 @@ class ServerController extends Controller
 
         $merchansAll = $this->merchansAll();
 
-
     	// 返回查询的日期
     	$arrs['date']         = $this->getDate();
 
@@ -147,8 +160,6 @@ class ServerController extends Controller
 
 		$arrs['merchants']    = $this->getMerchants();
 
-
-        
         if ($merchansAll > 0 )
 		    $arrs['Avg']      = number_format(($trade / $merchansAll) / 100, 2, '.', ',');
     	else
@@ -269,7 +280,12 @@ class ServerController extends Controller
 
         switch ($this->dateType) {
             case 'month':
-                $date = Carbon::now()->year."-".Carbon::now()->month;
+                if($this->date == 'cur'){
+                    $date = Carbon::now()->year."-".Carbon::now()->month;
+                }else{
+                    $dateInfo = Carbon::createFromFormat('Y-m', $this->date);
+                    $date = $dateInfo->year."-".$dateInfo->month;
+                }
                 break;
             case 'day':
                 $date = Carbon::now()->year."-".Carbon::now()->month.'-'.Carbon::now()->day;
