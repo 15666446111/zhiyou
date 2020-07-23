@@ -120,30 +120,38 @@ class SetUserController extends Controller
     }
 
     /**
-     * 提现税点接口
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 我的 - 提现 - 获取提现税点]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
      */
     public function point(Request $request)
     {
 
         try{ 
+
             // 判断是分润钱包还是返现钱包 * 获取提现税点
             if($request->type == '1'){
                 //税点
                 $data['point']=config('draw.rate');
-                //单笔提现费
-                $data['rate_m']=config('draw.rate_m');
+                //单笔提现费  
+                $data['rate_m']= number_format(config('draw.rate_m') / 100, 2, '.', ',');
                 //免审核额度
                 $data['no_check']=config('draw.no_check');
-
-            }else
+                // 最小提现金额
+                $data['min_money'] = number_format(config('draw.cash_min') / 100, 2, '.', ',');
+            }else{  
                 $data['point']=config('draw.return_blance');
 
-                $data['rate_m']=config('draw.return_money');
+                $data['rate_m']=number_format(config('draw.return_money') / 100, 2, '.', ',');
 
                 $data['no_check']=config('draw.no_check');
-            
-            //最小提现金额
-            $data['min_money']=200;
+
+                $data['min_money'] = number_format(config('draw.return_min') / 100, 2, '.', ',');
+            }
             //提现范围时间
             $data['point_time']='9:00~21:00';
 
