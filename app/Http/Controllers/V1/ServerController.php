@@ -145,9 +145,9 @@ class ServerController extends Controller
 		$arrs['merchants']    = $this->getMerchants();
         
         if ($arrs['merchants'] > 0 )
-		    $arrs['Avg']          = number_format(($trade / $arrs['merchants']) / 100, 2, '.', ',');
+		    $arrs['Avg']      = number_format(($trade / $arrs['merchants']) / 100, 2, '.', ',');
     	else
-            $arrs['Avg']          = 0;
+            $arrs['Avg']      = 0;
         
         return $arrs;
     }
@@ -170,7 +170,7 @@ class ServerController extends Controller
 
     	$select = \App\Trade::whereHas('merchants', function($q) use ($team){
     		$q->whereIn('user_id', $team);
-    	})->whereBetween('created_at', [ $this->StartTime,  $this->EndTime]);
+    	})->whereBetween('trade_time', [ $this->StartTime,  $this->EndTime])->where('trade_status', 1)->where('card_type', '!=', '借记卡');
 
     	return $select->sum('money');
     }
