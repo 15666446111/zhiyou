@@ -117,72 +117,82 @@ class TransferController extends Controller
 
         try{
 
-            $res=\App\Merchant::whereIn('user_id',$request->friend_id)
-            ->whereIn('id',$request->merchant_id)
-            ->update(['user_id'=>$request->user->id]);
-
-            if($res){
-
-                $data=\App\MachineLog::where('user_id',$request->user->id)
-                ->whereIn('friend_id',$request->friend_id)
-                ->whereIn('merchant_id',$request->merchant_id)
-                ->update(['is_back'=>1]);
-
+            $sonsInfo = \App\Buser::where('id', $request->friend_id)->first();
+            if(empty($sonsInfo) or $sonsInfo->parent != $request->user->id){
+                return response()->json(['error'=>['message' => '下级不存在或无权限！']]);
             }
+
+            // 先改写数据库
+            $value = \App\MachineLog::where('user_id',$request->user->id)->where('friend_id',$request->friend_id)->whereIn('merchant_id',$request->merchant_id)->get();
+
+            foreach ($value as $key => $v) {
+                $v->is_back = $v->is_back ?? 1;
+                $v->save();
+                \App\Merchant::where('id', $v->merchant_id)->where('bind_status','0')->where('active_status','0')->update(['user_id'=>$request->user->id]);
+            }
+            return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
             
-            if($data){
-
-                return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
-
-            }
         } catch (\Exception $e) {
-            
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
-
         }
 
     }
 
     /**
-     * 划拨回拨记录
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 机具划拨回拨记录 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
      */
     public function transferLog(Request $request)
     {
         try{
 
-            $data=\App\MachineLog::select('nickname','friend_id','merchant_sn','is_back','merchants_transfer_log.created_at')
-            ->join('busers','busers.id','=','merchants_transfer_log.user_id')
-            ->join('merchants','merchants_transfer_log.merchant_id','=','merchants.id')
-            ->where('merchants_transfer_log.user_id',$request->user->id)
-            ->orderBy('merchants_transfer_log.created_at','desc')
-            ->get()
-            ->toArray();
-
-            $friends_id=[];
-
-            foreach($data as $k=>$v){
-
-                $friends_id[]=$v['friend_id'];
-     
+            if(!$request->type){
+                $request->type = 'my_transfer';
+                // my_back 我的回拨
+                // parent_transfer 上级划拨
+                // parent_bank 上级回拨
             }
-            
-            $title = \App\Buser::select('id','nickname')->whereIn('id',$friends_id)->get()->toArray();
 
-            // dd($title);
-            foreach($title as $key=>$value){
-
-                foreach($data as $i=>$p){
-
-                    if($data[$i]['friend_id'] == $value['id']){
-
-                        $data[$i]['friend_name']= $value['nickname'];
-    
-                    }
-                }
-
+            $data = \App\MachineLog::where('id', '>=', 1);
+            // 我的划拨
+            if($request->type == 'my_transfer'){
+                $data->where('user_id', $request->user->id);
             }
-            
-            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+
+            // 我的回拨动
+            if($request->type == 'my_back'){
+                $data->where('user_id', $request->user->id)->where('is_back', 1);
+            }
+
+            // 上级划拨
+            if($request->type == 'parent_transfer'){
+                $data->where('friend_id', $request->user->id);
+            }
+
+            // 上级回拨
+            if($request->type == 'parent_bank'){
+                $data->where('friend_id', $request->user->id)->where('is_back', 1);
+            }
+
+            $list = $data->get();
+
+            $arrs = array();
+
+            foreach ($list as $key => $value) {
+                $arrs[] = array(
+                    'nickname'      =>  $value->user_a->nickname,
+                    'friend_name'   =>  $value->user_b->nickname,
+                    'merchant_sn'   =>  $value->merchants->merchant_sn,
+                    'created_at'    =>  ($request->type == 'my_back' or $request->type == 'parent_bank') ? $value->updated_at->toDateTimeString() : $value->created_at->toDateTimeString()
+                );
+            }
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$arrs]]);
         
         } catch (\Exception $e) {
             
