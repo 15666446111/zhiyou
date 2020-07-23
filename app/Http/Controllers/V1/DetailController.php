@@ -93,7 +93,7 @@ class DetailController extends Controller
 	    		    			$query->where('user_id', $request->user->id);
 	    		    		})
 	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
-	    					->where('trade_status', 1)->where('card_type', '!=', '借记卡');
+	    					->where('trade_status', 1)->where('card_type', '!=', '借记卡')
 	    					->whereIn('trade_type', $trade_type)->groupBy('trade_type')
 	    					->select('trade_type', DB::raw('format(SUM(money) / 100, 2) as money'))
 	    					->get()->toArray();
