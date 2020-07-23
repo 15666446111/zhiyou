@@ -537,7 +537,6 @@ class DetailController extends Controller
 
 	    	$this->dateType = (!$request->dateType or $request->dateType == 'month') ? 'month' : 'month';
 
-
     		if($request->date){
     			$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
     			$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
@@ -549,24 +548,27 @@ class DetailController extends Controller
 
 	    	$data = array();
 
+	    	$trade_type = array('ENJOY', 'CARDPAY', 'SMALLFREEPAY', 'CLOUDPAY', 'WXQRPAY', 'ALIQRPAY', 'UNIONQRPAY');
+
 	    	if($this->type == 'self'){
 	    		//DB::connection()->enableQueryLog();
 	    		// 获取交易量
 	    		$selfData = \App\Policy::withCount([
 	    			'merchants' => function($query) use ($request){
-	    				$query->where('user_id', $request->user->id);
+	    				$query->where('user_id', $request->user->id)->where('bind_status', 1);
 	    			}
 	    		])->get();
 	    		
 	    		foreach ($selfData as $key => $value) {
 	    			// 获取交易总量
 	    			$TradeCount = \App\Trade::whereHas('merchants_sn', function($query) use ($request, $value){
-	    				$query->where('user_id', $request->user->id)
-	    					->where('policy_id', $value->id)
-	    					->where('trade_status', 1)
-	    					->where('card_type', '!=', '借记卡')
-	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end);
-	    			})->sum('money');
+	    				$query->where('user_id', $request->user->id)->where('policy_id', $value->id);
+	    			})
+	    			->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
+	    			->whereIn('trade_type', $trade_type)
+	    			->where('card_type', '!=', '借记卡')
+	    			->where('trade_status', 1)
+	    			->sum('money');
 
 
 	    			if($TradeCount === 0 or $value->merchants_count === 0){
@@ -581,19 +583,19 @@ class DetailController extends Controller
 				$agent = $this->getAgent($request->user->id);
 				$agentData = \App\Policy::withCount([
 	    			'merchants' => function($query) use ($agent){
-	    				$query->whereIn('user_id', $agent);
+	    				$query->whereIn('user_id', $agent)->where('bind_status', 1);
 	    			}
 	    		])->get();
 
 				foreach ($agentData as $key => $value) {
 					// 获取交易总量
 	    			$TradeCount = \App\Trade::whereHas('merchants_sn', function($query) use ($agent, $value){
-	    				$query->whereIn('user_id', $agent)
-	    					->where('policy_id', $value->id)
-	    					->where('trade_status', 1)
-	    					->where('card_type', '!=', '借记卡')
-	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end);
-	    			})->sum('money');
+	    				$query->whereIn('user_id', $agent)->where('policy_id', $value->id);
+	    			})->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
+	    			->whereIn('trade_type', $trade_type)
+	    			->where('card_type', '!=', '借记卡')
+	    			->where('trade_status', 1)
+	    			->sum('money');
 
 	    			if($TradeCount === 0 or $value->merchants_count === 0){
 	    				$avg = 0;
@@ -620,12 +622,12 @@ class DetailController extends Controller
 				foreach ($agentData as $key => $value) {
 					// 获取交易总量
 	    			$TradeCount = \App\Trade::whereHas('merchants_sn', function($query) use ($agent, $value){
-	    				$query->whereIn('user_id', $agent)
-	    					->where('policy_id', $value->id)
-	    					->where('trade_status', 1)
-	    					->where('card_type', '!=', '借记卡')
-	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end);
-	    			})->sum('money');
+	    				$query->whereIn('user_id', $agent)->where('policy_id', $value->id);
+	    			})->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
+	    			->whereIn('trade_type', $trade_type)
+	    			->where('card_type', '!=', '借记卡')
+	    			->where('trade_status', 1)
+	    			->sum('money');
 
 	    			if($TradeCount === 0 or $value->merchants_count === 0){
 	    				$avg = 0;

@@ -169,7 +169,6 @@ class ServerController extends Controller
     }
 
 
-
     /**
      * @Author    Pudding
      * @DateTime  2020-06-05
@@ -180,7 +179,7 @@ class ServerController extends Controller
      */
     public function getTrade()
     {
-    	DB::connection()->enableQueryLog();#开启执行日志
+    	//DB::connection()->enableQueryLog();#开启执行日志
 
         $team = $this->team;
         
