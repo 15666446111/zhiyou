@@ -205,4 +205,43 @@ class TransferController extends Controller
 
         }
     }
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 获取区间可划拨列表 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function sectionPolicy(Request $request)
+    {
+        try{
+
+            if(!$request->policy_id) return response()->json(['error'=>['message' => '当前政策不可用!']]);
+
+            if(!$request->start or !$request->end)  return response()->json(['error'=>['message' => '区间范围不可用!']]);
+
+            $data = [];
+
+            //
+            $lenth = strlen($request->start);
+
+            for($i = $request->start; $i<= $request->end; $i++){
+                $i =sprintf("%0".$lenth."d", $i);
+                $data[] = $i;
+            }
+
+            $list = \App\Merchant::where('user_id', $request->user->id)->where('policy_id', $request->policy_id)->whereIn('merchant_sn', $data)->where('bind_status', 0)->where('active_status', 0)->get();
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$list]]);
+            
+        } catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+ 
+    }
 }
