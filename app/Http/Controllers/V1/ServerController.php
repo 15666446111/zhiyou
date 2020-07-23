@@ -173,7 +173,7 @@ class ServerController extends Controller
 
         $team = $this->team;
 
-    	$select = \App\Trade::whereHas('merchants', function($q) use ($team){
+    	$select = \App\Trade::whereHasIn('merchants', function($q) use ($team){
     		$q->whereIn('user_id', $team);
     	})->whereBetween('trade_time', [ $this->StartTime,  $this->EndTime])->where('trade_status', 1)->where('card_type', '!=', '借记卡');
 
