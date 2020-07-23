@@ -67,30 +67,21 @@ class DetailController extends Controller
 
 	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
 
-	    	if(!$request->date){
 
-	    		if($this->dateType == 'day'){
-	    			$this->begin = Carbon::today()->toDateTimeString();
-	    		}
-	    		if($this->dateType == 'month'){
-	    			$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
-	    		}
-
-	    		if($this->dateType == 'day'){
-	    			$this->end   = Carbon::tomorrow()->toDateTimeString();
-	    		}
-	    		if($this->dateType == 'month'){
-	    			$this->end 	 = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
-	    		}
-
-	    	}else{
-
-	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
-
-	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	if($this->dateType == 'day'){
+    			$this->begin = Carbon::today()->toDateTimeString();
+    			$this->end   = Carbon::tomorrow()->toDateTimeString();
 	    	}
 
-	    	//dd($this->begin);
+	    	if($this->dateType == 'month'){
+	    		if($request->date){
+	    			$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}else{
+	    			$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}
+	    	}
 
 	    	$data = array();
 
@@ -98,10 +89,11 @@ class DetailController extends Controller
 	    	$trade_type = array('ENJOY', 'CARDPAY', 'SMALLFREEPAY', 'CLOUDPAY', 'WXQRPAY', 'ALIQRPAY', 'UNIONQRPAY');
 
 	    	if($this->type == 'self'){
-	    		$selfData = \App\Trade::whereHas('merchants_sn', function($query) use ($request){
+	    		$selfData = \App\Trade::whereHasIn('merchants_sn', function($query) use ($request){
 	    		    			$query->where('user_id', $request->user->id);
 	    		    		})
 	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
+	    					->where('trade_status', 1)->where('card_type', '!=', '借记卡');
 	    					->whereIn('trade_type', $trade_type)->groupBy('trade_type')
 	    					->select('trade_type', DB::raw('format(SUM(money) / 100, 2) as money'))
 	    					->get()->toArray();
@@ -120,7 +112,7 @@ class DetailController extends Controller
 	    		// 获取所有代理的
 	    		$agent = $this->getAgent($request->user->id);
 	    		//dd($agent);
-	    		$agentData = \App\Trade::whereHas('merchants_sn', function($query) use ($agent){
+	    		$agentData = \App\Trade::whereHasIn('merchants_sn', function($query) use ($agent){
 	    		    			$query->whereIn('user_id', $agent);
 	    		    		})
 	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
@@ -206,16 +198,19 @@ class DetailController extends Controller
 
 	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
 
-	    	if(!$request->date){
+	    	if($this->dateType == 'day'){
+    			$this->begin = Carbon::today()->toDateTimeString();
+    			$this->end   = Carbon::tomorrow()->toDateTimeString();
+	    	}
 
-	    		$this->begin = $this->dateType == 'day' ? Carbon::today()->toDateTimeString() : Carbon::now()->firstOfMonth()->toDateTimeString();
-
-	    		$this->end = $this->dateType == 'day' ? Carbon::tomorrow()->toDateTimeString() : Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
-	    	}else{
-
-	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
-
-	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	if($this->dateType == 'month'){
+	    		if($request->date){
+	    			$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}else{
+	    			$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}
 	    	}
 
 	    	$data = array();
@@ -358,16 +353,19 @@ class DetailController extends Controller
 
 	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
 
-	    	if(!$request->date){
+	    	if($this->dateType == 'day'){
+    			$this->begin = Carbon::today()->toDateTimeString();
+    			$this->end   = Carbon::tomorrow()->toDateTimeString();
+	    	}
 
-	    		$this->begin = $this->dateType == 'day' ? Carbon::today()->toDateTimeString() : Carbon::now()->firstOfMonth()->toDateTimeString();
-
-	    		$this->end = $this->dateType == 'day' ? Carbon::tomorrow()->toDateTimeString() : Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
-	    	}else{
-
-	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
-
-	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	if($this->dateType == 'month'){
+	    		if($request->date){
+	    			$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}else{
+	    			$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}
 	    	}
 
 	    	$data = array();
@@ -444,16 +442,19 @@ class DetailController extends Controller
 
 	    	$this->dateType = (!$request->dateType or $request->dateType == 'day') ? 'day' : 'month';
 
-	    	if(!$request->date){
+	    	if($this->dateType == 'day'){
+    			$this->begin = Carbon::today()->toDateTimeString();
+    			$this->end   = Carbon::tomorrow()->toDateTimeString();
+	    	}
 
-	    		$this->begin = $this->dateType == 'day' ? Carbon::today()->toDateTimeString() : Carbon::now()->firstOfMonth()->toDateTimeString();
-
-	    		$this->end = $this->dateType == 'day' ? Carbon::tomorrow()->toDateTimeString() : Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
-	    	}else{
-
-	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
-
-	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    	if($this->dateType == 'month'){
+	    		if($request->date){
+	    			$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}else{
+	    			$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
+	    			$this->end 	 = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+	    		}
 	    	}
 
 	    	$data = array();
@@ -535,18 +536,15 @@ class DetailController extends Controller
 
 	    	$this->dateType = (!$request->dateType or $request->dateType == 'month') ? 'month' : 'month';
 
-	    	if(!$request->date){
 
-	    		$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
+    		if($request->date){
+    			$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
+    			$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
+    		}else{
+    			$this->begin = Carbon::now()->firstOfMonth()->toDateTimeString();
+    			$this->end 	 = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
+    		}
 
-	    		$this->end   = Carbon::now()->addMonth(1)->firstOfMonth()->toDateTimeString();
-
-	    	}else{
-
-	    		$this->begin = Carbon::createFromFormat('Y-m', $request->date)->firstOfMonth()->toDateTimeString();
-
-	    		$this->end 	 = Carbon::createFromFormat('Y-m', $request->date)->addMonth(1)->firstOfMonth()->toDateTimeString();
-	    	}
 
 	    	$data = array();
 
