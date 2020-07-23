@@ -608,13 +608,15 @@ class DetailController extends Controller
 
 	    	if($this->type == 'agent'){
 				// 获取所有代理的
-				$agent = $this->getAgent($request->agent_id);
+				$agent   = $this->getAgent($request->agent_id);
 				$agent[] = $request->agent_id;
 				$agentData = \App\Policy::withCount([
 	    			'merchants' => function($query) use ($agent){
-	    				$query->whereIn('user_id', $agent);
+	    				$query->whereIn('user_id', $agent)->where('bind_status', 1);
 	    			}
 	    		])->get();
+
+	    		//dd($agentData);
 
 				foreach ($agentData as $key => $value) {
 					// 获取交易总量
