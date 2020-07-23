@@ -131,7 +131,8 @@ class TransferController extends Controller
             $value = \App\MachineLog::where('user_id',$request->user->id)->where('friend_id',$request->friend_id)->whereIn('merchant_id',$request->merchant_id)->get();
 
             foreach ($value as $key => $v) {
-                $v->is_back = $v->is_back ?? 1;
+                // $v->is_back = $v->is_back ?? 1;
+                $v->is_back = 1;
                 $v->save();
                 \App\Merchant::where('id', $v->merchant_id)->where('bind_status','0')->where('active_status','0')->update(['user_id'=>$request->user->id]);
             }
