@@ -85,7 +85,6 @@ class DetailController extends Controller
 
 	    	$data = array();
 
-
 	    	$trade_type = array('ENJOY', 'CARDPAY', 'SMALLFREEPAY', 'CLOUDPAY', 'WXQRPAY', 'ALIQRPAY', 'UNIONQRPAY');
 
 	    	if($this->type == 'self'){
@@ -116,6 +115,7 @@ class DetailController extends Controller
 	    		    			$query->whereIn('user_id', $agent);
 	    		    		})
 	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
+	    					->where('trade_status', 1)->where('card_type', '!=', '借记卡')
 	    					->whereIn('trade_type', $trade_type)->groupBy('trade_type')
 	    					->select('trade_type', DB::raw('format(SUM(money) / 100, 2) as money'))
 	    					->get()->toArray();
@@ -148,6 +148,7 @@ class DetailController extends Controller
 	    		    			$query->whereIn('user_id', $agent);
 	    		    		})
 	    					->where('trade_time', '>=', $this->begin)->where('trade_time', '<=', $this->end)
+	    					->where('trade_status', 1)->where('card_type', '!=', '借记卡')
 	    					->whereIn('trade_type', $trade_type)->groupBy('trade_type')
 	    					->select('trade_type', DB::raw('format(SUM(money) / 100, 2) as money'))
 	    					->get()->toArray();

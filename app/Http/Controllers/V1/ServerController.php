@@ -93,11 +93,10 @@ class ServerController extends Controller
         if($this->dateType == 'month' && $date != 'cur'){
 
             $this->EndTime = Carbon::createFromFormat('Y-m', $date)->addMonth(1)->startOfMonth()->toDateTimeString();
+
         }else{
             $this->EndTime = Carbon::now()->toDateTimeString();
         }
-
-        
 
     	$this->Type     = $current;
 
@@ -181,15 +180,17 @@ class ServerController extends Controller
      */
     public function getTrade()
     {
-    	//DB::connection()->enableQueryLog();#开启执行日志
+    	DB::connection()->enableQueryLog();#开启执行日志
 
         $team = $this->team;
         
         $trade_type = array('ENJOY', 'CARDPAY', 'SMALLFREEPAY', 'CLOUDPAY', 'WXQRPAY', 'ALIQRPAY', 'UNIONQRPAY');
 
-    	$select = \App\Trade::whereHasIn('merchants', function($q) use ($team){
+    	$select = \App\Trade::whereHasIn('merchants_sn', function($q) use ($team){
     		$q->whereIn('user_id', $team);
     	})->whereBetween('trade_time', [ $this->StartTime,  $this->EndTime])->where('trade_status', 1)->where('card_type', '!=', '借记卡')->whereIn('trade_type', $trade_type);
+        
+        //dd(DB::getQueryLog());
 
     	return $select->sum('money');
     }
