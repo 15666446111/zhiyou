@@ -149,8 +149,8 @@ class ServerController extends Controller
 
 
         
-        if ($arrs['merchansAll'] > 0 )
-		    $arrs['Avg']      = number_format(($trade / $arrs['merchansAll']) / 100, 2, '.', ',');
+        if ($merchansAll > 0 )
+		    $arrs['Avg']      = number_format(($trade / $merchansAll) / 100, 2, '.', ',');
     	else
             $arrs['Avg']      = 0;
         
