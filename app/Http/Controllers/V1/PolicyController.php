@@ -93,7 +93,7 @@ class PolicyController extends Controller
                         $arrs['active_price']['return_money'] = $userPolicy->vip_active_set['return_money'];
 
                     $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
-                    $arrs['active_price']['min'] = 0;
+                    $arrs['active_price']['min'] = $policy->recommend;
 
                     // 读取达标返现
                     foreach ($userPolicy->standard as $key => $value) {
