@@ -53,18 +53,12 @@ class LoginController extends Controller
     {
 
         try{
-
-
             if($request->password !== $request->password1){
-
                 return response()->json(['error'=>['message' => '请保持密码一致']]);
-
             }
 
-            if($request->code !== '8888'){
-                
-                return response()->json(['error'=>['message' => '验证码错误']]);
-
+            if(!$this->verifyCode($request->account, $request->code)){
+                return response()->json(['error'=>['message' => '验证码不正确或已过期']]);
             }
 
             \App\Buser::where('account',$request->account)->update(['password'=>md5($request->password)]);
@@ -77,5 +71,72 @@ class LoginController extends Controller
 
         }
 
+    }
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-08
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [注册发送验证码]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function code(Request $request)
+    {
+        try{
+
+            if(!$request->phone) return response()->json(['error'=>['message' => '手机号不存在!']]);
+            // 发送验证码
+            $appliction = new \App\Services\Sms\SendSmsController;
+
+            $res = $appliction->send($request->phone, rand(1000,9999));
+
+            if($res['code'] = 10000){
+                return response()->json(['success'=>['message' => '发送成功!']]);
+            }else{
+                return response()->json(['error'=>['message' => $res['message']]]);
+            }
+            
+        } catch (\Exception $e) {
+
+            return response()->json(['error'=>['message' => '发送失败!']]);
+
+        }
+    }
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-09
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 验证验证码是否正确 ]
+     * @param     [type]      $phone [description]
+     * @param     [type]      $code  [description]
+     * @return    [type]             [description]
+     */
+    public function verifyCode($phone, $code)
+    {
+        try{
+            // 获取到该用户的最后一条可用的验证码
+            $codeMsg = \App\Sms::where('phone', $phone)->where('is_use', 0)->where('out_time', '>=', Carbon::now()->toDateTimeString())
+                        ->orderBy('id', 'desc')->first();
+
+            if(empty($codeMsg) or !$codeMsg){
+                \App\Sms::where('phone', $phone)->update(['is_use' => 1]);
+                return false;
+            }
+
+            if($codeMsg->code != $code){
+                return false;
+            }
+
+            \App\Sms::where('phone', $phone)->update(['is_use' => 1]);
+
+            return true;
+            
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }

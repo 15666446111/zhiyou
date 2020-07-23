@@ -15,7 +15,6 @@ Route::get('/',  'HomeController@index');
 
 Auth::routes();
 
-
 /**
  * @version [<汇付方交易推送地址>] [<description>]
  * @return  [交易数据推送处理]   [<description>]
@@ -75,3 +74,7 @@ Route::get('/extendTemail/{code}', 'RegisterController@extendTemail');
  * @version [<提交表单>] [<description>]
  */
 Route::post('/extendTemail/{code}', 'RegisterController@extendTemailIn');
+
+
+// 注册发送验证码
+Route::post('/getCode', 	'RegisterController@code');

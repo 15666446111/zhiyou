@@ -148,6 +148,19 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
+   
+    /*
+    |--------------------------------------------------------------------------
+    | TencentCloud Config。SMS
+    |--------------------------------------------------------------------------
+    |
+    */
+    'TxSign'            =>  env('TXSIGN', '翔鹭通'),
+    'TxAppId'           =>  env('TXAPPID', '1400385216'),
+    'TxTemplateId'      =>  env('TXTEMPLATE', '636764'),
+    'TxSecretId'        =>  env('TX_SECRETID', 'AKIDVigQVbvPzKVQ6ebJedO3XpvYv7yatLUU'),
+    'TxSecretKey'       =>  env('TXSECRETKEY', '86s8DG6nIcliOrTtAH0ZyMaev30ARaYR'),
+
 
     'providers' => [
 

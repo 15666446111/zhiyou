@@ -66,4 +66,7 @@ Route::group([
 
     //操作日志
     $router->resource('admin-open-logs', AdminOpenLogController::class);
+
+    // 验证码
+    $router->resource('sms', SmsController::class);
 });
