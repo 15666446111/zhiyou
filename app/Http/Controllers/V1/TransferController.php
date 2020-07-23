@@ -166,7 +166,7 @@ class TransferController extends Controller
             $data = \App\MachineLog::where('id', '>=', 1);
             // 我的划拨
             if($request->type == 'my_transfer'){
-                $data->where('user_id', $request->user->id);
+                $data->where('user_id', $request->user->id)->where('is_back', 0);
             }
 
             // 我的回拨动
@@ -176,7 +176,7 @@ class TransferController extends Controller
 
             // 上级划拨
             if($request->type == 'parent_transfer'){
-                $data->where('friend_id', $request->user->id);
+                $data->where('friend_id', $request->user->id)->where('is_back', 0);
             }
 
             // 上级回拨
