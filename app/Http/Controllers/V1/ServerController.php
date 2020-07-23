@@ -184,10 +184,12 @@ class ServerController extends Controller
     	//DB::connection()->enableQueryLog();#开启执行日志
 
         $team = $this->team;
+        
+        $trade_type = array('ENJOY', 'CARDPAY', 'SMALLFREEPAY', 'CLOUDPAY', 'WXQRPAY', 'ALIQRPAY', 'UNIONQRPAY');
 
     	$select = \App\Trade::whereHasIn('merchants', function($q) use ($team){
     		$q->whereIn('user_id', $team);
-    	})->whereBetween('trade_time', [ $this->StartTime,  $this->EndTime])->where('trade_status', 1)->where('card_type', '!=', '借记卡');
+    	})->whereBetween('trade_time', [ $this->StartTime,  $this->EndTime])->where('trade_status', 1)->where('card_type', '!=', '借记卡')->whereIn('trade_type', $trade_type);
 
     	return $select->sum('money');
     }
