@@ -91,7 +91,8 @@ class ServerController extends Controller
         }
 
         if($this->dateType == 'month' && $date != 'cur'){
-            $this->EndTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->addMonth(1)->startOfMonth()->toDateTimeString();
+
+            $this->EndTime = Carbon::createFromFormat('Y-m', $date)->addMonth(1)->startOfMonth()->toDateTimeString();
         }else{
             $this->EndTime = Carbon::now()->toDateTimeString();
         }
