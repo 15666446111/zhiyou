@@ -174,6 +174,8 @@ class PolicyController extends AdminController
             
         })->tab('激活返现设置', function ($form) {
 
+            $form->number('recommend', __('推荐装机奖励'))->default(2)->help('当朋友圈推荐机器激活时, 奖励推荐人的金额, 此额度与激活返现额度共享.(单位为分)');
+
             $form->number('default_active', __('直推激活'))->default(2)->help('机器激活,上级获得的直推奖励.(单位为分)');
             $form->number('indirect_active', __('间推激活'))->default(1)->help('机器激活,上上级获得的间推奖励.(单位为分)');
 

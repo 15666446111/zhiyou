@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08262081bb95f9f544d72e87f176615a",
+    "content-hash": "2a2cbaf7c5fb8e13952f6ea83388aeea",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -530,6 +530,68 @@
                 "utils"
             ],
             "time": "2017-06-12T01:10:27+00:00"
+        },
+        {
+            "name": "dcat/laravel-wherehasin",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jqhph/laravel-wherehasin.git",
+                "reference": "b74f7c70dfd3fcbe3b8e01e97b39e1dea06e632f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jqhph/laravel-wherehasin/zipball/b74f7c70dfd3fcbe3b8e01e97b39e1dea06e632f",
+                "reference": "b74f7c70dfd3fcbe3b8e01e97b39e1dea06e632f",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.4",
+                "laravel/laravel": ">=5.5",
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Dcat\\Laravel\\Database\\WhereHasInServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dcat\\Laravel\\Database\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "jqh",
+                    "email": "841324345@qq.com"
+                }
+            ],
+            "description": "Laravel ORM whereHasIn",
+            "homepage": "https://github.com/jqhph/dcat-admin",
+            "keywords": [
+                "laravel",
+                "orm",
+                "relation",
+                "whereHas"
+            ],
+            "time": "2020-06-28T01:51:10+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

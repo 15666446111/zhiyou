@@ -9,60 +9,62 @@ class TransferController extends Controller
 {
     
     /**
-     * 查询用户未绑定终端机器
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 查询可划拨的机器列表]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
      */
     public function getUnBound(Request $request)
     {
-
         try{
-            if(!$request->policy_id)  
-                return response()->json(['error'=>['message' => '请选择政策活动!']]);
+            if(!$request->policy_id)  return response()->json(['error'=>['message' => '请选择政策活动!']]);
 
             //获取该用户该政策下未绑定未激活终端机器
             $list = \App\Merchant::select('id','merchant_terminal','merchant_sn')
-            ->where('user_id',  '=', $request->user->id)
-            ->where('policy_id','=', $request->policy_id)
-            ->where('active_status','!=', 1)
-            ->where('bind_status','!=', 1)
-            ->get()
-            ->toArray();
-
+                ->where('user_id',  '=', $request->user->id)
+                ->where('policy_id','=', $request->policy_id)
+                ->where('active_status', 0)
+                ->where('bind_status', 0)->get()->toArray();
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$list]]);
-        
         } catch (\Exception $e) {
-            
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
-
         }
 
     }
     
 
     /**
-     * 划拨
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [version]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
      */
     public function transfer(Request $request)
     {
-
         try{
-            $merchants=\App\Merchant::whereIn('id',$request->id)->get();
 
-            foreach($merchants as $k=>$v){
+            if(!$request->friend_id) return response()->json(['error'=>['message' => '请选择划拨伙伴']]);
 
-                if($v->active_status == 1 || $v->bind_status == 1){
-                    return response()->json(['error'=>['message' => '请选择未绑定并且未激活的终端']]);
-                }
-
-                \App\Merchant::where('id',$v->id)->where('user_id',$request->user->id)->update(['user_id'=>$request->friend_id]);
-
+            $sonsInfo = \App\Buser::where('id', $request->friend_id)->first();
+            if(empty($sonsInfo) or $sonsInfo->parent != $request->user->id){
+                return response()->json(['error'=>['message' => '下级不存在或无权限！']]);
             }
 
-            foreach($request->id as $k=>$v){
-                \App\MachineLog::create([
-                    'user_id'=>$request->user->id,
-                    'friend_id'=>$request->friend_id,
-                    'merchant_id'=>$v
-                ]);
+
+            $merchants=\App\Merchant::whereIn('id', $request->id)->where('user_id', $request->user->id)
+                        ->where('active_status', 0)->where('bind_status', 0)->get();
+
+            foreach($merchants as $k=>$v){
+                $v->user_id = $request->friend_id;
+                $v->save();
+
+                \App\MachineLog::create([ 'user_id'=>$request->user->id, 'friend_id'=>$request->friend_id, 'merchant_id'=>$v->id ]);
             }
 
             return response()->json(['success'=>['message' => '划拨成功!', 'data'=>[]]]);
@@ -78,116 +80,168 @@ class TransferController extends Controller
 
 
     /**
-     * 回拨机器列表
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 获取回拨机器列表 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
      */
     public function backList(Request $request)
     {
 
         try{
-
-            $list = \App\MachineLog::where('user_id',$request->user->id)
-            ->where('friend_id',$request->friend_id)
-            ->where('is_back',0)
-            ->pluck('merchant_id')
-            ->toArray();
+            $list = \App\MachineLog::where('user_id',$request->user->id)->where('friend_id',$request->friend_id)->where('is_back', 0)
+                        ->pluck('merchant_id')->toArray();
             
-            $data = \App\Merchant::select('id','merchant_terminal','merchant_sn')
-            ->whereIn('id',$list)
-            ->where('policy_id',$request->policy_id)
-            ->where('active_status',0)
-            ->where('bind_status',0)
-            ->get()
-            ->toArray();
-
+            $data = \App\Merchant::select('id','merchant_terminal','merchant_sn')->whereIn('id',$list)->where('policy_id',$request->policy_id)
+                        ->where('active_status',0)
+                        ->where('bind_status',0)
+                        ->get()
+                        ->toArray();
             return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
         
         } catch (\Exception $e) {
-            
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
-
         }
     }
 
 
     /**
-     * 回拨
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 划拨机器回拨 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
      */
     public function backTransfer(Request $request)
     {
 
         try{
 
-            $res=\App\Merchant::whereIn('user_id',$request->friend_id)
-            ->whereIn('id',$request->merchant_id)
-            ->update(['user_id'=>$request->user->id]);
-
-            if($res){
-
-                $data=\App\MachineLog::where('user_id',$request->user->id)
-                ->whereIn('friend_id',$request->friend_id)
-                ->whereIn('merchant_id',$request->merchant_id)
-                ->update(['is_back'=>1]);
-
+            $sonsInfo = \App\Buser::where('id', $request->friend_id)->first();
+            if(empty($sonsInfo) or $sonsInfo->parent != $request->user->id){
+                return response()->json(['error'=>['message' => '下级不存在或无权限！']]);
             }
-            
-            if($data){
 
-                return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
+            // 先改写数据库
+            $value = \App\MachineLog::where('user_id',$request->user->id)->where('friend_id',$request->friend_id)->whereIn('merchant_id',$request->merchant_id)->get();
 
+            foreach ($value as $key => $v) {
+                $v->is_back = $v->is_back ?? 1;
+                $v->save();
+                \App\Merchant::where('id', $v->merchant_id)->where('bind_status','0')->where('active_status','0')->update(['user_id'=>$request->user->id]);
             }
+            return response()->json(['success'=>['message' => '回拨成功!', 'data'=>[]]]);
+
         } catch (\Exception $e) {
-            
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
-
         }
 
     }
 
     /**
-     * 划拨回拨记录
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 机具划拨回拨记录 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
      */
     public function transferLog(Request $request)
     {
         try{
 
-            $data=\App\MachineLog::select('nickname','friend_id','merchant_sn','is_back','merchants_transfer_log.created_at')
-            ->join('busers','busers.id','=','merchants_transfer_log.user_id')
-            ->join('merchants','merchants_transfer_log.merchant_id','=','merchants.id')
-            ->where('merchants_transfer_log.user_id',$request->user->id)
-            ->orderBy('merchants_transfer_log.created_at','desc')
-            ->get()
-            ->toArray();
-
-            $friends_id=[];
-
-            foreach($data as $k=>$v){
-
-                $friends_id[]=$v['friend_id'];
-     
+            if(!$request->type){
+                $request->type = 'my_transfer';
+                // my_back 我的回拨
+                // parent_transfer 上级划拨
+                // parent_bank 上级回拨
             }
-            
-            $title = \App\Buser::select('id','nickname')->whereIn('id',$friends_id)->get()->toArray();
 
-            // dd($title);
-            foreach($title as $key=>$value){
-
-                foreach($data as $i=>$p){
-
-                    if($data[$i]['friend_id'] == $value['id']){
-
-                        $data[$i]['friend_name']= $value['nickname'];
-    
-                    }
-                }
-
+            $data = \App\MachineLog::where('id', '>=', 1);
+            // 我的划拨
+            if($request->type == 'my_transfer'){
+                $data->where('user_id', $request->user->id)->where('is_back', 0);
             }
-            
-            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$data]]);
+
+            // 我的回拨动
+            if($request->type == 'my_back'){
+                $data->where('user_id', $request->user->id)->where('is_back', 1);
+            }
+
+            // 上级划拨
+            if($request->type == 'parent_transfer'){
+                $data->where('friend_id', $request->user->id)->where('is_back', 0);
+            }
+
+            // 上级回拨
+            if($request->type == 'parent_bank'){
+                $data->where('friend_id', $request->user->id)->where('is_back', 1);
+            }
+
+            $list = $data->get();
+
+            $arrs = array();
+
+            foreach ($list as $key => $value) {
+                $arrs[] = array(
+                    'nickname'      =>  $value->user_a->nickname,
+                    'friend_name'   =>  $value->user_b->nickname,
+                    'merchant_sn'   =>  $value->merchants->merchant_sn,
+                    'created_at'    =>  ($request->type == 'my_back' or $request->type == 'parent_bank') ? $value->updated_at->toDateTimeString() : $value->created_at->toDateTimeString()
+                );
+            }
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$arrs]]);
         
         } catch (\Exception $e) {
             
             return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
 
         }
+    }
+
+    /**
+     * @Author    Pudding
+     * @DateTime  2020-07-23
+     * @copyright [copyright]
+     * @license   [license]
+     * @version   [ 获取区间可划拨列表 ]
+     * @param     Request     $request [description]
+     * @return    [type]               [description]
+     */
+    public function sectionPolicy(Request $request)
+    {
+        try{
+
+            if(!$request->policy_id) return response()->json(['error'=>['message' => '当前政策不可用!']]);
+
+            if(!$request->start or !$request->end)  return response()->json(['error'=>['message' => '区间范围不可用!']]);
+
+            $data = [];
+
+            //
+            $lenth = strlen($request->start);
+
+            for($i = $request->start; $i<= $request->end; $i++){
+                $i =sprintf("%0".$lenth."d", $i);
+                $data[] = $i;
+            }
+
+            $list = \App\Merchant::where('user_id', $request->user->id)->where('policy_id', $request->policy_id)->whereIn('merchant_sn', $data)->where('bind_status', 0)->where('active_status', 0)->get();
+
+            return response()->json(['success'=>['message' => '获取成功!', 'data'=>$list]]);
+            
+        } catch (\Exception $e) {
+            
+            return response()->json(['error'=>['message' => '系统错误,联系客服!']]);
+
+        }
+ 
     }
 }

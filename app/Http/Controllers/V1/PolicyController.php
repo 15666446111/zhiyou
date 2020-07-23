@@ -93,7 +93,7 @@ class PolicyController extends Controller
                         $arrs['active_price']['return_money'] = $userPolicy->vip_active_set['return_money'];
 
                     $arrs['active_price']['max'] = $this->getActivePriceMax($request->user, $policy);
-                    $arrs['active_price']['min'] = 0;
+                    $arrs['active_price']['min'] = $policy->recommend;
 
                     // 读取达标返现
                     foreach ($userPolicy->standard as $key => $value) {
@@ -254,7 +254,7 @@ class PolicyController extends Controller
                 $vipActive      = $sonPolicy->vip_active_set;
                 #2 获取可设置的范围
                 $vipActiveMax   =  $this->getActivePriceMax($request->user, $policyInfo);
-                $vipActiveMin   =  0;
+                $vipActiveMin   =  $policyInfo->recommend;
                 #3 传递过来设置的值 需为这两个值的区间
                 if($request->activePrice * 100 >= $vipActiveMin && $request->activePrice * 100 <= $vipActiveMax ){
                     $vipActive['return_money']      = $request->activePrice * 100;

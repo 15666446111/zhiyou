@@ -51,6 +51,7 @@ class ServerController extends Controller
 	protected $team;
 
 
+    protected $date;
 
 	/**
 	 * @Author    Pudding
@@ -62,27 +63,40 @@ class ServerController extends Controller
 	 * @param     [type]      $date     [description]
 	 * @param     [type]      $current  [description]
 	 */
-    public function __construct($dateType, $current, $user)
+    public function __construct($dateType, $current, $user, $date)
     {
 
     	$this->dateType = $dateType;
 
+
+        $this->date     = $date;
+
         switch ($this->dateType) {
             case 'month':
-                $this->StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
+                if($date == 'cur'){
+                    $this->StartTime = Carbon::now()->startOfMonth()->toDateTimeString();
+                }else{
+                    $this->StartTime = Carbon::createFromFormat('Y-m', $date)->startOfMonth()->toDateTimeString();
+                }
                 break;
             case 'day':
                 $this->StartTime = Carbon::today()->toDateTimeString();
                 break;
             case 'all':
-                $this->StartTime = Carbon::createFromFormat('Y-m-d H', '1970-01-01 00')->toDateTimeString();
+                $this->StartTime = Carbon::createFromFormat('Y-m-d', '1970-01-01')->toDateTimeString();
                 break;
             default:
                 $this->StartTime = $time;
                 break;
         }
 
-        $this->EndTime = Carbon::now()->toDateTimeString();
+        if($this->dateType == 'month' && $date != 'cur'){
+
+            $this->EndTime = Carbon::createFromFormat('Y-m', $date)->addMonth(1)->startOfMonth()->toDateTimeString();
+
+        }else{
+            $this->EndTime = Carbon::now()->toDateTimeString();
+        }
 
     	$this->Type     = $current;
 
@@ -129,6 +143,8 @@ class ServerController extends Controller
 
         $trade = $this->getTrade();
 
+        $merchansAll = $this->merchansAll();
+
     	// 返回查询的日期
     	$arrs['date']         = $this->getDate();
 
@@ -143,15 +159,14 @@ class ServerController extends Controller
 		$arrs['friends']      = $this->getFriends();
 
 		$arrs['merchants']    = $this->getMerchants();
-        
-        if ($arrs['merchants'] > 0 )
-		    $arrs['Avg']          = number_format(($trade / $arrs['merchants']) / 100, 2, '.', ',');
+
+        if ($merchansAll > 0 )
+		    $arrs['Avg']      = number_format(($trade / $merchansAll) / 100, 2, '.', ',');
     	else
-            $arrs['Avg']          = 0;
+            $arrs['Avg']      = 0;
         
         return $arrs;
     }
-
 
 
     /**
@@ -167,10 +182,14 @@ class ServerController extends Controller
     	//DB::connection()->enableQueryLog();#开启执行日志
 
         $team = $this->team;
+        
+        $trade_type = array('ENJOY', 'CARDPAY', 'SMALLFREEPAY', 'CLOUDPAY', 'WXQRPAY', 'ALIQRPAY', 'UNIONQRPAY');
 
-    	$select = \App\Trade::whereHas('merchants', function($q) use ($team){
+    	$select = \App\Trade::whereHasIn('merchants_sn', function($q) use ($team){
     		$q->whereIn('user_id', $team);
-    	})->whereBetween('created_at', [ $this->StartTime,  $this->EndTime]);
+    	})->whereBetween('trade_time', [ $this->StartTime,  $this->EndTime])->where('trade_status', 1)->where('card_type', '!=', '借记卡')->whereIn('trade_type', $trade_type);
+        
+        //dd(DB::getQueryLog());
 
     	return $select->sum('money');
     }
@@ -223,6 +242,15 @@ class ServerController extends Controller
 	}
 
 
+    /**
+     * @version [<vector>] [< 获取已绑定的机具总数 >]
+     */
+    public function merchansAll()
+    {
+        return \App\Merchant::whereIn('user_id',$this->team)->where('bind_status', 1)->count();
+    }
+
+
 
     /**
      * @Author    Pudding
@@ -255,7 +283,12 @@ class ServerController extends Controller
 
         switch ($this->dateType) {
             case 'month':
-                $date = Carbon::now()->year."-".Carbon::now()->month;
+                if($this->date == 'cur'){
+                    $date = Carbon::now()->year."-".Carbon::now()->month;
+                }else{
+                    $dateInfo = Carbon::createFromFormat('Y-m', $this->date);
+                    $date = $dateInfo->year."-".$dateInfo->month;
+                }
                 break;
             case 'day':
                 $date = Carbon::now()->year."-".Carbon::now()->month.'-'.Carbon::now()->day;

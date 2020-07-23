@@ -53,7 +53,6 @@ class ActiveMerchantController extends Controller
      */
 	public function __construct(Trade $trade)
 	{
-
 		$this->trade 			= $trade;
 
 		$this->policy 			= $trade->merchants_sn->policys;
@@ -70,6 +69,7 @@ class ActiveMerchantController extends Controller
 			$this->active_money_max = $this->policy->vip_active_set['return_money'];
 		}
     }
+
 
     /**
      * @Author    Pudding
@@ -93,7 +93,6 @@ class ActiveMerchantController extends Controller
 
         $this->trade->merchants_sn->save();
 
-
     	if($this->user->parent > 0 ){
     		// 获得直接上级信息
     		$parent = \App\Buser::where('id', $this->user->parent)->first();
@@ -114,17 +113,46 @@ class ActiveMerchantController extends Controller
 
     			$this->addUserBlance($parent->parent, $this->policy->indirect_active, 7,'间推激活:获得'.number_format($this->policy->indirect_active / 100, 2, '.', ',').')激活推荐奖励');
     		}
-
     	}
 
+        // 获取机器是否是推荐装机
+        $recomd = \App\ApplicationForm::where('handle_temail', $this->trade->merchant_sn)->first();
+        if(!empty($recomd)){
+            $recomdMoney =  $this->policy->recommend;
+            // 如果 推荐奖励小于等于总激活返现 才会给推荐人进行发放奖励
+            if($recomdMoney <= $this->active_money_max){
+                $pushMoney += $recomdMoney;
+                $this->addUserBlance($recomd->user_id, $recomdMoney, 11,
+                    '机器激活:获得激活推荐奖励'.number_format($recomdMoney / 100, 2, '.', ',')."元!");
+            }
 
-    	// 根据用户获取该用户应获得的激活返现
-    	$pushUser = $this->getActiveMoney( $this->user->id );
+            // 根据用户获取该用户应获得的激活返现
+            $pushUser = $this->getActiveMoney( $this->user->id );
+            if($pushUser != 0 && $pushUser > 0){
 
-    	if($pushUser != 0){
-    		$pushMoney += $pushUser;
-    		$this->addUserBlance($this->user->id, $pushUser, 5,'机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
-    	}
+                if($pushUser >= $recomdMoney){
+                    $pushUser = $pushUser - $recomdMoney;
+                    $pushMoney += $pushUser;
+                    $this->addUserBlance($this->user->id, $pushUser, 5,'机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
+                }
+
+
+                $pushMoney += $pushUser;
+                $this->addUserBlance($this->user->id, $pushUser, 5,'机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
+            //
+            }else{
+
+            }
+
+        }else{
+            // 根据用户获取该用户应获得的激活返现
+            $pushUser = $this->getActiveMoney( $this->user->id );
+
+            if($pushUser != 0 && $pushUser > 0){
+                $pushMoney += $pushUser;
+                $this->addUserBlance($this->user->id, $pushUser, 5,'机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
+            }
+        }
 
 		// 如果激活奖励金额不为最大的激活奖励金额
 		// 计算上级代理中的奖励差价

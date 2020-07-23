@@ -133,8 +133,8 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->get('/getBackList', 'V1\TransferController@backList');                      // 我的 - 机具管理 - 机具回拨列表
     Route::middleware('AuthToken')->post('/addBackTransfer', 'V1\TransferController@backTransfer');             // 我的 - 机具管理 - 机具回拨
     Route::middleware('AuthToken')->get('/getTransferLog', 'V1\TransferController@transferLog');                // 我的 - 机具管理 - 划拨回拨记录
-    Route::middleware('AuthToken')->get('/getPolicy', 'V1\PolicyController@getPolicy');                         // 我的 - 机具管理 - 政策活动选择
-
+    Route::middleware('AuthToken')->get('/getPolicy',       'V1\PolicyController@getPolicy');                   // 我的 - 机具管理 - 政策活动选择
+    Route::middleware('AuthToken')->post('/sectionPolicy', 'V1\TransferController@sectionPolicy');                // 我的 - 机具管理 - 区间列表
 
     /**
      * @author  [ Gong Ke] [< 755969423@qq.com >]
@@ -160,12 +160,12 @@ Route::prefix('V1')->group(function () {
      * @author  [ Gong Ke] [< 755969423@qq.com >]
      * @version [<vector>] [< 我的 - 结算卡信息管理  >]
      */
-    Route::middleware('AuthToken')->post('/createBank',     'V1\SetUserController@insertBank');         // 我的 - 添加银行卡结算信息
-    Route::middleware('AuthToken')->get('/getBankInfo',     'V1\SetUserController@selectBank');         // 我的 - 获取银行卡列表信息
-    Route::middleware('AuthToken')->get('/getBankDefault',  'V1\SetUserController@bankDefault');        // 我的 - 查询默认银行卡信息
-    Route::middleware('AuthToken')->get('/getBankFirst',    'V1\SetUserController@bankFirst');          // 我的 - 查询单个银行卡信息
-    Route::middleware('AuthToken')->get('/deBank',          'V1\SetUserController@unsetBank');          // 我的 - 删除银行卡结算信息
-    Route::middleware('AuthToken')->get('/upBank',          'V1\SetUserController@updateBank');         // 我的 - 修改银行卡结算信息
+    Route::middleware('AuthToken')->post('/createBank',     'V1\BankController@insertBank');         // 我的 - 添加银行卡结算信息
+    Route::middleware('AuthToken')->get('/getBankInfo',     'V1\BankController@selectBank');         // 我的 - 获取银行卡列表信息
+    Route::middleware('AuthToken')->get('/getBankDefault',  'V1\BankController@bankDefault');        // 我的 - 查询默认银行卡信息
+    Route::middleware('AuthToken')->get('/getBankFirst',    'V1\BankController@bankFirst');          // 我的 - 查询单个银行卡信息
+    Route::middleware('AuthToken')->get('/deBank',          'V1\BankController@unsetBank');          // 我的 - 删除银行卡结算信息
+    Route::middleware('AuthToken')->get('/upBank',          'V1\BankController@updateBank');         // 我的 - 修改银行卡结算信息
 
 
     /**
