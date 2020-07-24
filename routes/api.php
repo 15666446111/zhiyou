@@ -134,7 +134,7 @@ Route::prefix('V1')->group(function () {
     Route::middleware('AuthToken')->post('/addBackTransfer', 'V1\TransferController@backTransfer');             // 我的 - 机具管理 - 机具回拨
     Route::middleware('AuthToken')->get('/getTransferLog', 'V1\TransferController@transferLog');                // 我的 - 机具管理 - 划拨回拨记录
     Route::middleware('AuthToken')->get('/getPolicy',       'V1\PolicyController@getPolicy');                   // 我的 - 机具管理 - 政策活动选择
-    Route::middleware('AuthToken')->post('/sectionPolicy', 'V1\TransferController@sectionPolicy');                // 我的 - 机具管理 - 区间列表
+    Route::middleware('AuthToken')->post('/sectionPolicy', 'V1\TransferController@sectionPolicy');              // 我的 - 机具管理 - 区间列表
 
     /**
      * @author  [ Gong Ke] [< 755969423@qq.com >]

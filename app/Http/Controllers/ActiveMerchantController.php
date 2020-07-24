@@ -129,25 +129,15 @@ class ActiveMerchantController extends Controller
             // 根据用户获取该用户应获得的激活返现
             $pushUser = $this->getActiveMoney( $this->user->id );
             if($pushUser != 0 && $pushUser > 0){
-
-                if($pushUser >= $recomdMoney){
-                    $pushUser = $pushUser - $recomdMoney;
-                    $pushMoney += $pushUser;
-                    $this->addUserBlance($this->user->id, $pushUser, 5,'机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
-                }
-
-
+                $pushUser = $pushUser - $recomdMoney;
                 $pushMoney += $pushUser;
-                $this->addUserBlance($this->user->id, $pushUser, 5,'机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
-            //
-            }else{
-
+                $this->addUserBlance($this->user->id, $pushUser, 5,
+                    '机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
             }
 
         }else{
             // 根据用户获取该用户应获得的激活返现
             $pushUser = $this->getActiveMoney( $this->user->id );
-
             if($pushUser != 0 && $pushUser > 0){
                 $pushMoney += $pushUser;
                 $this->addUserBlance($this->user->id, $pushUser, 5,'机器激活:获得'.number_format($pushUser / 100, 2, '.', ',').')激活返现奖励');
