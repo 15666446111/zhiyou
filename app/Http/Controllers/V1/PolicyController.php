@@ -66,7 +66,9 @@ class PolicyController extends Controller
             // 组合返回数据
             $arrs = [];
 
-            if($User->parent != $request->user->id) return response()->json(['error'=>['message' => '用户非直接下级!']]);
+            if($request->user->id != $request->uid){
+                if($User->parent != $request->user->id) return response()->json(['error'=>['message' => '用户非直接下级!']]);
+            }
 
             if($request->user->group == 2 && $User->group == 2){
 
