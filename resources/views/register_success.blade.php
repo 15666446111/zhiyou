@@ -16,8 +16,8 @@
 
     <div class="weui-msg__opr-area">
         <p class="weui-btn-area">
-            <a href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=Mzg4NDA1NDM0Mw==#wechat_redirect" class="weui-btn weui-btn_primary">关注公众号</a>
-            <a href="{{ config('base.app_down_url') }}" class="weui-btn weui-btn_default">下载APP</a>
+            <a href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzA3MTQwMjM1MQ==#wechat_redirect" class="weui-btn weui-btn_primary">关注公众号</a>
+            <a href="http://androidownload.webbyme.cn/voGgL5" class="weui-btn weui-btn_default">下载APP</a>
         </p>
     </div>
 
